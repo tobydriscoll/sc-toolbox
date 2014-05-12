@@ -1,5 +1,5 @@
 % Schwarz-Christoffel Toolbox
-% Version 2.3   January 15, 2003
+% Version 2.4.1
 % Copyright (c) 1994-2003 by Toby Driscoll (driscoll@math.udel.edu).
 %
 % This is a selective listing of functions.
