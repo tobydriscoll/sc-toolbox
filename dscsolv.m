@@ -96,24 +96,28 @@ x(3) = imag(c1);
 fdat = {w0,w1,phi0,phi1,nptq,qwork,linearc,ishape,nshape,ind,dataz};
 
 % Solve nonlinear systems by using SDogleg:
-%disp('Wait..be patient :) ')
-%[x,info] = sdogleg(@dscfun,fdat,x,[1 1e-9 1e-7 1e-7 1000 1e-3 ]);
+% disp('Wait..be patient :) ')
+% optdl = zeros(6,1);
+% optdl(1) = 1; optdl(2) = 1e-9;
+% optdl(3) = 1e-7; optdl(4) = 1e-7;
+% optdl(5) = 1000; optdl(6) = 1e-3;
+% [x,info] = sdogleg(@dscfun,fdat,x,optdl);
 
 % Solve nonlinear systems by using nesolve:
-%tol = 1e-8;
-%opt = zeros(16,1);
-%opt(1) = 2;
-%opt(2) = 2;
-%opt(6) = 100*(16-3);
-%opt(8) = tol;
-%opt(9) = min(eps^(2/3),tol/10);
-%opt(12) = nptq;
-%x = nesolve(@dscfun,x(:),opt,fdat);
+tol = 1e-8;
+opt = zeros(16,1);
+opt(1) = 2;
+opt(2) = 2;
+opt(6) = 100*(16-3);
+opt(8) = tol;
+opt(9) = min(eps^(2/3),tol/10);
+opt(12) = nptq;
+x = nesolve(@dscfun,x(:),opt,fdat);
 %x = nesolve(@dscfun,x(:),2,fdat); %old style
 
 % Solve nonlinear systems by using fsolve:
-options=optimset('Display','iter');   % Option to display output
-x = fsolve(@dscfun,x',options,fdat);
+%options=optimset('Display','iter');   % Option to display output
+%x = fsolve(@dscfun,x',options,fdat);
 
 % Convert back x to DSC parameters u,c,w0,w1,phi0,phi1
 [u,c,w0,w1,phi0,phi1] = xwtran(x,w0,w1,phi0,phi1,dataz);

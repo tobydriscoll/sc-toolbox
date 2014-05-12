@@ -1,5 +1,8 @@
-clear;
-IPOLY = 5;
+clf;
+IPOLY = 1;
+
+% In the file dscsolv.m, between line 98 and 116
+% nonlinear solver can use nesolve, sdogleg, or fsolve (optim toolbox).
 
 if IPOLY==1
     q = sqrt(2);
@@ -11,7 +14,6 @@ if IPOLY==1
     p1 = polygon(z1);
     rgn = dscpolygons(p1,p0)
 elseif IPOLY==2
-    % Use sdogleg instead. nesolve is very slow
     z0 = [0.5+2.5*i 0.5+0.5*i 1+0.5*i 1+i 1+0.5*i 0.5+0.5*i 0.5+2.5*i 2.5*i 0 2 2+2.5*i];
     z1 = [1+2*i 1+1.5*i 1+2*i 1.5+2*i 1.5+0.5*i 1.5+2*i];
     p0 = polygon(z0);
