@@ -1,15 +1,14 @@
-function w = dscinvmap(z,map)
-% DSCINVMAP Map a pt z to a pt w
+function w = dscinvmap(map,z)
+%DSCINVMAP   Values of the inverse map.
+%   DSCINVMAP(MAP,Z) finds the inverse image of a point Z under the annulusmap 
+%   MAP. That is, it maps from the DC polygonal domain MAP.REGION to the
+%   annulus.
+%
+% See also ANNULUSMAP, ANNULUSMAP.DSCMAP.
 
-% DSCINVMAP(z,map) maps a pt z in the doubly connected region to the
-% annulus. map is an annulusmap object.
+% Copyright by Alfa Heryudono, 2003. 
 
-% see @annulusmap/annulusmap.m
-
-% check if z is in the doubly connected region
-% Not implemented yet.
-%----------------------
-%----------------------
+% TODO: check if z is in the doubly connected region
 
 % z is not allowed to be a vertex.
 % check if z is in Z0.

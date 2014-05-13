@@ -1,13 +1,13 @@
 function plot(map,varargin)
-%PLOT Create the graphical representation of the annulusmap.
-%   PLOT(map) creates the graphical representation of the annulusmap.
+%PLOT Graphical representation of an annulusmap.
+%   PLOT(MAP) creates a graphical representation of the annulusmap MAP.
 %   
 %   PLOT(map,'num') or PLOT(map,'lab') also plots dots for the vertices and
 %   numeric labels of inner polygon and outer polygon. For infinite vertices, 
 %   two numeric labels are printed.
 
 %   Modification of dplot.
-%   Modified by Alfa Heryudono, 2003.
+%   Copyright by Alfa Heryudono, 2003.
 
 % Plot the outer and inner polygon first.
 if nargin >1

@@ -1,8 +1,8 @@
 function display(map)
-%   Pretty-print D-SC parameters.
+%DISPLAY   Pretty-print D-SC parameters.
+%   Called automatically when a map is displayed at the command line.
 
-%   Modification of POLYGON/DISPLAY.m
-%   Modified by Alfa Heryudono, 2003.
+%   Copyright by Alfa Heryudono, 2003.
 
 fprintf('\n%s = DSC annulusmap:\n\n',inputname(1))
 if imag(map.c) < 0

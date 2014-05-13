@@ -1,11 +1,11 @@
 function map = annulusmap(rgn)
 %ANNULUSMAP Solve the nonlinear system for D-SC parameter.
-
 %   ANNULUSMAP(RGN) solves the nonlinear system for D-SC parameter of a
-%   doubly connected region RGN. RGN is an object of DSCPOLYGONS.
+%   doubly connected region RGN as created by DSCPOLYGONS.
 %
 %   See also DSCPOLYGONS.
-%   Written by Alfa Heryudono, 2003.
+
+%   Copyright by Alfa Heryudono, 2003.
 
 % Get inner and outer polygons from region rgn
 [p1 p0] = get(rgn);

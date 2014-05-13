@@ -1,5 +1,7 @@
+% Tests of doubly-connected maps.
+
 clf;
-IPOLY = 1;
+IPOLY = 4;
 
 % In the file dscsolv.m, between line 98 and 116
 % nonlinear solver can use nesolve, sdogleg, or fsolve (optim toolbox).
