@@ -116,7 +116,7 @@ else
   if termcode~=1
     disp('Warning: Nonlinear equations solver did not terminate normally')
   end
-  %y = fsolve(@rspfun,y0,...
+  y = fsolve(@rspfun,y0,...
              optimset('display','iter','tolfun',tol,'large','off','tolx',tol),fdat);
 
   % Convert y values to z
