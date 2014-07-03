@@ -112,7 +112,7 @@ color = 'k';
 
 % Plot vertical lines...
 y2 = max(z(n-1),10);
-linh = zeros(length(re),2);
+linh = gobjects(length(re),2);
 for j = 1:length(re)
   % Start evenly spaced
   zp = re(j) + i*[linspace(0,y2,15) Inf].';
@@ -162,7 +162,7 @@ end
 z1 = min(-10,z(1));
 z2 = max(40,z(n-1));
 linh1 = linh;
-linh = zeros(length(im),2);
+linh = gobjects(length(im),2);
 for j = 1:length(im)
   % Start evenly spaced
   zp = [-Inf linspace(z1,z2,15) Inf].' + i*im(j);

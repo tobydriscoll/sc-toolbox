@@ -142,7 +142,7 @@ n = length(w);
 % Find size of the rectified domain.
 siz = max( max(imag(wr))-min(imag(wr)), max(real(wr))-min(real(wr)) );
 
-linh = zeros(length(val),2);
+linh = gobjects(length(val),2);
 for j = 1:length(val)
 
   % Find intersections with rectified polygon sides

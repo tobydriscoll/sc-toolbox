@@ -52,8 +52,8 @@ beta = beta(renum);
 atinf = isinf(w);
 
 % First edge
-edgeh = zeros(n,1);
-lblh = NaN*zeros(n,2);
+edgeh = gobjects(n,1);
+lblh = gobjects( n, 2 );
 edgeh(1) = plot(real(w(1:2)),imag(w(1:2)),'-','linewid',lw);
 ang = angle(w(2)-w(1));
 hold on

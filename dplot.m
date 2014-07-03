@@ -94,7 +94,7 @@ axlim = axis;
 color = 'k';
 
 % Plot circles...
-linh = zeros(length(R),2);
+linh = gobjects(length(R),2);
 for j = 1:length(R)
   % Start with evenly spaced theta
   tp = linspace(0,2*pi,20)';
@@ -144,7 +144,7 @@ end
 
 % Plot radii...
 linh1 = linh;
-linh = zeros(length(theta),2);
+linh = gobjects(length(theta),2);
 for j = 1:length(theta)
   Rp = linspace(0,1,14)';
   zp = Rp*exp(i*theta(j));

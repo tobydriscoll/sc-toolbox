@@ -48,7 +48,7 @@ poly = [];
 
 for j=1:nargin
   arg = varargin{j};
-  if ishandle(arg) & strcmp(get(arg,'type'),'figure')
+  if isgraphics(arg,'figure')  
     fig = arg;
   elseif isa(arg,'polygon')
     poly = arg;

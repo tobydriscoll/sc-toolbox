@@ -108,7 +108,7 @@ axlim = axis;
 color = 'k';
 
 % Plot vertical lines...
-linh = zeros(length(re),2);
+linh = gobjects(length(re),2);
 for j = 1:length(re)
   % Start evenly spaced
   zp = re(j) + i*linspace(0,Kp,15).';
@@ -154,7 +154,7 @@ end
 
 % Plot horizontal lines...
 linh1 = linh;
-linh = zeros(length(im),2);
+linh = gobjects(length(im),2);
 for j = 1:length(im)
   % Start evenly spaced
   zp = linspace(-K,K,15).' + i*im(j);

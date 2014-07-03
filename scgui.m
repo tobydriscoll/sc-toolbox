@@ -840,7 +840,7 @@ if nargin==5
   nvar = 2;
 end
 
-fig2 = figure('vis','off','number','off','menu','none','name',name);
+fig2 = figure('vis','off','NumberTitle','off','menu','none','name',name);
 pos = get(fig2,'pos');
 height = 150-34*(nvar==1);
 set(fig2,'pos',[pos(1),pos(2),400,height])
@@ -1196,7 +1196,7 @@ setview(fig)
 %============================================================
 function fig = make_importexportfig()
 
-fig = figure('vis','off','number','off','name','Import/Export',...
+fig = figure('vis','off','NumberTitle','off','name','Import/Export',...
     'tag','sc_importexport','handlevisibility','callback',...
     'unit','char','menu','none','integerhandle','off','resize','off');
 

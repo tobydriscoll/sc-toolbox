@@ -79,7 +79,7 @@ sc_hs = plotpoly(w,beta);			% side handles
 crack = find(beta==1);
 set(sc_hs(crack),'color',get(sc_hs(1),'color')/2)
 hold on
-sc_hv = repmat(NaN,n,1);			% vertex handles
+sc_hv = gobjects;			% vertex handles
 for j=find(~isinf(w))'
   sc_hv(j) = plot(real(w(j)),imag(w(j)),'.','markersize',20);
 end
@@ -146,7 +146,7 @@ switch action
 case 'down'				% button down
   h = get(gcf,'currentobj');
   % Act only if h is a line object
-  if strcmp(get(h,'type'),'line')
+  if isgraphics(h,'line')
     if ~strcmp(ptr,'crosshair')		% move or delete
       if strcmp(get(h,'marker'),'.')	% vertex?
 	sc_k = find(h==sc_hv);
@@ -275,7 +275,7 @@ case 'up'				% button up
     axis(axlim)
     axis normal
     cback('snap');
-    sc_hv = repmat(NaN,n+1,1);
+    sc_hv = gobjects;
     for j=find(~isinf(wn))'
       sc_hv(j) = plot(real(wn(j)),imag(wn(j)),'.','markersize',20);
     end
