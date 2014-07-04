@@ -46,12 +46,12 @@ if isempty([R(:);theta(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(R)==1) & (R == round(R))
+if (length(R)==1) && (R == round(R))
   m = R+2;
   R = linspace(0,1,m);
   R([1,m]) = [];
 end
-if (length(theta)==1) & (theta == round(theta))
+if (length(theta)==1) && (theta == round(theta))
   m = theta+1;
   theta = linspace(0,2*pi,m);
   theta(m) = [];
@@ -65,10 +65,10 @@ figure(fig);
 ax = [findobj(fig,'tag','PhysicalAxes');...
       findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = logical(1);
+  draw2 = true;
   vis = get(ax,'vis');
 else
-  draw2 = logical(0);
+  draw2 = false;
   ax = gca;
   vis = {'on'};
 end
@@ -97,43 +97,47 @@ linh = gobjects(length(R),2);
 for j = 1:length(R)
   % Start with evenly spaced theta
   tp = linspace(0,2*pi,20)';
-  new = logical(ones(length(tp),1));
+  new = true(length(tp),1);
   wp = NaN*new;
 
   % The individual points will be shown as they are found
-  linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7,'erasemode','none');
+  linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+      'linestyle','none','marker','.','markersize',7);
   if draw2
-    linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7,'erasemode','none');
+    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+	'linestyle','none','marker','.','markersize',7);
   end
   
   % Adaptively refine theta to get smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
-    neww = crmap(R(j)*exp(i*tp(new)),w,beta,cr,aff,wcfix,Q,qdat);
+    neww = crmap(R(j)*exp(1i*tp(new)),w,beta,cr,aff,wcfix,Q,qdat);
     wp(new) = neww;
     iter = iter + 1;
 
     % Update the points to show progress
-    set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
     if draw2
-      set(linh(j,2),'xdata',R(j)*cos(tp),'ydata',R(j)*sin(tp))
+      addpoints(linh(j,2),R(j)*cos(tp(new)),R(j)*sin(tp(new)))
     end
+    drawnow update
     
     % Add points to zp where necessary to make smooth curves
     [tp,wp,new] = scpadapt(tp,wp,minlen,maxlen,axlim);
   end
   % Set the lines to be solid
-  set(linh(j,1),'erasemode','back')
-  set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(i*tp))
+  % To ensure smooth closure, we erase and redraw all the points
+  % in order. 
+  clearpoints(linh(j,1))
+  addpoints(linh(j,1),real(wp),imag(wp));    
+  set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(1i*tp))
   if draw2
     % Replace the points with (hopefully) a smooth circle
-    tp = linspace(0,2*pi,101);
-    set(linh(j,2),'erasemode','back')
-    set(linh(j,2),'marker','none','linestyle','-',...
-	'xdata',R(j)*cos(tp),'ydata',R(j)*sin(tp))
+    tp = linspace(0,2*pi,361);
+    clearpoints(linh(j,2))
+    addpoints(linh(j,2),R(j)*cos(tp),R(j)*sin(tp));
+    set(linh(j,2),'marker','none','linestyle','-')
   end
   drawnow
 end
@@ -145,43 +149,45 @@ for j = 1:length(theta)
   % Start with evenly spaced radii
   Rp = linspace(0,1,12)';
   Rp = [Rp(1:11);.95;.98;Rp(12)];
-  zp = Rp*exp(i*theta(j));
-  new = logical(ones(length(zp),1));
+  zp = Rp*exp(1i*theta(j));
+  new = true(length(zp),1);
   wp = NaN*new;
 
   % The individual points will be shown as they are found
-  linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7,'erasemode','none');
+  linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+      'linestyle','none','marker','.','markersize',7);
   if draw2
-    linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7,'erasemode','none');
+    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+	'linestyle','none','marker','.','markersize',7);
   end
 
   % Adaptively refine to make smooth curves
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = crmap(zp(new),w,beta,cr,aff,wcfix,Q,qdat);
     wp(new) = neww;
     iter = iter + 1;
 
     % Update the points to show progress
-    set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
     if draw2
-      set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+        addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
     end
-        
+    drawnow update
+    
     % Add points to zp where necessary to make smooth curves
     [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
   end
   % Set the lines to be solid
-  set(linh(j,1),'erasemode','back')
+  clearpoints(linh(j,1))
+  addpoints(linh(j,1),real(wp),imag(wp));    
   set(linh(j,1),'marker','none','linestyle','-','user',zp)
   if draw2
     % Replace the points with just the ends
-    set(linh(j,2),'erasemode','back')
-    set(linh(j,2),'marker','none','linestyle','-',...
-	'xdata',[0 1]*cos(theta(j)),'ydata',[0 1]*sin(theta(j)))
+    clearpoints(linh(j,2))
+    addpoints(linh(j,2),[0 1]*cos(theta(j)),[0 1]*sin(theta(j)))
+    set(linh(j,2),'marker','none','linestyle','-')
   end
   drawnow
 end
@@ -190,7 +196,6 @@ linh = [linh1;linh];
 if ~draw2
   linh = linh(:,1);
 end
-set(linh,'erasemode','normal')
 
 refresh
 
