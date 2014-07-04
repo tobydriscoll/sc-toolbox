@@ -24,7 +24,6 @@ function [H,RE,IM] = crrplot(w,beta,wr,betar,cr,aff,affr,Q,re,im,options)
 %   $Id: crrplot.m 226 2003-01-08 16:59:17Z driscoll $
 
 % Parse input and initialize
-n = length(w);
 w = w(:);
 beta = beta(:);
 wr = wr(:);
@@ -50,7 +49,7 @@ if isempty([re(:);im(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(re)==1) & (re == round(re))
+if (length(re)==1) && (re == round(re))
   if re < 1
     re = [];
   else
@@ -59,7 +58,7 @@ if (length(re)==1) & (re == round(re))
     re([1,m+2]) = [];
   end
 end
-if (length(im)==1) & (im == round(im))
+if (length(im)==1) && (im == round(im))
   if im < 1
     im = [];
   else
@@ -77,10 +76,10 @@ figure(fig);
 ax = [findobj(fig,'tag','PhysicalAxes');...
       findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = logical(1);
+  draw2 = true;
   vis = get(ax,'vis');
 else
-  draw2 = logical(0);
+  draw2 = false;
   ax = gca;
   vis = {'on'};
 end
@@ -113,7 +112,6 @@ linh = [hv;hh];
 if ~draw2
   linh = linh(:,1);
 end
-set(linh,'erasemode','normal')
 
 % Force redraw to get clipping enforced
 refresh
@@ -168,11 +166,11 @@ for j = 1:length(val)
 
   % Test points at ends and mindpoints of intervals
   if strcmp(direcn(1:3),'ver')
-    testint = val(j) + i*mean(interval);
-    testedge = val(j) + i*srtcross;
+    testint = val(j) + 1i*mean(interval);
+    testedge = val(j) + 1i*srtcross;
   else
-    testint = i*val(j) + mean(interval);
-    testedge = i*val(j) + srtcross;
+    testint = 1i*val(j) + mean(interval);
+    testedge = 1i*val(j) + srtcross;
   end
   
   % Use test points to determine number of curves
@@ -193,14 +191,14 @@ for j = 1:length(val)
   %zp(find(~diff(zp))) = [];
   
   if strcmp(direcn(1:3),'ver')
-    zp = val(j) + i*zp;
+    zp = val(j) + 1i*zp;
   else
-    zp = i*val(j) + zp;
+    zp = 1i*val(j) + zp;
   end
 
   % Prepare for iterative mapping
   lenzp = length(zp);
-  new = logical(ones(lenzp,1));
+  new = true(lenzp,1);
   wp = NaN*ones(lenzp,numcurves);
   qn = NaN*ones(lenzp,numcurves);
   iter = 0;
@@ -208,15 +206,15 @@ for j = 1:length(val)
   color = 'k';
 
   % The individual points will be shown as they are found
-  linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7,'erasemode','none');
+   linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+      'linestyle','none','marker','.','markersize',7);
   if draw2
-    linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7,'erasemode','none');
+    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+	'linestyle','none','marker','.','markersize',7);
   end
 
-  % Do the mapping & plotting
-  while any(new) & (iter < maxrefn)
+  % Do the mapping && plotting
+  while any(new) && (iter < maxrefn)
     drawnow
 
     % Map new points 
@@ -242,10 +240,11 @@ for j = 1:length(val)
     [wp,qn] = crrsort(wp,qn,Q);
 
     % Update the points to show progress
-    set(linh(j,1),'xdata',real(wp(:)),'ydata',imag(wp(:)))
+    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
     if draw2
-      set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+        addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
     end
+    drawnow update
 
     iter = iter + 1;
     
@@ -261,14 +260,14 @@ for j = 1:length(val)
   wp(size(wp,1)+1,:) = NaN*wp(1,:);
   
   % Set the lines to be solid
-  set(linh(j,1),'erasemode','back')
-  set(linh(j,1),'marker','none','linestyle','-')
-  set(linh(j,1),'xdata',real(wp(:)),'ydata',imag(wp(:)),'user',zp)
+  clearpoints(linh(j,1))
+  addpoints(linh(j,1),real(wp),imag(wp));    
+  set(linh(j,1),'marker','none','linestyle','-','user',zp)
   if draw2
     % Replace the points with the endpoints
-    set(linh(j,2),'erasemode','back')
-    set(linh(j,2),'marker','none','linestyle','-',...
-	'xdata',real(zp([1 end])),'ydata',imag(zp([1 end])))
+    clearpoints(linh(j,2))
+    addpoints(linh(j,2),real(zp([1 end])),imag(zp([1 end])))
+    set(linh(j,2),'marker','none','linestyle','-')
   end
   drawnow
 
