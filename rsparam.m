@@ -1,4 +1,4 @@
-function [z,zb,c,qdat] = rsparam(w,beta,branch,z0,options);
+function [z,zb,c,qdat] = rsparam(w,beta,branch,z0,options)
 %RSPARAM Schwarz-Christoffel Riemann surface parameter problem.
 
 %   [Z,C,QDAT] = RSPARAM(W,BETA) solves the Schwarz-Christoffel mapping
@@ -58,7 +58,7 @@ atinf = (beta <= -1);
 
 if n==3
   % Trivial solution
-  z = [-i;(1-i)/sqrt(2);1];
+  z = [-1i;(1-1i)/sqrt(2);1];
 
 else
 
@@ -84,14 +84,14 @@ else
     z0 = z0{1};
     z0 = z0(:)./abs(z0(:));
     % Moebius to make th(n-2:n)=[1,1.5,2]*pi;
-    Am = moebius(z0(n-2:n),[-1;-i;1]);
+    Am = moebius(z0(n-2:n),[-1;-1i;1]);
     z0 = Am(z0);
     th = angle(z0);
     th(th<=0) = th(th<=0) + 2*pi;
     dt = diff([0;th(1:n-2)]);
     y0 = log(dt(1:n-3)./dt(2:n-2));
     % Map branch images to upper HP
-    Am = moebius(i,i,1,-1);
+    Am = moebius(1i,1i,1,-1);
     u = Am(zb);
     u0 = [real(u) sqrt(imag(u))]';
 %%    u = sqrt(Am(zb));
@@ -112,7 +112,7 @@ else
   opt(8) = tol;
   opt(9) = min(eps^(2/3),tol/10);
   opt(12) = nqpts;
-  [y,termcode] = nesolve(@rspfun,y0,opt,fdat);
+  [~,termcode] = nesolve(@rspfun,y0,opt,fdat);
   if termcode~=1
     disp('Warning: Nonlinear equations solver did not terminate normally')
   end
@@ -140,7 +140,7 @@ n = length(w);
 theta = angle(z(1:n-3));
 
 % Check crowding.
-if any(diff(theta)<eps) | any(isnan(theta))
+if any(diff(theta)<eps) || any(isnan(theta))
   % Since abs(y) is large, use it as the penalty function.
   F = y;
   disp('Warning: Severe crowding')
@@ -151,7 +151,7 @@ end
 zleft = z(left);
 zright = z(right);
 angl = angle(zleft);
-mid = exp(i*(angl + rem(angle(zright./zleft)+2*pi,2*pi)/2));
+mid = exp(1i*(angl + rem(angle(zright./zleft)+2*pi,2*pi)/2));
 % For integrals between nonadjacent singularities, choose 0 as intermediate
 % integration point.
 mid(cmplx) = zeros(size(mid(cmplx)));
@@ -199,9 +199,9 @@ function [z,zb] = vartsfm(y,n)
 cs = cumsum(cumprod([1;exp(-y(1:n-3))]));
 theta = pi*cs(1:n-3)/cs(length(cs));
 z = ones(n,1);
-z(1:n-3) = exp(i*theta);
-z(n-2:n-1) = [-1;-i];
+z(1:n-3) = exp(1i*theta);
+z(n-2:n-1) = [-1;-1i];
 
 u = y(n-2:2:end);
 v = y(n-1:2:end).^2;
-zb = (u+i*v-i)./(u+i*v+i);
+zb = (u+1i*v-1i)./(u+1i*v+1i);

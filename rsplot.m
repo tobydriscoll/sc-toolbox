@@ -26,7 +26,6 @@ function [H,R2,THETA] = rsplot(w,beta,z,zb,c,R,theta,options)
 
 w = w(:);
 beta = beta(:);
-n = length(w);
 z = z(:);
 zb = zb(:);
 
@@ -48,12 +47,12 @@ if isempty([R(:);theta(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(R)==1) & (R == round(R))
+if (length(R)==1) && (R == round(R))
   m = R+2;
   R = linspace(0,1,m);
   R([1,m]) = [];
 end
-if (length(theta)==1) & (theta == round(theta))
+if (length(theta)==1) && (theta == round(theta))
   m = theta+1;
   theta = linspace(0,2*pi,m);
   theta(m) = [];
@@ -67,10 +66,10 @@ figure(fig);
 ax = [findobj(fig,'tag','phydomain');...
       findobj(fig,'tag','candomain')];
 if length(ax)==2
-  draw2 = logical(1);
+  draw2 = true;
   vis = get(ax,'vis');
 else
-  draw2 = logical(0);
+  draw2 = false;
   ax = gca;
   vis = {'on'};
 end
@@ -99,7 +98,7 @@ linh = gobjects(length(R),2);
 for j = 1:length(R)
   % Start with evenly spaced theta
   tp = linspace(0,2*pi,20)';
-  new = logical(ones(length(tp),1));
+  new = true(length(tp),1);
   wp = NaN*new;
 
   % The individual points will be shown as they are found
@@ -112,9 +111,9 @@ for j = 1:length(R)
   
   % Adaptively refine theta to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
-    zp = R(j)*exp(i*tp(new));
+    zp = R(j)*exp(1i*tp(new));
     neww = rsmap(zp,w,beta,z,zb,c,qdat);
     wp(new) = neww;
     iter = iter + 1;
@@ -132,7 +131,7 @@ for j = 1:length(R)
   
   % Set the lines to be solid
   set(linh(j,1),'erasemode','back')
-  set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(i*tp))
+  set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(1i*tp))
   if draw2
     % Replace the points with (hopefully) a smooth circle
     tp = linspace(0,2*pi,101);
@@ -148,8 +147,8 @@ linh1 = linh;
 linh = gobjects(length(theta),2);
 for j = 1:length(theta)
   Rp = linspace(0,1,14)';
-  zp = Rp*exp(i*theta(j));
-  new = logical(ones(length(zp),1));
+  zp = Rp*exp(1i*theta(j));
+  new = true(length(zp),1);
   wp = NaN*new;
 
   % The individual points will be shown as they are found
@@ -162,7 +161,7 @@ for j = 1:length(theta)
  
   % Adaptively refine to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = rsmap(zp(new),w,beta,z,zb,c,qdat);
     wp(new) = neww;

@@ -50,7 +50,7 @@ if isempty([re(:);im(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(re)==1) & (re == round(re))
+if (length(re)==1) && (re == round(re))
   if re < 1
     re = [];
   elseif re < 2
@@ -62,7 +62,7 @@ if (length(re)==1) & (re == round(re))
     re = linspace(z(1)-dre,z(n-1)+dre,m);
   end
 end
-if (length(im)==1) & (im == round(im))
+if (length(im)==1) && (im == round(im))
   if length(re) < 2
     im = linspace(0,4,im+1);
     im(1) = [];
@@ -79,10 +79,10 @@ figure(fig);
 ax = [findobj(fig,'tag','PhysicalAxes');...
       findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = logical(1);
+  draw2 = true;
   vis = get(ax,'vis');
 else
-  draw2 = logical(0);
+  draw2 = false;
   ax = gca;
   vis = {'on'};
 end
@@ -115,10 +115,10 @@ y2 = max(z(n-1),10);
 linh = gobjects(length(re),2);
 for j = 1:length(re)
   % Start evenly spaced
-  zp = re(j) + i*[linspace(0,y2,15) Inf].';
-  new = logical(ones(size(zp)));
+  zp = re(j) + 1i*[linspace(0,y2,15) Inf].';
+  new = true(size(zp));
   new(end) = 0;
-  wp = repmat(NaN,length(zp),1);
+  wp = NaN(length(zp),1);
   wp(end) = w(n);
 
   % The individual points will be shown as they are found
@@ -131,7 +131,7 @@ for j = 1:length(re)
   
   % Adaptive refinement to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = hpmap(zp(new),w,beta,z,c,qdat);
     wp(new) = neww;
@@ -165,10 +165,10 @@ linh1 = linh;
 linh = gobjects(length(im),2);
 for j = 1:length(im)
   % Start evenly spaced
-  zp = [-Inf linspace(z1,z2,15) Inf].' + i*im(j);
-  new = logical(ones(size(zp)));
+  zp = [-Inf linspace(z1,z2,15) Inf].' + 1i*im(j);
+  new = true(size(zp));
   new([1 end]) = 0;
-  wp = repmat(NaN,length(zp),1);
+  wp = NaN(length(zp),1);
   wp([1 end]) = w(n);
   
   % The individual points will be shown as they are found
@@ -181,7 +181,7 @@ for j = 1:length(im)
  
   % Adaptive refinement to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = hpmap(zp(new),w,beta,z,c,qdat);
     wp(new) = neww;

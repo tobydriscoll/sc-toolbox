@@ -42,7 +42,7 @@ end
 R = max(lim(2)-lim(1),lim(4)-lim(3));
 
 % Renumber to start with two finite vertices
-first = min(find(~atinf & ~atinf([2:n,1])));
+first = find(~atinf & ~atinf([2:n,1]), 1 );
 if isempty(first), 
   error('There must be two consecutive finite vertices.')
 end
@@ -76,7 +76,7 @@ while j <= n
       theta = theta - pi/2;
     end
     % Make label; markers will be added last
-    pos = w(j) + .035*R*exp(i*theta);
+    pos = w(j) + .035*R*exp(1i*theta);
     %%lblh(j,1) = plot(real(w(j)),imag(w(j)),'.','markersize',12);
     lblh(j,2) = text(real(pos),imag(pos),int2str(renum(j)),...
 	'ver','mid','hor','cen');
@@ -91,7 +91,7 @@ while j <= n
   else
     % Unbounded edge (first of two consecutive)
     ang = ang-pi*beta(j);
-    z = [w(j);w(j)+R*exp(i*ang)];
+    z = [w(j);w(j)+R*exp(1i*ang)];
     edgeh(j) = plot(real(z),imag(z),'-','linewid',lw);
     % Make first label outside axes box
     if nargin == 3
@@ -99,21 +99,21 @@ while j <= n
       Rx = (lim(1:2) - real(w(j))) / (cos(theta)+eps*(cos(theta)==0));
       Ry = (lim(3:4) - imag(w(j))) / (sin(theta)+eps*(sin(theta)==0));
       RR = [Rx,Ry];
-      pos = w(j) + (min(RR(RR>0))+.07*R)*exp(i*theta);
+      pos = w(j) + (min(RR(RR>0))+.07*R)*exp(1i*theta);
       str = sprintf('%i (inf)',renum(j+1));
       lblh(j+1,1) = text(real(pos),imag(pos),str,'ver','mid','hor','cen');
     end
 
     % Second unbounded edge
     ang = ang-pi*beta(jp1);
-    z = [w(rem(j+1,n)+1)-R*exp(i*ang);w(rem(j+1,n)+1)];
+    z = [w(rem(j+1,n)+1)-R*exp(1i*ang);w(rem(j+1,n)+1)];
     edgeh(j+1) = plot(real(z),imag(z),'-','linewid',lw);
     if nargin == 3
       theta = ang + pi;
       Rx = (lim(1:2) - real(z(2))) / (cos(theta)+eps*(cos(theta)==0));
       Ry = (lim(3:4) - imag(z(2))) / (sin(theta)+eps*(sin(theta)==0));
       RR = [Rx,Ry];
-      pos = z(2) + (min(RR(RR>0))+.07*R)*exp(i*theta);
+      pos = z(2) + (min(RR(RR>0))+.07*R)*exp(1i*theta);
       str = sprintf('%i (inf)',renum(j+1));
       lblh(j+1,2) = text(real(pos),imag(pos),str,'ver','mid','hor','cen');
     end
@@ -129,7 +129,7 @@ if nargin == 3
   if any( abs([beta(n)-1 beta(1) beta(2)-1]) < 3*eps)
     theta = theta + pi -(beta(1)+1)*pi/2;
   end
-  pos = w(1) + .035*R*exp(i*theta);
+  pos = w(1) + .035*R*exp(1i*theta);
   %%lblh(1,1) = plot(real(w(1)),imag(w(1)),'.','markersize',12);
   lblh(1,2) = text(real(pos),imag(pos),int2str(renum(1)),...
       'ver','mid','hor','cen');

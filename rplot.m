@@ -25,7 +25,6 @@ function [H,RE,IM] = rplot(w,beta,z,c,L,re,im,options)
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: rplot.m 298 2009-09-15 14:36:37Z driscoll $
 
-n = length(w);
 w = w(:);
 beta = beta(:);
 z = z(:);
@@ -53,7 +52,7 @@ if isempty([re(:);im(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(re)==1) & (re == round(re))
+if (length(re)==1) && (re == round(re))
   if re < 1
     re = [];
   else
@@ -62,7 +61,7 @@ if (length(re)==1) & (re == round(re))
     re([1,m+2]) = [];
   end
 end
-if (length(im)==1) & (im == round(im))
+if (length(im)==1) && (im == round(im))
   if im < 1
     im = [];
   else
@@ -80,10 +79,10 @@ figure(fig);
 ax = [findobj(fig,'tag','PhysicalAxes');...
       findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = logical(1);
+  draw2 = true;
   vis = get(ax,'vis');
 else
-  draw2 = logical(0);
+  draw2 = false;
   ax = gca;
   vis = {'on'};
 end
@@ -111,9 +110,9 @@ color = 'k';
 linh = gobjects(length(re),2);
 for j = 1:length(re)
   % Start evenly spaced
-  zp = re(j) + i*linspace(0,Kp,15).';
-  new = logical(ones(size(zp)));
-  wp = repmat(NaN,length(zp),1);
+  zp = re(j) + 1i*linspace(0,Kp,15).';
+  new = true(size(zp));
+  wp = NaN(length(zp),1);
 
   % The individual points will be shown as they are found
   linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
@@ -125,7 +124,7 @@ for j = 1:length(re)
   
   % Adaptive refinement to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = rmap(zp(new),w,beta,z,c,L,qdat);
     wp(new) = neww;
@@ -157,9 +156,9 @@ linh1 = linh;
 linh = gobjects(length(im),2);
 for j = 1:length(im)
   % Start evenly spaced
-  zp = linspace(-K,K,15).' + i*im(j);
-  new = logical(ones(size(zp)));
-  wp = repmat(NaN,length(zp),1);
+  zp = linspace(-K,K,15).' + 1i*im(j);
+  new = true(size(zp));
+  wp = NaN(length(zp),1);
   
   % The individual points will be shown as they are found
   linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
@@ -171,7 +170,7 @@ for j = 1:length(im)
 
   % Adaptive refinement to make smooth curve
   iter = 0;
-  while (any(new)) & (iter < maxrefn)
+  while (any(new)) && (iter < maxrefn)
     drawnow
     neww = rmap(zp(new),w,beta,z,c,L,qdat);
     wp(new) = neww;
