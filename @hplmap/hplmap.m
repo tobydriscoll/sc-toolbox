@@ -1,4 +1,14 @@
-function map = hplmap(varargin)
+classdef  (InferiorClasses = {?double}) hplmap < scmap
+    
+    properties
+        prevertex = [];
+        constant = [];
+        qdata = [];
+        accuracy = [];
+    end
+    
+  methods
+      function map = hplmap(varargin)
 %HPLMAP Schwarz-Christoffel half-plane map object.
 %   HPLMAP(P) constructs a Schwarz-Christoffel half-plane map object for
 %   the polygon P. The parameter problem is solved using default options
@@ -31,19 +41,6 @@ function map = hplmap(varargin)
 %   Copyright 1998-2001 by Toby Driscoll.
 %   $Id: hplmap.m 215 2002-10-23 18:19:50Z driscoll $
 
-superiorto('double');
-
-% For class name with no arguments, return an empty object
-if nargin == 0
-  map.prevertex = [];
-  map.constant = [];
-  map.qdata = [];
-  map.accuracy = [];
-  parent = scmap;
-  map = class(map,'hplmap',parent);
-  return
-end
-
 % Initialize with empties
 poly = [];
 alpha = [];
@@ -55,24 +52,19 @@ qdata = [];
 % Branch based on class of first argument
 switch class(varargin{1})
   case 'hplmap'
-    map = varargin{1};    
-    if nargin == 1
-      % Self-return
-      return
-    else
+    oldmap = varargin{1};    
       % Continuation of given map to given polygon
       poly = varargin{2};
-      opt = scmapopt(map);
-      z0 = prevertex(map);
+      opt = scmapopt(oldmap);
+      z0 = prevertex(oldmap);
       if length(z0) ~= length(poly)
         msg = 'Polygon %s must have the same length as that in %s.';
-        error(sprintf(msg,inputname(2),inputname(1)))
+        error(msg,inputname(2),inputname(1))
       end
       if nargin > 2
         opt = scmapopt(opt,varargin{3});
       end
       opt = scmapopt(opt,'initial',z0);
-    end
     
   case 'polygon'
     poly = varargin{1};
@@ -101,7 +93,7 @@ switch class(varargin{1})
       z = [z;Inf];
       alpha = [alpha;1];
     end
-    poly = polygon(NaN*alpha*i,alpha);  %  nonsense vertices
+    poly = polygon(NaN*alpha*1i,alpha);  %  nonsense vertices
     c = 1;
     for j = 3:length(varargin)
       if isa(varargin{j},'struct')
@@ -110,13 +102,13 @@ switch class(varargin{1})
         c = varargin{j};
       else
         msg = 'Unable to parse argument ''%s''.';
-        error(sprintf(msg,inputname(j+1)))
+        error(msg,inputname(j+1))
       end
     end
     
   otherwise
     msg = 'Expected ''%s'' to be a polygon, hplmap, or prevertex vector.';
-    error(sprintf(msg,inputname(1)))
+    error(msg,inputname(1))
     
 end % switch
 
@@ -144,32 +136,18 @@ if isempty(c)
   % Find constant
   w = vertex(poly);
   beta = angle(poly)-1;
-  idx = 1 + min(find(~isinf(z(2:end))));
-  mid = mean(z([1 idx])) + i*diff(real(z([1 idx])))/2;
+  idx = 1 + find(~isinf(z(2:end)), 1 );
+  mid = mean(z([1 idx])) + 1i*diff(real(z([1 idx])))/2;
   I = hpquad(z(1),mid,1,z(1:end-1),beta(1:end-1),qdata) - ...
       hpquad(z(idx),mid,idx,z(1:end-1),beta(1:end-1),qdata);
   c = diff(w([1 idx]))/I;
 end
 
-% Get data for the low-level functions
-w = vertex(poly);
-n = length(w);
-beta = angle(poly) - 1;
+map = map@scmap(poly,opt);
 
 map.prevertex = z;
 map.constant = c;
 map.qdata = qdata;
-
-% Make a parent scmap object
-parent = scmap(poly,opt);
-
-% Leave a spot for accuracy and create object
-map.accuracy = [];
-if ~isa(map,'hplmap')
-  map = class(map,'hplmap',parent);
-else
-  map.scmap = parent;
-end
 
 % If the polygon was not known, find it from the map
 if any(isnan(vertex(poly)))
@@ -180,3 +158,6 @@ end
 % Now fill in apparent accuracy
 map.accuracy = accuracy(map);
 
+      end
+  end
+end
