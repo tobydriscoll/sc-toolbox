@@ -17,7 +17,7 @@ function [H,RE,IM] = crrplot(w,beta,wr,betar,cr,aff,affr,Q,re,im,options)
 %   in the interior of the polygon W.  [H,RE,IM] = CRRPLOT(...) also
 %   returns the abscissae and ordinates of the lines comprising the
 %   grid.
-%       
+%
 %   See also SCPLTOPT, CRPARAM, CRRECT, CRRMAP.
 
 %   Copyright 1998 by Toby Driscoll.
@@ -30,13 +30,13 @@ wr = wr(:);
 betar = betar(:);
 
 if nargin < 11
-  options = [];
-  if nargin < 10
-    im = [];
-    if nargin < 9
-      re = [];
+    options = [];
+    if nargin < 10
+        im = [];
+        if nargin < 9
+            re = [];
+        end
     end
-  end
 end
 
 xlim = [min(real(wr)) max(real(wr))];
@@ -44,28 +44,28 @@ ylim = [min(imag(wr)) max(imag(wr))];
 
 % Empty arguments default to 10
 if isempty([re(:);im(:)])
-  re = 10;
-  im = 10;
+    re = 10;
+    im = 10;
 end
 
 % Integer arguments must be converted to specific values
 if (length(re)==1) && (re == round(re))
-  if re < 1
-    re = [];
-  else
-    m = re;
-    re = linspace(xlim(1),xlim(2),m+2);
-    re([1,m+2]) = [];
-  end
+    if re < 1
+        re = [];
+    else
+        m = re;
+        re = linspace(xlim(1),xlim(2),m+2);
+        re([1,m+2]) = [];
+    end
 end
 if (length(im)==1) && (im == round(im))
-  if im < 1
-    im = [];
-  else
-    m = im;
-    im = linspace(ylim(1),ylim(2),m+2);
-    im([1,m+2]) = [];
-  end
+    if im < 1
+        im = [];
+    else
+        m = im;
+        im = linspace(ylim(1),ylim(2),m+2);
+        im([1,m+2]) = [];
+    end
 end
 
 % Prepare figure
@@ -74,14 +74,14 @@ figure(fig);
 
 % If figure has two tagged axes, draw in both
 ax = [findobj(fig,'tag','PhysicalAxes');...
-      findobj(fig,'tag','CanonicalAxes')];
+    findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = true;
-  vis = get(ax,'vis');
+    draw2 = true;
+    vis = get(ax,'vis');
 else
-  draw2 = false;
-  ax = gca;
-  vis = {'on'};
+    draw2 = false;
+    ax = gca;
+    vis = {'on'};
 end
 
 % Prepare axes
@@ -110,7 +110,7 @@ hh = crrplot0('hor',im,minlen,maxlen,maxrefn,tol,...
     w,beta,wr,betar,cr,aff,affr,Q,qdat,qdatr,ax,axlim,vis,draw2);
 linh = [hv;hh];
 if ~draw2
-  linh = linh(:,1);
+    linh = linh(:,1);
 end
 
 % Force redraw to get clipping enforced
@@ -118,22 +118,23 @@ refresh
 
 if turn_off_hold, hold off, end;
 if nargout > 0
-  H = linh;
-  if nargout > 1
-    RE = re;
-    if nargout > 2
-      IM = im;
+    H = linh;
+    if nargout > 1
+        RE = re;
+        if nargout > 2
+            IM = im;
+        end
     end
-  end
-end 
+end
 
+end
 
 function linh = crrplot0(direcn,val,minlen,maxlen,maxrefn,tol,...
-                         w,beta,wr,betar,cr,aff,affr,Q,qdat,qdatr, ...
-			 ax,axlim,vis,draw2)
+    w,beta,wr,betar,cr,aff,affr,Q,qdat,qdatr, ...
+    ax,axlim,vis,draw2)
 
 %   This is the routine that actually draws the curves corresponding
-%   to either vertical and horizontal lines. 
+%   to either vertical and horizontal lines.
 
 n = length(w);
 
@@ -142,137 +143,166 @@ siz = max( max(imag(wr))-min(imag(wr)), max(real(wr))-min(real(wr)) );
 
 linh = gobjects(length(val),2);
 for j = 1:length(val)
-
-  % Find intersections with rectified polygon sides
-  if strcmp(direcn(1:3),'ver')
-    d = real(wr)-val(j);
-    cross = find(diff(sign(d([1:n 1]))) | abs(d) < tol );
-    [srtcross,idx] = sort(imag(wr(cross)));
-  else    
-    d = imag(wr)-val(j);
-    cross = find(diff(sign(d([1:n 1]))) | abs(d) < tol );
-    [srtcross,idx] = sort(real(wr(cross)));
-  end
-  cross = cross(idx);
-
-  % Remove (near-) duplicates
-  identical = find( abs(diff(srtcross)) < tol );
-  srtcross(identical) = [];
-  cross(identical) = [];
-  numcross = length(cross);
-
-  % Set up intervals between crossings
-  interval = [srtcross(1:numcross-1)  srtcross(2:numcross)]';
-
-  % Test points at ends and mindpoints of intervals
-  if strcmp(direcn(1:3),'ver')
-    testint = val(j) + 1i*mean(interval);
-    testedge = val(j) + 1i*srtcross;
-  else
-    testint = 1i*val(j) + mean(interval);
-    testedge = 1i*val(j) + srtcross;
-  end
-  
-  % Use test points to determine number of curves
-  index = isinpoly(testint,wr,betar,tol);
-  numcurves = max(isinpoly(testedge,wr,betar,tol));
-  numcurves = max(numcurves,max(index));
-
-  % Put initial points in zp (string together intervals).
-  delta = diff(interval);
-  n0 = max(5, ceil(16*delta/siz));
-  zp = interval(1,1);
-  for k = 1:length(delta)
-    zp = [zp; interval(1,k)+(1:n0(k))'*delta(k)/n0(k)];
-  end
-  %h = delta/5;
-  %zp = interval(ones(6,1),find(index)) + (0:5)'*h(:,find(index));
-  %zp = zp(:);
-  %zp(find(~diff(zp))) = [];
-  
-  if strcmp(direcn(1:3),'ver')
-    zp = val(j) + 1i*zp;
-  else
-    zp = 1i*val(j) + zp;
-  end
-
-  % Prepare for iterative mapping
-  lenzp = length(zp);
-  new = true(lenzp,1);
-  wp = NaN*ones(lenzp,numcurves);
-  qn = NaN*ones(lenzp,numcurves);
-  iter = 0;
-  
-  color = 'k';
-
-  % The individual points will be shown as they are found
-   linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7);
-  if draw2
-    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7);
-  end
-
-  % Do the mapping && plotting
-  while any(new) && (iter < maxrefn)
+    
+    % Find intersections with rectified polygon sides
+    if strcmp(direcn(1:3),'ver')
+        d = real(wr)-val(j);
+        cross = find(diff(sign(d([1:n 1]))) | abs(d) < tol );
+        [srtcross,idx] = sort(imag(wr(cross)));
+    else
+        d = imag(wr)-val(j);
+        cross = find(diff(sign(d([1:n 1]))) | abs(d) < tol );
+        [srtcross,idx] = sort(real(wr(cross)));
+    end
+    cross = cross(idx);
+    
+    % Remove (near-) duplicates
+    identical = find( abs(diff(srtcross)) < tol );
+    srtcross(identical) = [];
+    cross(identical) = [];
+    numcross = length(cross);
+    
+    % Set up intervals between crossings
+    interval = [srtcross(1:numcross-1)  srtcross(2:numcross)]';
+    
+    % Test points at ends and mindpoints of intervals
+    if strcmp(direcn(1:3),'ver')
+        testint = val(j) + 1i*mean(interval);
+        testedge = val(j) + 1i*srtcross;
+    else
+        testint = 1i*val(j) + mean(interval);
+        testedge = 1i*val(j) + srtcross;
+    end
+    
+    % Use test points to determine number of curves
+    index = isinpoly(testint,wr,betar,tol);
+    numcurves = max(isinpoly(testedge,wr,betar,tol));
+    numcurves = max(numcurves,max(index));
+    
+    % Put initial points in zp (string together intervals).
+    delta = diff(interval);
+    n0 = max(5, ceil(16*delta/siz));
+    zp = interval(1,1);
+    for k = 1:length(delta)
+        zp = [zp; interval(1,k)+(1:n0(k))'*delta(k)/n0(k)];
+    end
+    %h = delta/5;
+    %zp = interval(ones(6,1),find(index)) + (0:5)'*h(:,find(index));
+    %zp = zp(:);
+    %zp(find(~diff(zp))) = [];
+    
+    if strcmp(direcn(1:3),'ver')
+        zp = val(j) + 1i*zp;
+    else
+        zp = 1i*val(j) + zp;
+    end
+    
+    % Prepare for iterative mapping
+    lenzp = length(zp);
+    new = true(lenzp,1);
+    wp = NaN*ones(lenzp,numcurves);
+    qn = NaN*ones(lenzp,numcurves);
+    iter = 0;
+    
+    color = 'k';
+    
+    % The individual points will be shown as they are found
+    if verLessThan('matlab','8.4')
+        linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        if draw2
+            linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        end
+    else
+        linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7);
+        if draw2
+            linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7);
+        end
+    end
+    
+    % Do the mapping && plotting
+    while any(new) && (iter < maxrefn)
+        drawnow
+        
+        % Map new points
+        [neww,newqn] = crrmap(zp(new),w,beta,wr,betar,cr,aff,affr,...
+            Q,qdat,qdatr);
+        nc = size(neww,2);
+        
+        % Check
+        if nc > numcurves
+            error('Too many values found at some points!')
+        end
+        
+        % Incorporate new points
+        wp(new,1:nc) = neww;
+        if any(~new)
+            qnold = qn;
+            qn = NaN*wp;
+            qn(~new,:) = qnold;
+        end
+        qn(new,1:nc) = newqn;
+        
+        % Sort the columns so as to make continuous curves
+        [wp,qn] = crrsort(wp,qn,Q);
+        
+        % Update the points to show progress
+        if verLessThan('matlab','8.4')
+            set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+            if draw2
+                set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+            end
+        else
+            addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
+            if draw2
+                addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+            end
+        end
+        drawnow
+        
+        iter = iter + 1;
+        
+        % Add points to zp where necessary to make smooth curves
+        [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
+    end
+    
+    % In case we exceeded max # iters, delete the uncomputed points
+    wp(new,:) = [];
+    
+    % Add a row of NaN's. We will stack columns, so the NaN's prevent the
+    % graphical joining of separate curves.
+    wp(size(wp,1)+1,:) = NaN*wp(1,:);
+    
+    % Set the lines to be solid
+    if verLessThan('matlab','8.4')
+        set(linh(j,1),'erasemode','back')
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with the endpoints
+            set(linh(j,2),'erasemode','back')
+            set(linh(j,2),'marker','none','linestyle','-',...
+                'xdata',real(zp([1 end])),'ydata',imag(zp([1 end])) )
+        end
+    else
+        clearpoints(linh(j,1))
+        addpoints(linh(j,1),real(wp),imag(wp));
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with the endpoints
+            clearpoints(linh(j,2))
+            addpoints(linh(j,2),real(zp([1 end])),imag(zp([1 end])))
+            set(linh(j,2),'marker','none','linestyle','-')
+        end     
+    end
+    
     drawnow
-
-    % Map new points 
-    [neww,newqn] = crrmap(zp(new),w,beta,wr,betar,cr,aff,affr,...
-	Q,qdat,qdatr);
-    nc = size(neww,2);
     
-    % Check
-    if nc > numcurves
-      error('Too many values found at some points!')
-    end
-    
-    % Incorporate new points
-    wp(new,1:nc) = neww;
-    if any(~new)
-      qnold = qn;
-      qn = NaN*wp;
-      qn(~new,:) = qnold;
-    end
-    qn(new,1:nc) = newqn;
-
-    % Sort the columns so as to make continuous curves
-    [wp,qn] = crrsort(wp,qn,Q);
-
-    % Update the points to show progress
-    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
-    if draw2
-        addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
-    end
-    drawnow update
-
-    iter = iter + 1;
-    
-    % Add points to zp where necessary to make smooth curves
-    [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
-  end	
-  
-  % In case we exceeded max # iters, delete the uncomputed points
-  wp(new,:) = [];
-  
-  % Add a row of NaN's. We will stack columns, so the NaN's prevent the
-  % graphical joining of separate curves.
-  wp(size(wp,1)+1,:) = NaN*wp(1,:);
-  
-  % Set the lines to be solid
-  clearpoints(linh(j,1))
-  addpoints(linh(j,1),real(wp),imag(wp));    
-  set(linh(j,1),'marker','none','linestyle','-','user',zp)
-  if draw2
-    % Replace the points with the endpoints
-    clearpoints(linh(j,2))
-    addpoints(linh(j,2),real(zp([1 end])),imag(zp([1 end])))
-    set(linh(j,2),'marker','none','linestyle','-')
-  end
-  drawnow
-
 end
 
+end
 
 function [wp,qnum] = crrsort(wp,qnum,Q)
 
@@ -295,39 +325,41 @@ mask = isnan(qnum);
 qnum(mask) = (n3+1)*ones(sum(mask(:)),1);
 
 if m > 1
-  % For each potential curve
-  for k = 1:m
-    % Indices of changes in source quadrilateral
-    p = find( diff(qnum(1:len,k)) );
-    toggle = ~isnan(wp(1,k));
-    while ~isempty(p)
-      p = p(1);
-      % If the change is not to a neighbor, swap columns
-      if ~adj(qnum(p,k),qnum(p+1,k))
-	% Look for a column that does use a neighbor
-	col = find( adj(qnum(p,k),qnum(p+1,:)) );
-%%        % Without that, go by physical distance.
-%%        if isempty(col)
-%%          [tmp,col] = min(abs(wp(p+1,k) - wp(p,:)));
-%%          col = col(1);
-%%        end
-	if ~isempty(col)
-	  % Swap
-	  wp(p+1:len,[k col]) = wp(p+1:len,[col k]);
-	  qnum(p+1:len,[k col]) = qnum(p+1:len,[col k]);
-	end
-      end
-      if toggle
-        if isnan(wp(p+1,k)), break, end
-      else
-        if ~isnan(wp(p+1,k)), toggle=1; end
-      end
-      % Move to the next change in quads (must recompute)
-      p = p + find( diff(qnum(p+1:len,k)) );
+    % For each potential curve
+    for k = 1:m
+        % Indices of changes in source quadrilateral
+        p = find( diff(qnum(1:len,k)) );
+        toggle = ~isnan(wp(1,k));
+        while ~isempty(p)
+            p = p(1);
+            % If the change is not to a neighbor, swap columns
+            if ~adj(qnum(p,k),qnum(p+1,k))
+                % Look for a column that does use a neighbor
+                col = find( adj(qnum(p,k),qnum(p+1,:)) );
+                %%        % Without that, go by physical distance.
+                %%        if isempty(col)
+                %%          [tmp,col] = min(abs(wp(p+1,k) - wp(p,:)));
+                %%          col = col(1);
+                %%        end
+                if ~isempty(col)
+                    % Swap
+                    wp(p+1:len,[k col]) = wp(p+1:len,[col k]);
+                    qnum(p+1:len,[k col]) = qnum(p+1:len,[col k]);
+                end
+            end
+            if toggle
+                if isnan(wp(p+1,k)), break, end
+            else
+                if ~isnan(wp(p+1,k)), toggle=1; end
+            end
+            % Move to the next change in quads (must recompute)
+            p = p + find( diff(qnum(p+1:len,k)) );
+        end
     end
-  end
 end
 
 % Change null quads back to NaNs
 mask = (qnum == n3+1);
 qnum(mask) = NaN*ones(sum(mask(:)),1);
+
+end

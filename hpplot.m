@@ -21,7 +21,7 @@ function [H,RE,IM] = hpplot(w,beta,z,c,re,im,options)
 %   curves drawn in the interior of the polygon.  [H,RE,IM] =
 %   HPPLOT(W,BETA,Z,C,...) also returns the abscissae and ordinates of
 %   the lines comprising the grid.
-%   
+%
 %   See also SCPLTOPT, HPPARAM, HPMAP, HPDISP.
 
 %   Copyright 1998 by Toby Driscoll.
@@ -34,41 +34,41 @@ z = z(:);
 
 % Parse input
 if nargin < 7
-  options = [];
-  if nargin < 6
-    im = [];
-    if nargin < 5
-      re = [];
+    options = [];
+    if nargin < 6
+        im = [];
+        if nargin < 5
+            re = [];
+        end
     end
-  end
 end
 
 % Empty arguments default to 10
 if isempty([re(:);im(:)])
-  re = 10;
-  im = 10;
+    re = 10;
+    im = 10;
 end
 
 % Integer arguments must be converted to specific values
 if (length(re)==1) && (re == round(re))
-  if re < 1
-    re = [];
-  elseif re < 2
-    re = mean(z([1,n-1]));
-  else
-    m = re;
-    re = linspace(z(1),z(n-1),m);
-    dre = diff(re(1:2));
-    re = linspace(z(1)-dre,z(n-1)+dre,m);
-  end
+    if re < 1
+        re = [];
+    elseif re < 2
+        re = mean(z([1,n-1]));
+    else
+        m = re;
+        re = linspace(z(1),z(n-1),m);
+        dre = diff(re(1:2));
+        re = linspace(z(1)-dre,z(n-1)+dre,m);
+    end
 end
 if (length(im)==1) && (im == round(im))
-  if length(re) < 2
-    im = linspace(0,4,im+1);
-    im(1) = [];
-  else
-    im = mean(diff(re))*(1:im);
-  end
+    if length(re) < 2
+        im = linspace(0,4,im+1);
+        im(1) = [];
+    else
+        im = mean(diff(re))*(1:im);
+    end
 end
 
 % Prepare figure
@@ -77,14 +77,14 @@ figure(fig);
 
 % If figure has two tagged axes, draw in both
 ax = [findobj(fig,'tag','PhysicalAxes');...
-      findobj(fig,'tag','CanonicalAxes')];
+    findobj(fig,'tag','CanonicalAxes')];
 if length(ax)==2
-  draw2 = true;
-  vis = get(ax,'vis');
+    draw2 = true;
+    vis = get(ax,'vis');
 else
-  draw2 = false;
-  ax = gca;
-  vis = {'on'};
+    draw2 = false;
+    ax = gca;
+    vis = {'on'};
 end
 
 % Prepare axes
@@ -102,9 +102,9 @@ len = max(diff(get(ax(1),'xlim')),diff(get(ax(1),'ylim')));
 minlen = len*minlen;
 maxlen = len*maxlen;
 if any(isinf(z))
-  qdat = scqdata(beta(1:n-1),nqpts);
+    qdat = scqdata(beta(1:n-1),nqpts);
 else
-  qdat = scqdata(beta,nqpts);
+    qdat = scqdata(beta,nqpts);
 end
 axlim = axis;
 
@@ -114,49 +114,85 @@ color = 'k';
 y2 = max(z(n-1),10);
 linh = gobjects(length(re),2);
 for j = 1:length(re)
-  % Start evenly spaced
-  zp = re(j) + 1i*[linspace(0,y2,15) Inf].';
-  new = true(size(zp));
-  new(end) = 0;
-  wp = NaN(length(zp),1);
-  wp(end) = w(n);
-
-  % The individual points will be shown as they are found
-  linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7,'erasemode','none');
-  if draw2
-    linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7,'erasemode','none');
-  end
-  
-  % Adaptive refinement to make smooth curve
-  iter = 0;
-  while (any(new)) && (iter < maxrefn)
-    drawnow
-    neww = hpmap(zp(new),w,beta,z,c,qdat);
-    wp(new) = neww;
-    iter = iter + 1;
-
-    % Update the points to show progress
-    set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
-    if draw2
-      set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+    % Start evenly spaced
+    zp = re(j) + 1i*[linspace(0,y2,15) Inf].';
+    new = true(size(zp));
+    new(end) = false;
+    wp = NaN(length(zp),1);
+    wp(end) = w(n);
+    
+    % The individual points will be shown as they are found
+    if verLessThan('matlab','8.4')
+        linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        if draw2
+            linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        end
+    else
+        
+        linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7);
+        if draw2
+            linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7);
+        end
     end
- 
-    % Add points to zp where necessary
-    [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
-  end
-
-  % Set the lines to be solid
-  set(linh(j,1),'erasemode','back')
-  set(linh(j,1),'marker','none','linestyle','-','user',zp)
-  if draw2
-    % Replace the points with the endpoints
-    set(linh(j,2),'erasemode','back')
-    set(linh(j,2),'marker','none','linestyle','-',...
-	'xdata',re(j)*[1 1],'ydata',[0 imag(zp(end-1))])
-  end
-  drawnow
+    
+    % Adaptive refinement to make smooth curve
+    iter = 0;
+    while (any(new)) && (iter < maxrefn)
+        drawnow
+        neww = hpmap(zp(new),w,beta,z,c,qdat);
+        wp(new) = neww;
+        iter = iter + 1;
+        
+        % Update the points to show progress
+        if verLessThan('matlab','8.4')
+            set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+            if draw2
+                set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+            end
+        else
+            % On the first pass, include the image of Inf
+            if iter==1
+                addpoints(linh(j,1),real(wp),imag(wp))
+            else
+                addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
+            end
+            if draw2
+                addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+            end           
+        end
+        drawnow
+        
+        % Add points to zp where necessary
+        [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
+    end
+    
+    % Set the lines to be solid
+    if verLessThan('matlab','8.4')
+        set(linh(j,1),'erasemode','back')
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with the endpoints
+            set(linh(j,2),'erasemode','back')
+            set(linh(j,2),'marker','none','linestyle','-',...
+                'xdata',re(j)*[1 1],'ydata',[0 imag(zp(end-1))])
+        end
+    else
+        clearpoints(linh(j,1))
+        addpoints(linh(j,1),real(wp(~isnan(wp))),imag(wp(~isnan(wp))));
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with (hopefully) a smooth circle
+            clearpoints(linh(j,2))
+            addpoints(linh(j,2),re(j)*[1 1],[0 imag(zp(end-1))])
+            set(linh(j,2),'marker','none','linestyle','-')
+        end
+        
+    end
+    drawnow
 end
 
 z1 = min(-10,z(1));
@@ -164,67 +200,98 @@ z2 = max(40,z(n-1));
 linh1 = linh;
 linh = gobjects(length(im),2);
 for j = 1:length(im)
-  % Start evenly spaced
-  zp = [-Inf linspace(z1,z2,15) Inf].' + 1i*im(j);
-  new = true(size(zp));
-  new([1 end]) = 0;
-  wp = NaN(length(zp),1);
-  wp([1 end]) = w(n);
-  
-  % The individual points will be shown as they are found
-  linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7,'erasemode','none');
-  if draw2
-    linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7,'erasemode','none');
-  end
- 
-  % Adaptive refinement to make smooth curve
-  iter = 0;
-  while (any(new)) && (iter < maxrefn)
-    drawnow
-    neww = hpmap(zp(new),w,beta,z,c,qdat);
-    wp(new) = neww;
-    iter = iter + 1;
+    % Start evenly spaced
+    zp = [-Inf linspace(z1,z2,15) Inf].' + 1i*im(j);
+    new = true(size(zp));
+    new([1 end]) = 0;
+    wp = NaN(length(zp),1);
+    wp([1 end]) = w(n);
     
-    % Update the points to show progress
-    set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
-    if draw2
-      set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+    % The individual points will be shown as they are found
+    if verLessThan('matlab','8.4')
+        linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        if draw2
+            linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7,'erasemode','none');
+        end
+    else
+        linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+            'linestyle','none','marker','.','markersize',7);
+        if draw2
+            linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+                'linestyle','none','marker','.','markersize',7);
+        end
     end
     
-    % Add points to zp where necessary
-    [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
-  end
-
-  % Set the lines to be solid
-  set(linh(j,1),'erasemode','back')
-  set(linh(j,1),'marker','none','linestyle','-','user',zp)
-  if draw2
-    % Replace the points with the endpoints
-    set(linh(j,2),'erasemode','back')
-    set(linh(j,2),'marker','none','linestyle','-',...
-	'xdata',real(zp([2 end-1])),'ydata',im(j)*[1 1]);
-  end
-  drawnow
+    % Adaptive refinement to make smooth curve
+    iter = 0;
+    while (any(new)) && (iter < maxrefn)
+        drawnow
+        neww = hpmap(zp(new),w,beta,z,c,qdat);
+        wp(new) = neww;
+        iter = iter + 1;
+        
+        % Update the points to show progress
+        if verLessThan('matlab','8.4')
+            set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+            if draw2
+                set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+            end
+        else
+            addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
+            if draw2
+                addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+            end
+        end
+        drawnow
+        
+        % Add points to zp where necessary
+        [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axlim);
+    end
+    
+    % Set the lines to be solid
+    if verLessThan('matlab','8.4')
+        set(linh(j,1),'erasemode','back')
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with just the ends
+            set(linh(j,2),'erasemode','back')
+            set(linh(j,2),'marker','none','linestyle','-',...
+                'xdata',[0 1]*cos(theta(j)),'ydata',[0 1]*sin(theta(j)))
+        end
+    else
+        clearpoints(linh(j,1))
+        addpoints(linh(j,1),real(wp),imag(wp));
+        set(linh(j,1),'marker','none','linestyle','-','user',zp)
+        if draw2
+            % Replace the points with just the ends
+            clearpoints(linh(j,2))
+            addpoints(linh(j,2),real(zp([2 end-1])),im(j)*[1 1])
+            set(linh(j,2),'marker','none','linestyle','-')
+        end
+    end
+    
+    drawnow
 end
-  
+
 linh = [linh1;linh];
 if ~draw2
-  linh = linh(:,1);
+    linh = linh(:,1);
 end
-set(linh,'erasemode','normal')
+if verLessThan('matlab','8.4'), set(linh,'erasemode','normal'),end
 
-refresh
+drawnow
 
 if turn_off_hold, hold off, end;
 if nargout > 0
-  H = linh;
-  if nargout > 1
-    RE = re;
-    if nargout > 2
-      IM = im;
+    H = linh;
+    if nargout > 1
+        RE = re;
+        if nargout > 2
+            IM = im;
+        end
     end
-  end
-end 
+end
 
+end

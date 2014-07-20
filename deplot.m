@@ -115,11 +115,21 @@ for j = 1:length(R)
   wp = NaN(size(new));
 
   % The individual points will be shown as they are found
-  linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7);
-  if draw2
-    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7);
+  if verLessThan('matlab','8.4')
+      linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
+          'linestyle','none','marker','.','markersize',7,'erasemode','none');
+      if draw2
+          linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
+              'linestyle','none','marker','.','markersize',7,'erasemode','none');
+      end
+  else
+      
+      linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+          'linestyle','none','marker','.','markersize',7);
+      if draw2
+          linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+              'linestyle','none','marker','.','markersize',7);
+      end     
   end
 
   % Adaptively refine theta to make smooth curve
@@ -132,28 +142,51 @@ for j = 1:length(R)
     iter = iter + 1;
     
     % Update the points to show progress
-    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
-    if draw2
-        addpoints(linh(j,1),R(j)*cos(tp(new)),R(j)*sin(tp(new)))
+    if verLessThan('matlab','8.4')
+        set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+        if draw2
+            set(linh(j,2),'xdata',R(j)*cos(tp),'ydata',R(j)*sin(tp))
+        end
+    else
+        addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
+        if draw2
+            addpoints(linh(j,1),R(j)*cos(tp(new)),R(j)*sin(tp(new)))
+        end
     end
-    drawnow update
+    drawnow
 
     % Add points to zp where necessary
     [tp,wp,new] = scpadapt(tp,wp,minlen,maxlen,axis);
 
   end
   % Set the lines to be solid
-  clearpoints(linh(j,1))
-  addpoints(linh(j,1),real(wp),imag(wp));    
-  set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(1i*tp))
-  if draw2
-    % Replace the points with (hopefully) a smooth circle
-    tp = linspace(0,2*pi,361);
-    clearpoints(linh(j,2))
-    addpoints(linh(j,2),R(j)*cos(tp),R(j)*sin(tp))
-    set(linh(j,2),'marker','none','linestyle','-')
+  if verLessThan('matlab','8.4')
+      set(linh(j,1),'erasemode','back')
+      set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(1i*tp))
+      if draw2
+          % Replace the points with (hopefully) a smooth circle
+          tp = linspace(0,2*pi,101);
+          set(linh(j,2),'erasemode','back')
+          set(linh(j,2),'marker','none','linestyle','-',...
+              'xdata',R(j)*cos(tp),'ydata',R(j)*sin(tp))
+      end
+      
+  else
+      
+      clearpoints(linh(j,1))
+      addpoints(linh(j,1),real(wp),imag(wp));
+      set(linh(j,1),'marker','none','linestyle','-','user',R(j)*exp(1i*tp))
+      if draw2
+          % Replace the points with (hopefully) a smooth circle
+          tp = linspace(0,2*pi,361);
+          clearpoints(linh(j,2))
+          addpoints(linh(j,2),R(j)*cos(tp),R(j)*sin(tp))
+          set(linh(j,2),'marker','none','linestyle','-')
+      end
   end
+  
   drawnow
+  
 end
 
 
@@ -169,11 +202,20 @@ for j = 1:length(theta)
   wp(1) = Inf;
 
   % The individual points will be shown as they are found
-  linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
-      'linestyle','none','marker','.','markersize',7);
-  if draw2
-    linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
-	'linestyle','none','marker','.','markersize',7);
+  if verLessThan('matlab','8.4')
+      linh(j,1) = line(NaN,NaN,'parent',ax(1),'color',color,'vis',vis{1},...
+          'linestyle','none','marker','.','markersize',7,'erasemode','none');
+      if draw2
+          linh(j,2) = line(NaN,NaN,'parent',ax(2),'color',color,'vis',vis{2},...
+              'linestyle','none','marker','.','markersize',7,'erasemode','none');
+      end
+  else
+      linh(j,1) = animatedline('parent',ax(1),'color',color,'vis',vis{1},...
+          'linestyle','none','marker','.','markersize',7);
+      if draw2
+          linh(j,2) = animatedline('parent',ax(2),'color',color,'vis',vis{2},...
+              'linestyle','none','marker','.','markersize',7);
+      end
   end
 
   % Adaptively refine to make smooth curve
@@ -185,25 +227,43 @@ for j = 1:length(theta)
     iter = iter + 1;
 
     % Update the points to show progress
-    addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
-    if draw2
-        addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+    if verLessThan('matlab','8.4')
+        set(linh(j,1),'xdata',real(wp),'ydata',imag(wp))
+        if draw2
+            set(linh(j,2),'xdata',real(zp),'ydata',imag(zp))
+        end
+    else
+        addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
+        if draw2
+            addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+        end
     end
-    drawnow update
+    drawnow
  
     % Add points to zp where necessary
     [zp,wp,new] = scpadapt(zp,wp,minlen,maxlen,axis);
   end
 
   % Set the lines to be solid
-  clearpoints(linh(j,1))
-  addpoints(linh(j,1),real(wp),imag(wp));    
-  set(linh(j,1),'marker','none','linestyle','-','user',zp)
-  if draw2
-    % Replace the points with just the ends
-    clearpoints(linh(j,2))
-    addpoints(linh(j,2),[0 1]*cos(theta(j)),[0 1]*sin(theta(j)))
-    set(linh(j,2),'marker','none','linestyle','-')
+  if verLessThan('matlab','8.4')
+      set(linh(j,1),'erasemode','back')
+      set(linh(j,1),'marker','none','linestyle','-','user',zp)
+      if draw2
+          % Replace the points with just the ends
+          set(linh(j,2),'erasemode','back')
+          set(linh(j,2),'marker','none','linestyle','-',...
+              'xdata',[0 1]*cos(theta(j)),'ydata',[0 1]*sin(theta(j)))
+      end
+  else
+      clearpoints(linh(j,1))
+      addpoints(linh(j,1),real(wp),imag(wp));
+      set(linh(j,1),'marker','none','linestyle','-','user',zp)
+      if draw2
+          % Replace the points with just the ends
+          clearpoints(linh(j,2))
+          addpoints(linh(j,2),[0 1]*cos(theta(j)),[0 1]*sin(theta(j)))
+          set(linh(j,2),'marker','none','linestyle','-')
+      end
   end
   drawnow
 end
@@ -212,8 +272,9 @@ linh = [linh1;linh];
 if ~draw2
   linh = linh(:,1);
 end
+if verLessThan('matlab','8.4'), set(linh,'erasemode','normal'),end
 
-refresh
+drawnow
 
 if turn_off_hold, hold off, end;
 if nargout > 0
