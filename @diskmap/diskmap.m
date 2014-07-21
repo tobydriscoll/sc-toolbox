@@ -52,6 +52,8 @@ classdef  (InferiorClasses = {?double}) diskmap < scmap
             opt = [];
             qdata = [];
             
+            import sctool.*
+            
             % Branch based on class of first argument
             switch class(varargin{1})
                 case 'diskmap'
@@ -160,5 +162,13 @@ classdef  (InferiorClasses = {?double}) diskmap < scmap
             
         end
         
+    end 
+    
+    methods (Static)
+        % needed by CR inverse mapping
+        function out = imapfun(varargin)
+            out = dimapfun(varargin{:});
+        end
     end
+        
 end

@@ -54,6 +54,8 @@ classdef  (InferiorClasses = {?double}) extermap < scmap
             opt = [];
             qdata = [];
             
+            import sctool.*
+            
             % Branch based on class of first argument
             switch class(varargin{1})
                 case 'extermap'

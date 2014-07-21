@@ -46,6 +46,7 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
             z = [];
             c = [];
             opt = [];
+            import sctool.*
             
             % Branch based on class of first argument
             switch class(poly)
@@ -146,6 +147,26 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
             % Now fill in apparent accuracy
             map.accuracy = accuracy(map);
             
+        end
+    end
+    
+    methods (Static)
+        % Primitives for rectangle maps need these.
+
+        function q = deriv(varargin)
+            q = stderiv(varargin{:});
+        end
+
+        function q = quad(varargin)
+            q = stquad(varargin{:});
+        end
+
+        function q = quadh(varargin)
+            q = stquadh(varargin{:});
+        end
+        
+        function w = evaluate(varargin)
+            w = stmap(varargin{:});
         end
     end
 end

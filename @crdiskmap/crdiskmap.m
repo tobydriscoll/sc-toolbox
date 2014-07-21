@@ -41,6 +41,7 @@ classdef (InferiorClasses = {?double}) crdiskmap < scmap
             %   Copyright 1998-2001 by Toby Driscoll.
             
             % Assign empties to optional args
+            import sctool.*
             cr = [];
             c = [];
             opt = [];
@@ -142,5 +143,22 @@ classdef (InferiorClasses = {?double}) crdiskmap < scmap
             map.accuracy = accuracy(map);
             
         end
+    end
+    
+    methods (Static)
+        % Needed by crrectmap
+        function varargout = craffine(varargin)
+            [varargout{1:nargout}] = craffine(varargin{:});
+        end
+        function varargout = crembed(varargin)
+            [varargout{1:nargout}] = crembed(varargin{:});
+        end
+        function varargout = imap0(varargin)
+            [varargout{1:nargout}] = crimap0(varargin{:});
+        end
+        function varargout = map0(varargin)
+            [varargout{1:nargout}] = crmap0(varargin{:});
+        end
+
     end
 end

@@ -48,6 +48,7 @@ classdef (InferiorClasses = {?double}) crrectmap < scmap
             %   Copyright 1998 by Toby Driscoll.
             
             % Assign empties to optional args
+            import sctool.*
             alphar = [];
             opt = [];
             MD = [];

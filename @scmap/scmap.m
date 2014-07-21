@@ -43,7 +43,7 @@ classdef (InferiorClasses = {?double}) scmap
             end
             
             map.polygon = poly;
-            map.options = scmapopt(opt);
+            map.options = sctool.scmapopt(opt);
                         
         end
     end

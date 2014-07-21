@@ -47,6 +47,7 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
             c = [];
             L = [];
             opt = [];
+            import sctool.*
             
             % Branch based on class of first argument
             switch class(poly)

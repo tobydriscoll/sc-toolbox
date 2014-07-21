@@ -62,6 +62,7 @@ classdef (InferiorClasses = {?double}) riesurfmap < scmap
             c = [];
             opt = [];
             qdata = [];
+            import sctool.*
             
             % Branch based on class of first argument
             switch class(varargin{1})
@@ -158,24 +159,14 @@ classdef (InferiorClasses = {?double}) riesurfmap < scmap
                 c = diff(w([1 idx]))/I;
             end
             
+            map = map@scmap(poly,opt);
+            
             map.branch = branch;
             map.prevertex = z;
             map.prebranch = zb;
             map.constant = c;
             map.qdata = qdata;
-            
-            % Make a parent scmap object
-            parentmap = scmap(poly,opt);
-            
-            % Leave placeholders and create object
-            map.accuracy = [];
-            map.center = [];
-            if ~isa(map,'riesurfmap')
-                map = class(map,'riesurfmap',parentmap);
-            else
-                map.scmap = parentmap;
-            end
-            
+            xs           
             % If the polygon was not known, find it from the map
             if any(isnan(vertex(poly)))
                 poly = forwardpoly(map);

@@ -1025,8 +1025,13 @@ set(gca,'unit','char','box','on','xgrid','off','ygrid','off',...
      'plotboxaspectratio',[1,1,1],'tag','Axes')
 
 % Preview line
-animatedline('linestyle','--','color','r','clipping','off',...
-    'tag','PreviewLine');
+if verLessThan('matlab','8.4')
+    line(NaN,NaN,'linestyle','--','color','r',...
+    'clipping','off','tag','PreviewLine');
+else
+    animatedline('linestyle','--','color','r','clipping','off',...
+        'tag','PreviewLine');
+end
 
 data = guihandles(fig);
 
