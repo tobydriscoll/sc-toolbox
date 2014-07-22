@@ -37,7 +37,7 @@ function [phi,fd,fr,sidenum] = lapsolve(p,bdata)
 %
 %   See also DISKMAP, RIESURFMAP, COMPOSITE, POLYGON/TRIANGULATE.
 
-
+import sctool.*
 % First, map to half-plane if not done.
 if isequal(class(p),'hplmap')
   f = p;
@@ -109,7 +109,7 @@ M = zeros(kappa-1,kappa-1);
 s = zeros(size(ze));  % no singular endpoints.
 for d = 1:kappa-1
   qdata = scqdata(bs,15);
-  M(:,d) = hpquad(ze(1:end-1),ze(2:end),s,s,zs,bs,qdata);
+  M(:,d) = hplmap.hpquad(ze(1:end-1),ze(2:end),s,s,zs,bs,qdata);
   bs(end) = bs(end) + 1;                  % next monomial
 end
 

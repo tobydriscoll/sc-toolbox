@@ -166,7 +166,7 @@ classdef (InferiorClasses = {?double}) riesurfmap < scmap
             map.prebranch = zb;
             map.constant = c;
             map.qdata = qdata;
-            xs           
+                      
             % If the polygon was not known, find it from the map
             if any(isnan(vertex(poly)))
                 poly = forwardpoly(map);
