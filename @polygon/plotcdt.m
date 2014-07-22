@@ -10,7 +10,7 @@ function h = plotcdt(p,T,varargin)
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: plotcdt.m 7 1998-05-10 04:37:19Z tad $
 
-han = plotptri(p.vertex,T.edge,varargin{:});
+han = sctool.plotptri(p.vertex,T.edge,varargin{:});
 
 if nargout > 0
   h = han;
