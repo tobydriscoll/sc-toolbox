@@ -146,11 +146,11 @@ if nargin < 6
 else
   % betar was supplied: just do computation
   
-  aff = craffine(w,beta,cr,Q);
+  aff = crdiskmap.craffine(w,beta,cr,Q);
   k = min(find(betar<0));
   wr = NaN*w;
   wr([k rem(k,n)+1]) = [0;1];
-  [affr,wr] = craffine(wr,betar,cr,Q);
+  [affr,wr] = crdiskmap.craffine(wr,betar,cr,Q);
 end
 
 % End of user-call section

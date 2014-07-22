@@ -53,7 +53,7 @@ classdef (InferiorClasses = {?double}) crdiskmap < scmap
                     oldmap = poly;
                     % Continuation of given map to given polygon
                     poly = varargin{1};
-                    opt = scmapopt(oldmap);
+                    opt = options(oldmap);
                     cr0 = oldmap.crossratio;
                     if length(cr0) ~= length(poly)-3
                         msg = 'Polygon %s must have the same length as that in %s.';

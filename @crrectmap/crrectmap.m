@@ -79,7 +79,7 @@ classdef (InferiorClasses = {?double}) crrectmap < scmap
                         error('Invalid continuation syntax.')
                     end
                     poly = polygon(MD);
-                    opt = scmapopt(MD);
+                    opt = options(MD);
                     
                 case 'crdiskmap'
                     MD = poly;
@@ -128,7 +128,7 @@ classdef (InferiorClasses = {?double}) crrectmap < scmap
             else
                 param = parameters(MD);
                 orig = true(size(w));
-                opt = scmapopt(MD);
+                opt = options(MD);
             end
             
             map = map@scmap(poly,opt);

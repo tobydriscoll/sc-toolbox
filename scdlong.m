@@ -24,7 +24,7 @@ else
    '  -2.0000 + 2.0000i',
    '   2.0000 + 2.0000i  ]);',
    'plot(p)',
-   'f=diskmap(p,scmapopt(''tol'',1e-6,''trace'',''on''));',
+   'f=diskmap(p,sctool.scmapopt(''tol'',1e-6,''trace'',''on''));',
    '',
    '',
    '' };
@@ -67,7 +67,7 @@ else
 
   slide(5).code={
    'cla',
-   'f=rectmap(p,[1 3 4 6],scmapopt(''tol'',1e-6));',
+   'f=rectmap(p,[1 3 4 6],sctool.scmapopt(''tol'',1e-6));',
    'plot(f,4,8)',
    'title(''Map from rectangle'')' };
   slide(5).text={
@@ -92,7 +92,7 @@ else
   %========== Slide 7 ==========
 
   slide(7).code={
-   'f=stripmap(p,[3 6],scmapopt(''tol'',1e-6));',
+   'f=stripmap(p,[3 6],sctool.scmapopt(''tol'',1e-6));',
    'plot(f,8,4)',
    'title(''Map from strip'')' };
   slide(7).text={
@@ -122,7 +122,7 @@ else
   %========== Slide 9 ==========
 
   slide(9).code={
-   'f=rectmap(p,[2 4 5 1],scmapopt(''tol'',1e-4));',
+   'f=rectmap(p,[2 4 5 1],sctool.scmapopt(''tol'',1e-4));',
    'plot(f,4,6)' };
   slide(9).text={
    '>> f = rectmap(p,[2 4 5 1]);',
@@ -136,7 +136,7 @@ else
   %========== Slide 10 ==========
 
   slide(10).code={
-   'f=crdiskmap(p,scmapopt(''tol'',1e-4));',
+   'f=crdiskmap(p,sctool.scmapopt(''tol'',1e-4));',
    'f=center(f,i);',
    'plot(f)',
    '' };
