@@ -67,7 +67,7 @@ qdata = qdata(:,[j j+n+1]);
 zleft = zs(idx(:,1));
 zright = zs(idx(:,2));
 idx = idx + (idx > ends(1)) + (idx > ends(2));
-I = stquad(zleft,mid,idx(:,1),zq,bq,qdata) - ...
-    stquad(zright,mid,idx(:,2),zq,bq,qdata);
+I = stripmap.quad(zleft,mid,idx(:,1),zq,bq,qdata) - ...
+    stripmap.quad(zright,mid,idx(:,2),zq,bq,qdata);
 
 acc = max(abs( c*I - diff(wq(idx).').' ));

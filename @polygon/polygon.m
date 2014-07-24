@@ -30,7 +30,7 @@ elseif isempty(x)
 elseif isa(x,'polygon')
   p = x;
   return
-elseif ~isreal(x) | nargin == 1 | (any(isinf(x)) & nargin==2)
+elseif ~isreal(x) || nargin == 1 || (any(isinf(x)) && nargin==2)
   % Vertices passed as a complex vector
   w = x(:);
   % If first point is repeated at the end, delete the second copy
@@ -43,7 +43,7 @@ elseif ~isreal(x) | nargin == 1 | (any(isinf(x)) & nargin==2)
   end
 else
   % Vertices passed as two real vectors
-  w = x(:) + i*y(:);
+  w = x(:) + 1i*y(:);
   % If first point is repeated at the end, delete the second copy
   if abs(w(end) - w(1)) < 3*eps
     w(end) = [];

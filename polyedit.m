@@ -48,7 +48,7 @@ poly = [];
 
 for j=1:nargin
   arg = varargin{j};
-  if ishandle(arg) & strcmp(get(arg,'type'),'figure')
+  if isgraphics(arg,'figure')  
     fig = arg;
   elseif isa(arg,'polygon')
     poly = arg;
@@ -83,7 +83,7 @@ else
     axis auto
   end
   % Reset axes limits?
-  if strcmp(get(gca,'xlimmode'),'auto') & strcmp(get(gca,'ylimmode'),'auto')
+  if strcmp(get(gca,'xlimmode'),'auto') && strcmp(get(gca,'ylimmode'),'auto')
     axlim = [-4 4 -4 4];
   else
     axlim = axis;
@@ -139,7 +139,7 @@ try
   % Retrieve the polygon and assign to output if nonempty.
   data = guidata(fig);
   P = data.polygon;
-  if ~isempty(P) | nargout > 0
+  if ~isempty(P) || nargout > 0
     p = P;
   end
 catch
@@ -155,8 +155,8 @@ if isempty(figstate)
 else
   set(fig,figprops,figstate)
   set(gca,axprops,axstate)
-  set(data.Vertices,'erasemode','normal')
-  set(data.Edges,'erasemode','normal')
+  set(data.Vertices)
+  set(data.Edges)
   PEClear(fig)
   % This could be destructive in some cases.
   delete(findobj(fig,'type','uicontrol'))
@@ -194,7 +194,7 @@ PEDiscAngMode(obj)
 PEDiscLenMode(obj)
 
 set(data.Figure,'windowbuttondown',@PEAddStart)
-set(data.Vertices,'button','','hittest','off','erase','norm')
+set(data.Vertices,'button','','hittest','off')
 set(data.Edges,'button','','hittest','off')
 
 
@@ -220,7 +220,7 @@ PEDiscAngMode(obj)
 PEDiscLenMode(obj)
 
 set(data.Figure,'windowbuttondown','')
-set(data.Vertices,'button','','hittest','off','erase','norm')
+set(data.Vertices,'button','','hittest','off')
 set(data.Edges,'button',@PEInsert,'hittest','on')
 
 
@@ -246,7 +246,7 @@ PEDiscAngMode(obj)
 PEDiscLenMode(obj)
 
 set(data.Figure,'windowbuttondown','')
-set(data.Vertices,'button',@PEMoveStart,'hittest','on','erase','norm')
+set(data.Vertices,'button',@PEMoveStart,'hittest','on')
 set(data.Edges,'button','','hittest','off')
 
 
@@ -431,8 +431,9 @@ if mode==2
 end
 
 % Update.
-if m > 0 & (mode~=1)
-  set(data.PreviewLine,'xdata',[pts(m,1),P(1)], 'ydata',[pts(m,2),P(2)]);
+if m > 0 && (mode~=1)
+  %clearpoints(data.Previewline)
+  set(data.PreviewLine,'xdata',[pts(m,1),P(1)],'ydata',[pts(m,2),P(2)]);
 end
 data.currentpoint = P;
 guidata(obj,data)
@@ -444,7 +445,8 @@ P = data.currentpoint;
 if ~isnan(P(1))
   set(data.Figure,'windowbuttonmotion','')
   set(data.Figure,'windowbuttonup','')
-  set(data.PreviewLine,'xdata',[P(1) NaN],'ydata',[P(2) NaN])
+  %clearpoints(data.Previewline)
+  set(data.PreviewLine,'xdata',P(1),'ydata',P(2))
   pts = PE_get_clicks(data);
   x = pts(:,1);  y = pts(:,2);
   %%x = get(data.Vertices,'xdata');
@@ -453,7 +455,7 @@ if ~isnan(P(1))
   n = m - sum(data.atinf)/2;
   axlim = axis;
   reflen = mean([diff(axlim(1:2)),diff(axlim(3:4))])/60;
-  if (m > 0) & norm([P(1)-x(1), P(2)-y(1)]) < reflen
+  if (m > 0) && norm([P(1)-x(1), P(2)-y(1)]) < reflen
     %%x = x(1:m);
     %%y = y(1:m);
     %%set(data.Vertices,'xdata',x,'ydata',y)
@@ -468,13 +470,13 @@ if ~isnan(P(1))
   if n==1
     data.orient = sign( diff( x(1:2)+i*y(1:2) ) );
   elseif n > 1 
-    neworient = sign( diff( x(m:m+1)+i*y(m:m+1) ) );
+    neworient = sign( diff( x(m:m+1)+1i*y(m:m+1) ) );
     if strcmp(data.addmode,'normal')
       % Last vertex was finite.
       data.polybeta(n) = angle(data.orient/neworient) / pi;
     elseif strcmp(data.addmode,'return')
       % Last vertex was infinite.
-      b = scangle( x(m-2:m+1)+i*y(m-2:m+1) );
+      b = scangle( x(m-2:m+1)+1i*y(m-2:m+1) );
       b = b(2:3);
       b(b>0) = b(b>0) - 2;
       data.polybeta(n) = sum(b);
@@ -484,28 +486,28 @@ if ~isnan(P(1))
  
   switch data.addmode
     case {'normal','first'}
-      if P(1)>=axlim(1) & P(1)<=axlim(2) & P(2)>=axlim(3) & P(2)<=axlim(4)
-	% Finite vertex.
-	data.atinf(m+1) = 0;
-	data.addmode = 'normal';
-	data.polyvertex(n+1) = P(1)+i*P(2);
-	data.polybeta(n+1) = NaN;
-	data.Vertices(n+1) = plot(P(1),P(2),'o','user',[P(1) P(2)]);
+      if P(1)>=axlim(1) && P(1)<=axlim(2) && P(2)>=axlim(3) && P(2)<=axlim(4)
+        % Finite vertex.
+        data.atinf(m+1) = 0;
+        data.addmode = 'normal';
+        data.polyvertex(n+1) = P(1)+1i*P(2);
+        data.polybeta(n+1) = NaN;
+        data.Vertices(n+1) = plot(P(1),P(2),'o','user',[P(1) P(2)]);
       else
-	data.atinf(m+1) = 1;
-	data.addmode = 'infinite';
-	% Set up for re-entry point next time.
-	set(data.Figure,'pointer','cross')
-	h = [data.InsertButton,data.MoveButton,data.DeleteButton,...
-	      data.FinishButton];
-	set(h,'enable','off')
-	data.polyvertex(n+1) = Inf;
-	data.polybeta(n+1) = NaN;
-	data.Vertices(n+1) = plot(Inf,Inf,'o','user',[P(1) P(2)]);
+	    data.atinf(m+1) = 1;
+        data.addmode = 'infinite';
+        % Set up for re-entry point next time.
+        set(data.Figure,'pointer','cross')
+        h = [data.InsertButton,data.MoveButton,data.DeleteButton,...
+            data.FinishButton];
+        set(h,'enable','off')
+        data.polyvertex(n+1) = Inf;
+        data.polybeta(n+1) = NaN;
+        data.Vertices(n+1) = plot(Inf,Inf,'o','user',[P(1) P(2)]);
       end
       if n > 0
-	data.Edges(n) = plot(x(m:m+1),y(m:m+1),'-','erasemode','norm');
-	set(data.Edges(n),'user',n)
+        data.Edges(n) = plot(x(m:m+1),y(m:m+1),'-');
+        set(data.Edges(n),'user',n)
       end
     case 'infinite'
       data.atinf(m+1) = 1;
@@ -514,10 +516,10 @@ if ~isnan(P(1))
       pt = get(data.Vertices(n+0.5),'user');
       set(data.Vertices(n+0.5),'user',[pt;[P(1) P(2)]])
     case 'return'
-      data.Edges(n) = plot(x(m:m+1),y(m:m+1),'-','erasemode','norm');
+      data.Edges(n) = plot(x(m:m+1),y(m:m+1),'-');
       set(data.Edges(n),'user',n)
       data.atinf(m+1) = 0;
-      data.polyvertex(n+1) = P(1)+i*P(2);
+      data.polyvertex(n+1) = P(1)+1i*P(2);
       data.polybeta(n+1) = NaN;
       data.Vertices(n+1) = plot(P(1),P(2),'o','user',[P(1) P(2)]);
       % Restore mode buttons.
@@ -584,45 +586,45 @@ if ~isnan(adj(1))
     % Note: draw lines to infinity long enough
     r = 2*scale;
     %r = sqrt(diff(xd)^2+diff(yd)^2);
-    y = xy(1)+i*xy(2) + [r*exp(i*phi),0];
+    y = xy(1)+1i*xy(2) + [r*exp(1i*phi),0];
     % The "clickpoint" for the inf vertex has changed.
     pts = get(data.Vertices(j),'user');
     pts(2,:) = [real(y(1)) imag(y(1))];
     set(data.Vertices(j),'user',pts)
   else
-    y = [w(j),xy(1)+i*xy(2)];
+    y = [w(j),xy(1)+1i*xy(2)];
     phi = angle(diff(y)/diff(w([j,k])));
     beta(k) = beta(k)+phi/pi;
     beta(j) = beta(j)-phi/pi;
   end
-  set(edges(adj(1)),'xd',real(y),'yd',imag(y))
+  %clearpoints(edges(adj(1)))
+  set(edges(adj(1)),'xdata',real(y),'ydata',imag(y))
 end
 
 if ~isnan(adj(2))
   % Adjust the "successor" side.
   j = rem(k,n)+1;
   if isinf(w(j))
-    xd = get(edges(k),'xd');
-    yd = get(edges(k),'yd');
+    [xd,yd] = getpoints(edges(k));
     phi = atan2(diff(yd),diff(xd));
     r = 2*scale;
     %%r = sqrt(diff(xd)^2+diff(yd)^2);
-    y = xy(1)+i*xy(2) + [0,r*exp(i*phi)];
+    y = xy(1)+1i*xy(2) + [0,r*exp(1i*phi)];
     % The "clickpoint" for the inf vertex has changed.
     pts = get(data.Vertices(j),'user');
     pts(1,:) = [real(y(2)) imag(y(2))];
     set(data.Vertices(j),'user',pts)
   else
-    y = [xy(1)+i*xy(2),w(j)];
+    y = [xy(1)+1i*xy(2),w(j)];
     phi = angle(-diff(y)/diff(w([j,k])));
     beta(k) = beta(k)-phi/pi;
     beta(j) = beta(j)+phi/pi;
   end
-  set(edges(adj(2)),'xd',real(y),'yd',imag(y))
+  set(edges(adj(2)),'xdata',real(y),'ydata',imag(y))
 end
 % Make changes effective
 drawnow
-data.polyvertex(k) = xy(1)+i*xy(2);
+data.polyvertex(k) = xy(1)+1i*xy(2);
 data.polybeta = beta;
 guidata(obj,data)
 
@@ -657,7 +659,7 @@ data.Vertices = [data.Vertices(1:idx) newVertex data.Vertices(idx+1:end)];
 pred = data.Edges(idx);
 x = get(pred,'xdata');  y = get(pred,'ydata');
 set(pred,'xdata',[x(1) real(P)],'ydata',[y(1) imag(P)])
-succ = plot([real(P) x(2)],[imag(P) y(2)],'-','erase','norm');
+succ = plot([real(P) x(2)],[imag(P) y(2)],'-');
 data.Edges = [data.Edges(1:idx) succ data.Edges(idx+1:end)];
 guidata(obj,data)
 
@@ -671,9 +673,9 @@ if n==1
   return
 end
 % Special case for an unfinished polygon at an endpoint.
-if ~data.isclosed & ( k==1 | k==n ) 
-  if (k==1 & isinf(data.polyvertex(2))) | ...
-	(k==n & isinf(data.polyvertex(n-1))) 
+if ~data.isclosed && ( k==1 || k==n ) 
+  if (k==1 && isinf(data.polyvertex(2))) || ...
+	(k==n && isinf(data.polyvertex(n-1))) 
     errordlg('To be deleted, a vertex must have at least one finite neighbor.','PolyEdit Error')
     return
   end
@@ -687,7 +689,7 @@ if ~data.isclosed & ( k==1 | k==n )
     delete(data.Edges(1))
     data.Edges(1) = [];
   else
-    data.orient = data.orient*exp(i*pi*data.polybeta(end));
+    data.orient = data.orient*exp(1i*pi*data.polybeta(end));
     data.polybeta(end) = NaN;
     delete(data.Edges(n-1))
     data.Edges(n-1) = [];
@@ -702,13 +704,13 @@ else
   % There must be at least one finite neighbor.
   infp = isinf(w(pred));
   infs = isinf(w(succ));
-  if ~infp & ~infs
+  if ~infp && ~infs
     wp = w(pred);
     ws = w(succ);
-    beta(pred) = angle( exp(i*pi*beta(pred))*(w(k)-wp)/(ws-wp) ) / pi;
-    beta(succ) = angle( exp(i*pi*beta(succ))*(wp-ws)/(w(k)-ws) ) / pi;
+    beta(pred) = angle( exp(1i*pi*beta(pred))*(w(k)-wp)/(ws-wp) ) / pi;
+    beta(succ) = angle( exp(1i*pi*beta(succ))*(wp-ws)/(w(k)-ws) ) / pi;
     side = [wp ws];
-  elseif infp & ~infs
+  elseif infp && ~infs
     axlim = axis;
     scale = 2*max( axlim(2)-axlim(1), axlim(4)-axlim(3) );
     beta(pred) = beta(pred) + beta(k);
@@ -716,7 +718,7 @@ else
     pts = get(data.Vertices(pred),'user');
     pts(2,:) = [real(side(1)) imag(side(1))];
     set(data.Vertices(pred),'user',pts)
-  elseif ~infp & infs
+  elseif ~infp && infs
     axlim = axis;
     scale = 2*max( axlim(2)-axlim(1), axlim(4)-axlim(3) );
     beta(succ) = beta(succ) + beta(k);
@@ -735,6 +737,7 @@ else
   data.polybeta(k) = [];
   delete(data.Vertices(k))
   data.Vertices(k) = [];
+  %clearpoints(data.Edges(pred))
   set(data.Edges(pred),'xdata',real(side),'ydata',imag(side))
   delete(data.Edges(k))
   data.Edges(k) = [];
@@ -1022,8 +1025,13 @@ set(gca,'unit','char','box','on','xgrid','off','ygrid','off',...
      'plotboxaspectratio',[1,1,1],'tag','Axes')
 
 % Preview line
-line(NaN,NaN,'linestyle','--','color','r','erasemode','norm',...
+if verLessThan('matlab','8.4')
+    line(NaN,NaN,'linestyle','--','color','r',...
     'clipping','off','tag','PreviewLine');
+else
+    animatedline('linestyle','--','color','r','clipping','off',...
+        'tag','PreviewLine');
+end
 
 data = guihandles(fig);
 

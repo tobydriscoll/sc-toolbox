@@ -18,4 +18,4 @@ if isinf(p)
   p = truncate(p);
 end
 
-idx = double( isinpoly(wp,p.vertex,varargin{:}) );
+idx = double( sctool.isinpoly(wp,p.vertex,varargin{:}) );

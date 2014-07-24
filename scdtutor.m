@@ -29,7 +29,7 @@ else
   %========== Slide 3 ==========
 
   slide(3).code={
-   'opt = scmapopt(''trace'',''off'');',
+   'opt = sctool.scmapopt(''trace'',''off'');',
    'f = hplmap(p,opt);',
    'plot(f,12,6)',
    '' };

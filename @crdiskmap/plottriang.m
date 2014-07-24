@@ -7,4 +7,4 @@ function plottriang(M,varargin)
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: plottriang.m 7 1998-05-10 04:37:19Z tad $
 
-plotptri(vertex(polygon(M)),M.qlgraph,varargin{:})
+sctool.plotptri(vertex(polygon(M)),M.qlgraph,varargin{:})
