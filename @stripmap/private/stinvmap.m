@@ -76,7 +76,7 @@ if ode
   if isempty(z0)
     % Pick a value z0 (not a singularity) and compute the map there.
     map = @(zp) stmap(zp,w,beta,z,c,qdat);
-    [z0,w0] = scimapz0('st',wp(~done),map,w,beta,z,c,qdat);
+    [z0,w0] = findz0('st',wp(~done),map,w,beta,z,c,qdat);
   else
     w0 = stmap(z0,w,beta,z,c,qdat);
     if length(z0)==1 & lenwp > 1
