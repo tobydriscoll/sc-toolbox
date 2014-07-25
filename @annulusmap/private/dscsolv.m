@@ -4,6 +4,8 @@ function [u,c,w0,w1,phi0,phi1] = dscsolv(iguess,nptq,qwork,ishape,linearc,dataz)
 %  DSCPACK, Chenglie Hu 1995
 
 % Provide space if ishape = 0
+import sctool.*
+
 w1 = zeros(1,dataz.N);
 phi1 = zeros(1,dataz.N);
 nshape = 0;

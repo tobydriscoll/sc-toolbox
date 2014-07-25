@@ -1,23 +1,24 @@
-function w = dscinvmap(map,z)
-%DSCINVMAP   Values of the inverse map.
-%   DSCINVMAP(MAP,Z) finds the inverse image of a point Z under the annulusmap 
-%   MAP. That is, it maps from the DC polygonal domain MAP.REGION to the
-%   annulus.
+function w = evalinv(map,z)
+%EVALINV   Evaluate the inverse map.
+%   EVALINV(MAP,Z) finds the inverse image of a point Z under the annulusmap 
+%   MAP. That is, it maps from a doubly connected polygonal domain to the
+%   canonical annulus.
 %
-% See also ANNULUSMAP, ANNULUSMAP.DSCMAP.
+% See also ANNULUSMAP, ANNULUSMAP.EvAL.
 
-% Copyright by Alfa Heryudono, 2003. 
+% Copyright by Toby Driscoll, 2014.
+% Written by Alfa Heryudono, 2003. 
 
 % TODO: check if z is in the doubly connected region
 
 % z is not allowed to be a vertex.
 % check if z is in Z0.
-idx = min(find(map.Z0 == z));
+idx = find(map.Z0 == z, 1 );
 if isempty(idx)==0
     error('The point calculated is a vertex.');
 else
     % check if z is in Z1.
-    idx = min(find(map.Z1 == z));
+    idx = find(map.Z1 == z, 1 );
     if isempty(idx)==0
        error('The point calculated is a vertex.');
     end
