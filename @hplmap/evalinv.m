@@ -21,6 +21,7 @@ function zp = evalinv(M,wp,tol,z0)
 %   $Id: evalinv.m 91 2000-05-17 23:05:51Z tad $
 
 % Assign empties to missing input args
+import sctool.*
 if nargin < 4
   z0 = [];
   if nargin < 3

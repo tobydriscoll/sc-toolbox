@@ -31,6 +31,7 @@ function zp = hpinvmap(wp,w,beta,z,c,qdat,z0,options)
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: hpinvmap.m 298 2009-09-15 14:36:37Z driscoll $
 
+import sctool.*
 n = length(w);
 w = w(:);
 beta = beta(:);
