@@ -38,6 +38,7 @@ z = z(:);
 zp = zeros(size(wp));
 wp = wp(:);
 lenwp = length(wp);
+import sctool.*
 
 if nargin < 8
   options = [];
