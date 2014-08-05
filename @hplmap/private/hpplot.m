@@ -259,7 +259,7 @@ for j = 1:length(im)
             % Replace the points with just the ends
             set(linh(j,2),'erasemode','back')
             set(linh(j,2),'marker','none','linestyle','-',...
-                'xdata',[0 1]*cos(theta(j)),'ydata',[0 1]*sin(theta(j)))
+                'xdata',real(zp([2 end-1])),'ydata',im(j)*[1 1])
         end
     else
         clearpoints(linh(j,1))

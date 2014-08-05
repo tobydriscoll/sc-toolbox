@@ -241,7 +241,7 @@ for j = 1:length(im)
             % Replace the points with the endpoints
             set(linh(j,2),'erasemode','back')
             set(linh(j,2),'marker','none','linestyle','-',...
-                'xdata','xdata',[-K K],'ydata',im(j)*[1 1])
+                'xdata',[-K K],'ydata',im(j)*[1 1])
         end
     else
         clearpoints(linh(j,1))

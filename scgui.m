@@ -162,7 +162,7 @@ else
   trace = 'off';
 end
 
-opt = scmapopt('Trace',trace,'Tol',tol);
+opt = sctool.scmapopt('Trace',trace,'Tol',tol);
 
 if ~isempty(oldmap)
   % Continuation
