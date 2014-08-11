@@ -15,6 +15,8 @@ function qdat = scqdata(beta,nqpts);
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: scqdata.m 298 2009-09-15 14:36:37Z driscoll $
 
+import sctool.gaussj
+
 n = length(beta);
 qnode = zeros(nqpts,n+1);
 qwght = zeros(nqpts,n+1);
