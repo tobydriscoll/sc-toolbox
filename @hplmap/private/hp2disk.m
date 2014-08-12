@@ -22,7 +22,7 @@ zd = sign(zd);
 
 % Recalculate constant from scratch.
 mid = (zd(1)+zd(2))/2;
-qdat = scqdata(beta,16);
+qdat = sctool.scqdata(beta,16);
 cd = (w(1) - w(2))/...
-    (dquad(zd(2),mid,2,zd,beta,qdat) - dquad(zd(1),mid,1,zd,beta,qdat));
+    (diskmap.dquad(zd(2),mid,2,zd,beta,qdat) - diskmap.dquad(zd(1),mid,1,zd,beta,qdat));
 
