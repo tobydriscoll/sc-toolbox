@@ -12,5 +12,5 @@ if isa(M,'double') & isa(c,'diskmap')
 end
 
 M.constant = c*M.constant;
-M.scmap = c*M.scmap;
+M.polygon = c*M.polygon;
 M.center = c*M.center;
