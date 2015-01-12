@@ -206,7 +206,7 @@ z = z.prevertex;
 
 switch class(data.map)
   case { 'diskmap','extermap','crdiskmap' }
-    h = plot(exp(i*linspace(0,2*pi,100)),'linewid',1);
+    h = plot(exp(1i*linspace(0,2*pi,100)),'linewid',1);
     axis normal
     axis equal
     axis square
@@ -324,7 +324,7 @@ end
 %%    set(findobj(ax(1)),'vis','on')
 %%    set(findobj(ax(2)),'vis','off')
 ml = findobj(ax,'tag','MeshLines');
-set(ml,'erase','normal')
+%%set(ml,'erase','normal')
 delete(ml)
 delete(findobj(ax(1),'tag','PolygonPlot'))
 drawnow
@@ -336,7 +336,8 @@ end
 
 % Do the plot
 [h,xr,yt] = plot(data.map,xr,yt);
-set(h,'erasemode','none','tag','MeshLines')
+%%set(h,'erasemode','none','tag','MeshLines')
+set(h,'tag','MeshLines')
 
 % Plotting routines plot their own copy of the polygon,
 % without returning handles. This locates and (re)tags these lines.
@@ -433,7 +434,7 @@ if strcmp(get(gcf,'selectiontype'),'normal')
   
   % Update objects to show points
   axes(ax(domain))
-  set(h,'erasemode','none')
+  %%set(h,'erasemode','none')
   xs = [get(h(domain),'xdata') pt(1,1)];
   ys = [get(h(domain),'ydata') pt(1,2)];
   set(h(domain),'xdata',xs,'ydata',ys)
@@ -441,13 +442,13 @@ if strcmp(get(gcf,'selectiontype'),'normal')
   yi = [get(h(3-domain),'ydata') imag(img)];
   set(h(3-domain),'xdata',xi,'ydata',yi)
   if domain==1
-    data.phypoints = xs + i*ys;
-    data.canpoints = xi + i*yi;
+    data.phypoints = xs + 1i*ys;
+    data.canpoints = xi + 1i*yi;
   else
-    data.phypoints = xi + i*yi;
-    data.canpoints = xs + i*ys;
+    data.phypoints = xi + 1i*yi;
+    data.canpoints = xs + 1i*ys;
   end
-  set(h,'erasemode','normal')
+  %%set(h,'erasemode','normal')
   
   guidata(gcbf,data)
 end
@@ -797,7 +798,7 @@ set(data.MapEnabled,'enable','off')
 
 % No mesh lines or canonical domain.
 ml = findobj(data.SCfig,'tag','MeshLines');
-set(ml,'erasemode','normal')
+%%set(ml,'erasemode','normal')
 delete(ml)
 delete(findobj(data.CanonicalAxes,'tag','PolygonPlot'))
 

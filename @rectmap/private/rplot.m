@@ -149,7 +149,7 @@ for j = 1:length(re)
         else
             addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
             if draw2
-                addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+                addpoints(linh(j,2),real(zp(new)),imag(zp(new)))
             end
         end
         drawnow
@@ -225,7 +225,7 @@ for j = 1:length(im)
         else
             addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
             if draw2
-                addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+                addpoints(linh(j,2),real(zp(new)),imag(zp(new)))
             end
         end
         drawnow

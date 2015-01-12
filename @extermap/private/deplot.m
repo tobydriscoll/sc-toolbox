@@ -151,7 +151,7 @@ for j = 1:length(R)
     else
         addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
         if draw2
-            addpoints(linh(j,1),R(j)*cos(tp(new)),R(j)*sin(tp(new)))
+            addpoints(linh(j,2),R(j)*cos(tp(new)),R(j)*sin(tp(new)))
         end
     end
     drawnow
@@ -236,7 +236,7 @@ for j = 1:length(theta)
     else
         addpoints(linh(j,1),real(wp(new)),imag(wp(new)))
         if draw2
-            addpoints(linh(j,1),real(zp(new)),imag(zp(new)))
+            addpoints(linh(j,2),real(zp(new)),imag(zp(new)))
         end
     end
     drawnow

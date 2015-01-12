@@ -7,6 +7,10 @@ function display(p)
 w = vertex(p);
 alpha = angle(p);
 n = length(w);
+if n==0
+    fprintf('\n empty polygon\n\n')
+    return
+end
 
 fprintf('\n%s = polygon object:\n\n',inputname(1))
 
