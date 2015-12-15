@@ -292,13 +292,13 @@ if get(data.SnapToggle,'value') & strcmp(get(data.SnapToggle,'enable'),'on')
   % For clarity, keep only about eight of the labels.
   N = length(x);
   keep = [1,3:ceil((N-1)/8):N-2,N];
-  xl = get(gca,'xticklabel');
+  xl = char( get(gca,'xticklabel') );
   p = min(size(xl,2),4);
   xlnew = setstr(ones(N+1,1)*blanks(p));
   xlnew(keep,:) = xl(keep,1:p);
   N = length(y);
   keep = [1,3:ceil((N-1)/8):N-2,N];
-  yl = get(gca,'yticklabel');
+  yl = char( get(gca,'yticklabel') );
   p = min(size(yl,2),4);
   ylnew = setstr(ones(N+1,1)*blanks(p));
   ylnew(keep,:) = yl(keep,1:p);
@@ -371,7 +371,7 @@ switch data.addmode
     % Point may not be outside axes box.
     P(1) = min(max(P(1),axlim(1)),axlim(2));
     P(2) = min(max(P(2),axlim(3)),axlim(4));
-    ang = scangle([pts(m-2:m,1);P(1)]+i*[pts(m-2:m,2);P(2)]);
+    ang = sctool.scangle([pts(m-2:m,1);P(1)]+i*[pts(m-2:m,2);P(2)]);
     ang = ang(2:3);
     ang(ang>0) = ang(ang>0) - 2;
     ang = sum(ang);
@@ -386,7 +386,7 @@ if any(mode==[0,2]) & qang & (m > 0)	% quantized angle
     ang = angle(P(1)-pts(m,1)+i*(P(2)-pts(m,2)))/pi;
     theta = qang*round(ang/qang)*pi;
   elseif mode==0
-    ang = scangle([pts(m-1:m,1);P(1)]+i*[pts(m-1:m,2);P(2)]);
+    ang = sctool.scangle([pts(m-1:m,1);P(1)]+i*[pts(m-1:m,2);P(2)]);
     ang = qang*round(ang(2)/qang);
     theta = atan2(pts(m,2)-pts(m-1,2),pts(m,1)-pts(m-1,1))-pi*ang;
   elseif mode==2
@@ -432,8 +432,12 @@ end
 
 % Update.
 if m > 0 && (mode~=1)
-  %clearpoints(data.Previewline)
-  set(data.PreviewLine,'xdata',[pts(m,1),P(1)],'ydata',[pts(m,2),P(2)]);
+    if verLessThan('matlab','8.4')
+        set(data.PreviewLine,'xdata',[pts(m,1),P(1)],'ydata',[pts(m,2),P(2)]);
+    else
+        clearpoints(data.PreviewLine)
+        addpoints(data.PreviewLine,[pts(m,1),P(1)],[pts(m,2),P(2)]);
+    end
 end
 data.currentpoint = P;
 guidata(obj,data)
@@ -445,8 +449,12 @@ P = data.currentpoint;
 if ~isnan(P(1))
   set(data.Figure,'windowbuttonmotion','')
   set(data.Figure,'windowbuttonup','')
-  %clearpoints(data.Previewline)
-  set(data.PreviewLine,'xdata',P(1),'ydata',P(2))
+    if verLessThan('matlab','8.4')
+        set(data.PreviewLine,'xdata',P(1),'ydata',P(2));
+    else
+        clearpoints(data.PreviewLine)
+        addpoints(data.PreviewLine,P(1),P(2));
+    end
   pts = PE_get_clicks(data);
   x = pts(:,1);  y = pts(:,2);
   %%x = get(data.Vertices,'xdata');
@@ -476,7 +484,7 @@ if ~isnan(P(1))
       data.polybeta(n) = angle(data.orient/neworient) / pi;
     elseif strcmp(data.addmode,'return')
       % Last vertex was infinite.
-      b = scangle( x(m-2:m+1)+1i*y(m-2:m+1) );
+      b = sctool.scangle( x(m-2:m+1)+1i*y(m-2:m+1) );
       b = b(2:3);
       b(b>0) = b(b>0) - 2;
       data.polybeta(n) = sum(b);
@@ -645,7 +653,7 @@ end
 function PEInsert(obj,varargin)
 data = guidata(obj);
 idx = find( get(gcf,'currentobj')==data.Edges );
-[wn,bn] = scaddvtx(data.polyvertex,data.polybeta,idx,axis);
+[wn,bn] = sctool.scaddvtx(data.polyvertex,data.polybeta,idx,axis);
 P = wn(idx+1);
 data.polyvertex = wn;
 data.polybeta = bn;
@@ -782,7 +790,7 @@ if n > 1
       data.polybeta(n) = angle(data.orient/neworient) / pi;
     else
       % Last vertex was infinite.
-      b = scangle( x([m-2:m 1])+i*y([m-2:m 1]) );
+      b = sctool.scangle( x([m-2:m 1])+i*y([m-2:m 1]) );
       b = b(2:3);
       b(b>0) = b(b>0) - 2;
       data.polybeta(n) = sum(b);

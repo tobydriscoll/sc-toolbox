@@ -22,7 +22,7 @@ atinf = isinf(w);
 wf = w(~atinf);
 
 if nargin == 1
-  beta = scangle(w);
+  beta = sctool.scangle(w);
 end
 
 % Decide whether to rescale axes
