@@ -47,7 +47,7 @@ else
     index = 1;                          % irrelevant
     return
   end
-  slit = logical(isinpoly(w(mask),w(~mask)));
+  slit = logical(sctool.isinpoly(w(mask),w(~mask)));
   fmask = find(mask);
   alpha(fmask(slit)) = 2;
   alpha(fmask(~slit)) = 0;

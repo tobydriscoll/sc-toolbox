@@ -169,6 +169,11 @@ classdef  (InferiorClasses = {?double}) diskmap < scmap
         function out = imapfun(varargin)
             out = dimapfun(varargin{:});
         end
+        
+        % Needed in @hplmap/private/hp2disk
+        function out = dquad(varargin)
+            out = dquad(varargin{:});
+        end
     end
         
 end
