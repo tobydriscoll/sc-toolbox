@@ -13,7 +13,7 @@ function wp = subsref(M,S)
 if length(S) == 1 & strcmp(S.type,'()')
   wp = eval(M,S.subs{1});
 else
-  error('Only syntax for SCMAP is a single parenthesized subscript.')
+  wp = builtin('subsref', M, S);
 end
 
   
