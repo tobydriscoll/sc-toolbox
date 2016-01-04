@@ -17,8 +17,8 @@ zhp = real(zhp);
 
 % Recalculate constant from scratch.
 mid = mean(zhp(1:2));
-qdat = scqdata(beta(1:n-1),16);
-chp = (w(1)-w(2))/(hpquad(zhp(2),mid,2,zhp(1:n-1),beta(1:n-1),qdat) - ...
-    hpquad(zhp(1),mid,1,zhp(1:n-1),beta(1:n-1),qdat));
+qdat = sctool.scqdata(beta(1:n-1),16);
+chp = (w(1)-w(2))/(hplmap.hpquad(zhp(2),mid,2,zhp(1:n-1),beta(1:n-1),qdat) - ...
+    hplmap.hpquad(zhp(1),mid,1,zhp(1:n-1),beta(1:n-1),qdat));
 
 

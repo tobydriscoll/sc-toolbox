@@ -13,7 +13,7 @@ end
 
 if length(a)==1 & isa(a,'double')
   M.center = M.center + a;
-  M.scmap = M.scmap + a;
+  M.polygon = M.polygon + a;
 else
   error('Addition is not defined for these operands.')
 end
