@@ -9,7 +9,7 @@ function I = hpquad(z1,z2,varargin)
 %   z1,z2 are vectors of left and right endpoints.  sing1 is a vector of
 %   integer indices which label the singularities in z1.  So if sing1(5)
 %   = 3, then z1(5) = z(3).  A zero means no singularity.  z is the
-%   vector of finite singularities; beta is the vector of associated
+%   vector of finite prevertices; beta is the vector of associated
 %   turning angles.  qdat is quadrature data from SCQDATA.
 %
 %   Make sure z and beta are column vectors.
