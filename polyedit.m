@@ -588,8 +588,8 @@ if ~isnan(adj(1))
   % Adjust the "predecessor" side.
   j = rem(k-2+n,n)+1;
   if isinf(w(j))
-    xd = get(edges(j),'xd');
-    yd = get(edges(j),'yd');
+    xd = get(edges(j),'xdata');
+    yd = get(edges(j),'ydata');
     phi = atan2(-diff(yd),-diff(xd));
     % Note: draw lines to infinity long enough
     r = 2*scale;

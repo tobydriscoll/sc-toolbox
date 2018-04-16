@@ -15,7 +15,7 @@ c = map.constant;
 n = length(z);
 
 % Since there is no parameter problem, use high accuracy in quadrature.
-qdata = scqdata(alpha-1,16);
+qdata = sctool.scqdata(alpha-1,16);
 
 w = zeros(n,1);
 atinf = (alpha < eps);

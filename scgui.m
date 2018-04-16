@@ -1063,48 +1063,48 @@ action(8) = uicontrol('parent',fig,'style','push',...
 
 % CONTEXT MENUS
 cm = uicontextmenu('tag','PolygonContextMenu');
-uimenu(cm,'label','Modify...','call',@domodify)
-uimenu(cm,'label','Inspect vertices...','call',@edit)
-uimenu(cm,'label','Delete...','call',@menudeletepoly)
+uimenu(cm,'label','Modify...','menuselect',@domodify)
+uimenu(cm,'label','Inspect vertices...','menuselect',@edit)
+uimenu(cm,'label','Delete...','menuselect',@menudeletepoly)
 uimenu(cm,'label','Cancel action','separator','on')
 
 cm = uicontextmenu('tag','PointContextMenu');
-uimenu(cm,'label','Inspect...','call',@editpts)
-uimenu(cm,'label','Delete...','call',@deletepoints)
+uimenu(cm,'label','Inspect...','menuselect',@editpts)
+uimenu(cm,'label','Delete...','menuselect',@deletepoints)
 uimenu(cm,'label','Cancel action','separator','on')
 
 % FIGURE MENUS
 filemenu = uimenu(fig,'label','File');
-uimenu(filemenu,'label','Save map data...','call',@savedata,...
+uimenu(filemenu,'label','Save map data...','menuselect',@savedata,...
        'tag','FileSaveMenu');
-uimenu(filemenu,'label','Load map data...','call',@loaddata,...
+uimenu(filemenu,'label','Load map data...','menuselect',@loaddata,...
        'tag','FileLoadMenu');
 uimenu(filemenu,'label','Import/export to workspace...',...
-       'call',@importexport,'tag','FileImportExportMenu');
-uimenu(filemenu,'label','Make a printable copy','call',@printablecopy);
-uimenu(filemenu,'label','Quit SC mapping...','call',@scquit);
+       'menuselect',@importexport,'tag','FileImportExportMenu');
+uimenu(filemenu,'label','Make a printable copy','menuselect',@printablecopy);
+uimenu(filemenu,'label','Quit SC mapping...','menuselect',@scquit);
 polymenu = uimenu(fig,'label','Polygon');
-uimenu(polymenu,'label','New...','call',@draw,'tag','PolyNewMenu');
-uimenu(polymenu,'label','Modify...','call',@domodify,'tag','PolyModifyMenu');
-uimenu(polymenu,'label','Edit numerically...','call',@edit,...
+uimenu(polymenu,'label','New...','menuselect',@draw,'tag','PolyNewMenu');
+uimenu(polymenu,'label','Modify...','menuselect',@domodify,'tag','PolyModifyMenu');
+uimenu(polymenu,'label','Edit numerically...','menuselect',@edit,...
        'tag','PolyEditMenu');
 mapmenu = uimenu(fig,'label','Map');
-uimenu(mapmenu,'label','Solve for parameters','call',@solve,...
+uimenu(mapmenu,'label','Solve for parameters','menuselect',@solve,...
        'tag','MapSolveMenu');
-uimenu(mapmenu,'label','Reset conformal center...','call',@recenter,...
+uimenu(mapmenu,'label','Reset conformal center...','menuselect',@recenter,...
        'tag','MapCenterMenu');
-uimenu(mapmenu,'label','Plot a mesh','call',@meshplot,...
+uimenu(mapmenu,'label','Plot a mesh','menuselect',@meshplot,...
        'tag','MapPlotMenu');
-uimenu(mapmenu,'label','Inspect details','call',@scdisplay,...
+uimenu(mapmenu,'label','Inspect details','menuselect',@scdisplay,...
        'tag','MapShowMenu');
 toolsmenu = uimenu(fig,'label','Tools');
 tutmenu = uimenu(toolsmenu,'label','Tutorials','separator','on');
-uimenu(tutmenu,'label','Basic','call','scdtutor');
-uimenu(tutmenu,'label','Infinite vertices','call','scdinf');
-uimenu(tutmenu,'label','Elongated polygons','call','scdlong');
-uimenu(tutmenu,'label','Faber polynomials','call','scdfaber');
+uimenu(tutmenu,'label','Basic','menuselect','scdtutor');
+uimenu(tutmenu,'label','Infinite vertices','menuselect','scdinf');
+uimenu(tutmenu,'label','Elongated polygons','menuselect','scdlong');
+uimenu(tutmenu,'label','Faber polynomials','menuselect','scdfaber');
 uimenu(toolsmenu,'label','Laplace solver...','separator','on',...
-       'call',@lapsolver,'tag','ToolsLaplaceMenu');
+       'menuselect',@lapsolver,'tag','ToolsLaplaceMenu');
 
 data = guihandles(fig);
 
