@@ -104,7 +104,7 @@ if ode
   zp(~done) = y(m,1:lenwp)+sqrt(-1)*y(m,lenwp+1:leny);
   abszp = abs(zp);
   out = abszp > 1;
-  zp(out) = zp(out)./abszp(out);
+  zp(out) = 1./conj(zp(out));
 end
 
 % Newton iterations
@@ -122,13 +122,13 @@ if newton
   wp = wp(:);
   k = 0;
   while ~all(done) && k < maxiter
-    F = wp(~done) - dmap(zn(~done),w,beta,z,c,qdat);
-    m = length(F);
-    dF = c*exp(sum(beta(:,ones(m,1)).*...
-          log(1-(zn(~done,ones(n,1)).')./z(:,ones(m,1)))));
-    zn(~done) = zn(~done) + F(:)./dF(:);
+    F = dmap(zn(~done),w,beta,z,c,qdat) - wp(~done);
+    [dF,ddF] = dderiv(zn(~done),z,beta,c);
+    %dz = -F(:)./dF(:);
+    dz = -F.*dF ./( dF.^2 - F.*ddF );
+    zn(~done) = zn(~done) + dz;
     out = abs(zn) > 1;
-    zn(out) = sign(zn(out));
+    zn(out) = 1./conj(zn(out));
     done(~done) = (abs(F)< tol);
     k = k+1;
   end
@@ -137,9 +137,8 @@ if newton
     warning(str)
   end
   zp(:) = zn; 
-end;
+end
 
 flag = find(~done);
 
 end
-
