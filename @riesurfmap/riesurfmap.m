@@ -71,7 +71,7 @@ classdef (InferiorClasses = {?double}) riesurfmap < scmap
                     % Continuation of given map to given polygon
                     poly = varargin{2};
                     branch = varargin{3};
-                    opt = scmapopt(oldmap);
+                    opt = scmapopt(options(oldmap));
                     z0 = prevertex(oldmap);
                     zb = prebranch(oldmap);
                     if length(z0) ~= length(poly)

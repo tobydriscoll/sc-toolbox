@@ -64,7 +64,7 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
                         msg = 'Polygon %s must have the same length as that in %s.';
                         error(msg,inputname(2),inputname(1))
                     end
-                    opt = scmapopt(oldmap);
+                    opt = scmapopt(oldmap.options);
                     if nargin > 2
                         opt = scmapopt(opt,varargin{2});
                     end

@@ -60,7 +60,7 @@ classdef  (InferiorClasses = {?double}) diskmap < scmap
                     oldmap = varargin{1};
                     % Continuation of given map to given polygon
                     poly = varargin{2};
-                    opt = scmapopt(oldmap);
+                    opt = scmapopt(options(oldmap));
                     z0 = prevertex(oldmap);
                     if length(z0) ~= length(poly)
                         msg = 'Polygon %s must have the same length as that in %s.';
