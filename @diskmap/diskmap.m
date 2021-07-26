@@ -151,7 +151,7 @@ classdef  (InferiorClasses = {?double}) diskmap < scmap
             % If the polygon was not known, find it from the map
             if any(isnan(vertex(poly)))
                 poly = forwardpoly(map);
-                map.scmap = scmap(poly,opt);
+                map = diskmap(poly,z,opt);
             end
             
             % Find conformal center

@@ -163,7 +163,7 @@ classdef  (InferiorClasses = {?double}) extermap < scmap
             % If the polygon was not known, find it from the map
             if any(isnan(vertex(poly)))
                 poly = forwardpoly(map);
-                map.scmap = scmap(poly,opt);
+                map = extermap(poly,z,opt);
             end
             
             % Now fill in apparent accuracy
