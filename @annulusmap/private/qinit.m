@@ -7,6 +7,8 @@ function qwork = qinit(dataz,nptq)
 
 %   For each finite vertex, compute nodes & weights
 %   For one-sided Gauss-Jacobi quadrature 
+
+import sctool.gaussj
 for K=1:(dataz.M+dataz.N)
     inodes = nptq*(K-1)+1;
     iwts = nptq*(dataz.M+dataz.N+K)+1;
