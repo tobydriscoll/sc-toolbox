@@ -1,6 +1,6 @@
-function [A,B,C,D] = moebius(z,w)
+function [A,B,C,D] = moebiuscoeffs(z,w)
 %MOEBIUS Moebius transformation parameters.
-%   A = MOEBIUS(Z,W) computes the coefficients of the Moebius
+%   A = MOEBIUSCOEFFS(Z,W) computes the coefficients of the Moebius
 %   transformation taking the 3-vector Z to W, so that
 %   
 %            W = (A(1)*Z + A(2))./(A(3)*Z + A(4)).
@@ -9,8 +9,7 @@ function [A,B,C,D] = moebius(z,w)
 % 
 %   If four output arguments are used, they will be given the A values.
 
-%   Copyright 1998 by Toby Driscoll.
-%   $Id: moebius.m 298 2009-09-15 14:36:37Z driscoll $
+%   Copyright 1998-2004 by Toby Driscoll.
 
 A = NaN*ones(1,4);
 
