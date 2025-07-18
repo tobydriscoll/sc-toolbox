@@ -61,7 +61,7 @@ for e=1:n3
   qledge(:,e) = [t1(2:3);t2(2:3)];
   
   % Any ql edge that is also a diagonal, is adjacent
-  t = qledge(find(qledge(:,e)<=n3),e);
+  t = qledge(qledge(:,e)<=n3,e);
   T(t,e) = ones(length(t),1);
   T(e,t) = ones(1,length(t));
   

@@ -28,7 +28,7 @@ c = M.constant;
 
 if nargin == 1
   [a1,a2,a3] = stplot(w,beta,z,c);
-elseif length(varargin) == 1
+elseif isscalar(varargin)
   % Tolerance given only
   [a1,a2,a3] = stplot(w,beta,z,c,10,10,ceil(-log10(varargin{1})));
 elseif length(varargin) == 2

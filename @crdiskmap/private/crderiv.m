@@ -1,4 +1,4 @@
-function fp = crderiv(zp,beta,cr,aff,wcfix,Q,qdat)
+function fp = crderiv(zp,beta,cr,aff,wcfix,Q)
 %CRDERIV  Derivative of the disk map in crossratio formulation.
 %   CRDERIV(ZP,BETA,CR,AFF,WCFIX,Q) returns the derivative at the points
 %   ZP of the Schwarz-Christoffel crossratio disk map. The arguments are
@@ -14,15 +14,8 @@ function fp = crderiv(zp,beta,cr,aff,wcfix,Q,qdat)
 
 % Parse input and initialize
 beta = beta(:);
-n = length(beta);
-if nargin < 6
-  qdat = scqdata(beta,8);
-elseif length(qdat)==1
-  qdat = scqdata(beta,max(ceil(-log10(qdat)),4));
-end
 fp = zeros(size(zp));
 zp = zp(:).';
-p = length(zp);
 
 % Transform points into all embeddings, from the reference in wcfix
 quadnum = wcfix(1);
@@ -32,7 +25,7 @@ d0 = (mt(1)*mt(4) - mt(2)*mt(3)) ./ (mt(3)*zp + mt(4)).^2;
 [zl,dl] = crspread(zl,quadnum,cr,Q);
 
 % Choose best embeddings based on proximity to origin
-[tmp,idx] = min(abs(zl));
+[~,idx] = min(abs(zl));
 
 % Compute derivatives via embeddings
 for q = unique(idx)

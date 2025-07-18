@@ -80,7 +80,7 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
                         elseif length(arg) == length(poly)
                             z = arg;
                             z = z(:);
-                        elseif length(arg) == 1
+                        elseif isscalar(arg)
                             c = arg;
                         else
                             msg = 'Unable to parse argument ''%s''.';
@@ -100,7 +100,6 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
             
             % Get data for the low-level functions
             w = vertex(poly);
-            n = length(w);
             beta = angle(poly) - 1;
             
             % Request endidx
@@ -121,7 +120,7 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
             else
                 
                 atinf = isinf(z);
-                if (sum(atinf & (z < 0)) ~= 1) | (sum(atinf & (z > 0)) ~= 1)
+                if (sum(atinf & (z < 0)) ~= 1) || (sum(atinf & (z > 0)) ~= 1)
                     error('Supplied prevertices must include -Inf and Inf')
                 end
                 % Base quadrature accuracy on given options

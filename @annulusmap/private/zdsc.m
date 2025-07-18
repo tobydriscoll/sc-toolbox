@@ -9,10 +9,7 @@ param4 = thdata(u);
 ibd = 1;
 ww0 = ww;
 
-if (iopt ~= 1) 
-    ;
-else
-    %if (abs(abs(ww0)-1) <= 1e-11) %original
+if (iopt == 1) 
     if (abs(abs(ww0)-1) == 0) 
         ww0 = (1+u)*ww0/2;
         ibd = 2;
@@ -48,7 +45,7 @@ else
     else
         phiwb = phi1(knear);
     end 
-    wb = dww0*exp(i*phiwb);
+    wb = dww0*exp(1i*phiwb);
 
 % Integration from wa to wb on a line segment:
     %if (abs(wb-wa) <= 1e-11) %original

@@ -21,7 +21,7 @@ if ~any(isinf(w([pos,pos1])))	% easy case
   new = mean(w([pos,pos1]));
 else					% messy case
   % Find a pair of adjacent finite vertices as a basis.
-  base = min(find(~isinf(w) & ~isinf(w([2:n,1]))));
+  base = find(~isinf(w) & ~isinf(w([2:n,1])), 1 );
   ang(base) = angle(w(rem(base,n)+1)-w(base));
   
   % Determine absolute angle of side pos->pos1.
@@ -36,16 +36,16 @@ else					% messy case
 
   if isinf(w(pos))
     base = w(pos1);
-    dir = exp(i*(ang(pos)+pi));
+    dir = exp(1i*(ang(pos)+pi));
   else
     base = w(pos);
-    dir = exp(i*(ang(pos)));
+    dir = exp(1i*(ang(pos)));
   end
   
   % Restrict point to a window (to help out graphics).
   new = base + avglen*dir;  
-  while real(new) < window(1) | real(new) > window(2) | ...
-	imag(new) < window(3) | imag(new) > window(4)
+  while real(new) < window(1) || real(new) > window(2) || ...
+	imag(new) < window(3) || imag(new) > window(4)
     avglen = avglen / 2;
     new = base + avglen*dir;
   end

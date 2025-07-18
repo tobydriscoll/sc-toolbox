@@ -27,7 +27,6 @@ function [H,R2,THETA] = crplot(w,beta,cr,aff,wcfix,Q,R,theta,options)
 import sctool.*
 w = w(:);
 beta = beta(:);
-n = length(w);
 
 % Parse input
 if nargin < 9
@@ -47,12 +46,12 @@ if isempty([R(:);theta(:)])
 end
 
 % Integer arguments must be converted to specific values
-if (length(R)==1) && (R == round(R))
+if (isscalar(R)) && (R == round(R))
     m = R+2;
     R = linspace(0,1,m);
     R([1,m]) = [];
 end
-if (length(theta)==1) && (theta == round(theta))
+if (isscalar(theta)) && (theta == round(theta))
     m = theta+1;
     theta = linspace(0,2*pi,m);
     theta(m) = [];
@@ -258,7 +257,7 @@ end
 if verLessThan('matlab','8.4'), set(linh,'erasemode','normal'),end
 drawnow
 
-if turn_off_hold, hold off, end;
+if turn_off_hold, hold off, end
 if nargout > 0
     H = linh;
     if nargout > 1

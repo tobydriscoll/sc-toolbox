@@ -20,7 +20,7 @@ qdata = scqdata(1-alpha,16);
 % Midpoints of integration
 theta = rem(angle(z(n)) + angle(z/z(n))+2*pi,2*pi);
 theta(end) = 2*pi;
-mid = exp(i*(theta(1:n-1)+theta(2:n))/2);
+mid = exp(1i*(theta(1:n-1)+theta(2:n))/2);
 
 % Integrations
 I = dequad(z(1:n-1),mid,1:n-1,z,1-alpha,qdata) - ...

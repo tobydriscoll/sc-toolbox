@@ -362,8 +362,8 @@ switch data.addmode
     mode = 0;
   case 'infinite'
     % Point may not be inside axes box.
-    if all(P>axlim([1,3])) & all(P<axlim([2,4]))
-      [junk,j] = min(abs([P(1)-axlim(1:2);P(2)-axlim(3:4)]'));
+    if all(P>axlim([1,3])) && all(P<axlim([2,4]))
+      [~,j] = min(abs([P(1)-axlim(1:2);P(2)-axlim(3:4)]'));
       P = axlim(j);
     end
     mode = 1;
@@ -371,7 +371,7 @@ switch data.addmode
     % Point may not be outside axes box.
     P(1) = min(max(P(1),axlim(1)),axlim(2));
     P(2) = min(max(P(2),axlim(3)),axlim(4));
-    ang = sctool.scangle([pts(m-2:m,1);P(1)]+i*[pts(m-2:m,2);P(2)]);
+    ang = sctool.scangle([pts(m-2:m,1);P(1)]+1i*[pts(m-2:m,2);P(2)]);
     ang = ang(2:3);
     ang(ang>0) = ang(ang>0) - 2;
     ang = sum(ang);
@@ -379,14 +379,14 @@ switch data.addmode
 end
 
 % Modify point to meet angle, length, or grid constraints.
-if any(mode==[0,2]) & qang & (m > 0)	% quantized angle
+if any(mode==[0,2]) && qang && (m > 0)	% quantized angle
   % Find arg of new side which meets quantization requirements. 
   if m==1
     % No reference side, so refer to positive real axis
-    ang = angle(P(1)-pts(m,1)+i*(P(2)-pts(m,2)))/pi;
+    ang = angle(P(1)-pts(m,1)+1i*(P(2)-pts(m,2)))/pi;
     theta = qang*round(ang/qang)*pi;
   elseif mode==0
-    ang = sctool.scangle([pts(m-1:m,1);P(1)]+i*[pts(m-1:m,2);P(2)]);
+    ang = sctool.scangle([pts(m-1:m,1);P(1)]+1i*[pts(m-1:m,2);P(2)]);
     ang = qang*round(ang(2)/qang);
     theta = atan2(pts(m,2)-pts(m-1,2),pts(m,1)-pts(m-1,1))-pi*ang;
   elseif mode==2
@@ -400,14 +400,14 @@ if any(mode==[0,2]) & qang & (m > 0)	% quantized angle
   P = A + ((BA)*(P-A)')*(BA);
   grid = 0;
 end
-if (mode==0) & qlen & (m > 0)		% quantized length
+if (mode==0) && qlen && (m > 0)		% quantized length
   A = pts(m,:);
   len = norm(P-A);
   fixlen = qlen*(round(len/qlen));
   P = A + fixlen/len*(P-A);
   grid = 0;
 end
-if any(mode==[0,1,2]) & grid	        % snap to grid
+if any(mode==[0,1,2]) && grid	        % snap to grid
   grid = [grid,grid];
   minxy = axlim([1,3]);
   P = minxy + grid.*(round((P-minxy)./grid));
@@ -457,16 +457,11 @@ if ~isnan(P(1))
     end
   pts = PE_get_clicks(data);
   x = pts(:,1);  y = pts(:,2);
-  %%x = get(data.Vertices,'xdata');
-  %%y = get(data.Vertices,'ydata');
   m = length(x);
   n = m - sum(data.atinf)/2;
   axlim = axis;
   reflen = mean([diff(axlim(1:2)),diff(axlim(3:4))])/60;
   if (m > 0) && norm([P(1)-x(1), P(2)-y(1)]) < reflen
-    %%x = x(1:m);
-    %%y = y(1:m);
-    %%set(data.Vertices,'xdata',x,'ydata',y)
     guidata(obj,data)
     PEFinish(obj)
     return
@@ -476,7 +471,7 @@ if ~isnan(P(1))
   
   % Beta (angle) computation.
   if n==1
-    data.orient = sign( diff( x(1:2)+i*y(1:2) ) );
+    data.orient = sign( diff( x(1:2)+1i*y(1:2) ) );
   elseif n > 1 
     neworient = sign( diff( x(m:m+1)+1i*y(m:m+1) ) );
     if strcmp(data.addmode,'normal')
@@ -548,9 +543,6 @@ end
 function PEMoveStart(obj,varargin)
 data = guidata(obj);
 % Figure out which vertex is selected.
-%%P = get(gca,'currentpoint');
-%%[m,idx] = min( abs( P(1)+i*P(2) - data.polyvertex ) );
-%%data.moveselected = idx(1);
 idx = find( get(gcf,'currentobj')==data.Vertices );
 data.moveselected = idx;
 adj = PE_adjacent_edges(data,data.moveselected);
@@ -571,7 +563,7 @@ axlim = axis;
 xy(1) = min( max(xy(1),axlim(1)), axlim(2) );
 xy(2) = min( max(xy(2),axlim(3)), axlim(4) );
 % Snap to grid if requested.
-if get(data.SnapToggle,'value');
+if get(data.SnapToggle,'value')
   grid = str2num(get(data.GridSpaceEdit,'string'))*[1 1];
   minxy = axlim([1 3]);
   xy = minxy + grid.*(round((xy-minxy)./grid));
@@ -657,9 +649,6 @@ idx = find( get(gcf,'currentobj')==data.Edges );
 P = wn(idx+1);
 data.polyvertex = wn;
 data.polybeta = bn;
-%%new = zeros(1,length(data.atinf)+1);
-%%new([1:idx idx+2:end]) = data.atinf(:);
-%%data.atinf = new;
 data.atinf = [data.atinf(1:idx); 0; data.atinf(idx+1:end)];
 newVertex = plot(real(P),imag(P),'bo',...
     'markerfacecolor','b','user',[real(P) imag(P)]);
@@ -784,20 +773,20 @@ if n > 1
     data.polybeta = [1;1];
   else
     % Find betas at last and first vertex.
-    neworient = sign( diff( x([m 1])+i*y([m 1]) ) );
+    neworient = sign( diff( x([m 1])+1i*y([m 1]) ) );
     if ~data.atinf(m)
       % Last vertex was finite.
       data.polybeta(n) = angle(data.orient/neworient) / pi;
     else
       % Last vertex was infinite.
-      b = sctool.scangle( x([m-2:m 1])+i*y([m-2:m 1]) );
+      b = sctool.scangle( x([m-2:m 1])+1i*y([m-2:m 1]) );
       b = b(2:3);
       b(b>0) = b(b>0) - 2;
       data.polybeta(n) = sum(b);
     end
     data.orient = neworient;
     % First vertex is always finite.
-    neworient = sign( diff( x(1:2)+i*y(1:2) ) );
+    neworient = sign( diff( x(1:2)+1i*y(1:2) ) );
     data.polybeta(1) = angle(data.orient/neworient) / pi; 
   end
 end
@@ -869,7 +858,7 @@ if idx==1
   else
     adj = [m 1];
   end
-elseif idx==n & ~data.isclosed
+elseif idx==n && ~data.isclosed
   adj = [m NaN];
 else
   adj = [idx-1 idx];

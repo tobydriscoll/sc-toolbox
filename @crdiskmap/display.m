@@ -5,8 +5,6 @@ function out = display(M)
 %   $Id: display.m 118 2001-05-03 21:18:27Z driscoll $
 
 p = polygon(M);
-w = vertex(p);
-beta = angle(p)-1;
 cr = M.crossratio;
 Q = M.qlgraph;
 

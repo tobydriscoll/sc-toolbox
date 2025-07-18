@@ -28,7 +28,7 @@ for n = 1:nargin
 	f.maps{end+1} = map;
       end
     otherwise
-      error(sprintf('Object type ''%s'' not recognized.',class(map)))
+      error('Object type ''%s'' not recognized.', class(map))
   end
 end
 

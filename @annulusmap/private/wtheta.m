@@ -9,7 +9,7 @@ if (u < 0.63)
     w_theta = w_theta .^ param4.POWER; 
     w_theta = 1 + sum(param4.UARY .* (w_theta + 1./w_theta),3);
 else
-    wt = -i*log(-w);
+    wt = -1i*log(-w);
     if (u >= 0.94)
         w_theta = exp(-0.25*(wt.^2)/(pi*param4.DLAM))/sqrt(param4.DLAM);
         return;

@@ -40,22 +40,20 @@ else
 end
 
 if ~isempty(z0)
-  if length(z0) == 1
+  if isscalar(z0)
     z0 = repmat(z0,size(wp));
   elseif any(size(z0) ~= size(wp))
     msg = 'Argument %s must be a complex scalar or the same size as %s.';
-    error(sprintf(msg,inputname(z0),inputname(1)));
+    error(msg,inputname(z0),inputname(1));
   end
 end  
 
 p = polygon(M);
-n = length(p);
 w = vertex(p);
 beta = angle(p) - 1;
 z = M.prevertex;
 c = M.constant;
 
 zp = NaN*wp;
-%idx = logical(isinpoly(wp,p));
-idx = logical(ones(size(wp)));
+idx = true(size(wp));
 zp(idx) = stinvmap(wp(idx),w,beta,z,c,qdata,z0,[0 tol]);

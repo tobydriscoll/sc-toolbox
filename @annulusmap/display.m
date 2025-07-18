@@ -15,7 +15,7 @@ fprintf('  Conformal modulus = %5.10f        c = %.8g %c %.8gi \n\n', 1/map.u, r
 lab{1} = 'Outer';
 lab{2} = 'Inner';
 
-for k=2:-1:1;
+for k=2:-1:1
 z1 = eval(['map.Z' int2str(k-1) '(:)']);
 alfa1 = eval(['map.ALFA' int2str(k-1) '(:)']);
 w1 = eval(['map.w' int2str(k-1) '(:)']);

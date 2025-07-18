@@ -23,7 +23,6 @@ function ptsource(w,beta,z,c,ws,R,theta,options)
 if nargin < 2
   [w,beta] = drawpoly;
 end 
-n = length(w);
 if nargin < 8
   options = [];
   if nargin < 7
@@ -48,7 +47,7 @@ if isempty(ws)
   plotpoly(w,beta)
   disp('Click mouse at source location.')
   [xc,yc] = ginput(1);
-  ws = xc+i*yc;
+  ws = complex(xc,yc);
 end
 
 [z,c] = dfixwc(w,beta,z,c,ws);

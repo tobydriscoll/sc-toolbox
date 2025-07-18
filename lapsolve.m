@@ -99,7 +99,7 @@ ze = 0.5*( Z(diridx) + Z(diridx+1) );
 if neumann(n-1) 
   rho = 1;
 else 
-  rho = i;
+  rho = 1i;
 end
 
 % Integrate between neighboring midpoints. 
@@ -169,7 +169,7 @@ end
 
 % Now that we have prevertices, transform to the disk since it's more
 % convenient overall.
-phi = moebius(z(N-2:N),[-1 -i 1]);
+phi = moebius(z(N-2:N),[-1 -1i 1]);
 z = phi(z); 
 zb = phi(zb);
 beta = alpha-1;
@@ -180,12 +180,12 @@ qdata = scqdata(beta,15);
 % First, find all finite D vertices.
 Dvert = find(dirichlet(sidenum) & alpha~=0);
 first = Dvert(1);
-second = Dvert( 1 + min( find( diff( bdata(sidenum(Dvert)) ) ) ) ); 
+second = Dvert( 1 + find( diff( bdata(sidenum(Dvert)) ) , 1 ) ); 
 % Use multiple versions and overdetermine for safety.
 dt = angle( z(rem(first,N)+1)/z(first) );
-z1 = z(first) * exp(i*dt*(0.2:0.2:0.8)');
+z1 = z(first) * exp(1i*dt*(0.2:0.2:0.8)');
 dt = angle( z(rem(second,N)+1)/z(second) );
-z2 = z(second) * exp(i*dt*(0.2:0.2:0.8)');
+z2 = z(second) * exp(1i*dt*(0.2:0.2:0.8)');
 q = rsquad(z1,0*z1,0*z1,z,beta,zb,qdata) - ...
     rsquad(z2,0*z2,0*z1,z,beta,zb,qdata);
 dphi = diff( bdata( sidenum([first second]) ) );
@@ -220,7 +220,7 @@ if isempty(zb)
 else
   fr = riesurfmap(Q,branch,z,zb,c);
 end
-phi = composite( inv(fd), fr, inline('real(z)') );
+phi = composite( inv(fd), fr, @real );
 
 
 % === Needed for RIESURFMAP quadrature. ===
@@ -253,7 +253,7 @@ function I = rsquad(z1,z2,varargin)
 
 if nargin==8
   % Break into two pieces with recursive call.
-  [sing1,sing2,z,beta,zb,qdat] = deal(varargin{:});
+  [sing1,sing2,z,beta,~,qdat] = deal(varargin{:});
   mid = zeros(size(z1));
   I1 = rsquad(z1,mid,sing1,z,beta,qdat);
   I2 = rsquad(z2,mid,sing2,z,beta,qdat);

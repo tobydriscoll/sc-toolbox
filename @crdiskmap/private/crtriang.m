@@ -50,7 +50,7 @@ while stackptr > 0
     % Base case: polygon is a triangle
 
     % Assign the triangle a new number
-    tnum = min(find(any(triedge==0)));
+    tnum = find(any(triedge==0), 1 );
 
     e = zeros(2,3);
     e(:) = idx([1 2 2 3 3 1]);		% edge vertices
@@ -70,7 +70,7 @@ while stackptr > 0
       end
       % Assign edge # to triangle and triangle # to edge
       triedge(j,tnum) = enum;
-      edgetri(min(find(edgetri(:,enum)==0)),enum) = tnum;
+      edgetri(find(edgetri(:,enum)==0, 1 ),enum) = tnum;
     end
 
   else
@@ -79,12 +79,12 @@ while stackptr > 0
 
     % Start with sharpest outward point in polygon
     beta = scangle(w);
-    [junk,j] = min(beta);
+    [~,j] = min(beta);
   
     % Trial triangle has vertices at j and its neighbors
     jm1 = rem(j+n-2,n)+1;
     jp1 = rem(j,n)+1;
-    t = logical(zeros(n,1));
+    t = false(n,1);
     t([jm1;j;jp1]) = ones(3,1);
 
     % Determine which remaining vertices lie in trial triangle
@@ -101,7 +101,7 @@ while stackptr > 0
 	if min(abs(w(p)-triangle)) > eps
 	  % Polygon slits/cracks need special care
 	  % If inward perturbation goes into triangle, it's "inside"
-	  s = exp(i*(angle(w(rem(p-2+n,n)+1)-w(p)) - pi*(beta(p)+1)/2));
+	  s = exp(1i*(angle(w(rem(p-2+n,n)+1)-w(p)) - pi*(beta(p)+1)/2));
 	  if isinpoly(w(p)+1e-13*abs(w(p))*s,triangle)
 	    inside(p) = 1;
 	  end
@@ -135,8 +135,8 @@ while stackptr > 0
 	
 	% Find nearest visible point to that line
 	wvis = w(inside(vis)) - w(j);
-	D = abs(wvis - real(wvis*exp(-i*theta))*exp(i*theta));
-	[junk,k] = min(D);
+	D = abs(wvis - real(wvis*exp(-1i*theta))*exp(1i*theta));
+	[~,k] = min(D);
       else
 	vis = 1;
 	k = 1;
@@ -146,7 +146,7 @@ while stackptr > 0
       
     end
     % Assign the next available edge #
-    enum = min(find(any(edge==0)));
+    enum = find(any(edge==0), 1 );
     edge(:,enum) = idx(e)';
     
     % Indices of subdivided pieces

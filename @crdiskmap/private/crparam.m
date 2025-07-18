@@ -54,7 +54,7 @@ end
 
 % Parse options
 [trace,tol,method] = sctool.parseopt(options);
-if length(cr0)==1
+if isscalar(cr0)
   tol = cr0;
   cr0 = [];
 end

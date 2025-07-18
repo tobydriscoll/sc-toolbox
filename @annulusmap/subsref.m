@@ -10,7 +10,7 @@ function wp = subsref(M,S)
 %   Copyright 1998 by Toby Driscoll.
 %   $Id: subsref.m 7 1998-05-10 04:37:19Z tad $
 
-if length(S) == 1 & strcmp(S.type,'()')
+if isscalar(S) && strcmp(S.type,'()')
   wp = eval(M,S.subs{1});
 else
   error('Only syntax for SCMAP is a single parenthesized subscript.')

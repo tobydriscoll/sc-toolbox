@@ -15,7 +15,7 @@ done(interior) = zeros(sum(interior),1); % boundaries are fixed
 quadvtx = zeros(4,1);
 
 while any(~done)
-  e = min(find(~done));
+  e = find(~done, 1 );
 
   % Get the 2 triangles in which edge e participates
   t1 = triedge(:,edgetri(1,e));
@@ -50,9 +50,9 @@ while any(~done)
     end
     % Change triangle/edge assignments
     triedge(i1,edgetri(1,e)) = t2(i2);
-    edgetri(find(edgetri(:,t2(i2))==edgetri(2,e)),t2(i2)) = edgetri(1,e);
+    edgetri(edgetri(:,t2(i2))==edgetri(2,e),t2(i2)) = edgetri(1,e);
     triedge(i2,edgetri(2,e)) = t1(i1);
-    edgetri(find(edgetri(:,t1(i1))==edgetri(1,e)),t1(i1)) = edgetri(2,e);
+    edgetri(edgetri(:,t1(i1))==edgetri(1,e),t1(i1)) = edgetri(2,e);
     
     % The (non-bdy) edges of the triangles must be reconsidered
     done(t1) = ~interior(t1);

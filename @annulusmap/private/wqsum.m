@@ -18,8 +18,8 @@ function wq_sum = wqsum(wa,phia,kwa,ic,wb,phib,radius,u,w0,w1,nptq,qwork,linearc
         pwc = (phib+phia)/2;
         uw0 = u*w0;
         u_w1 = u ./ w1;
-        w = radius*exp(i*(pwc+pwh*qwork(iwt1:iwt2)));
-        wq_sum = i*pwh*qwork(ioffst+iwt1:ioffst+iwt2).*w*wprod(w,u,uw0,u_w1,data,param4);
+        w = radius*exp(1i*(pwc+pwh*qwork(iwt1:iwt2)));
+        wq_sum = 1i*pwh*qwork(ioffst+iwt1:ioffst+iwt2).*w*wprod(w,u,uw0,u_w1,data,param4);
         return;
     else
 %   Integrate along a line segment:

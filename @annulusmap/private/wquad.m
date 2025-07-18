@@ -20,11 +20,11 @@ else
         end
     end
     phmid = (phia+phib)/2;
-    wmid = radius*exp(i*phmid);
+    wmid = radius*exp(1i*phmid);
     phmida = (phia+phmid)/2;
-    wmida = radius*exp(i*phmida);
+    wmida = radius*exp(1i*phmida);
     phmidb = (phib+phmid)/2;
-    wmidb = radius*exp(i*phmidb);
+    wmidb = radius*exp(1i*phmidb);
 end
 
 %   Compound Gauss-Jacobi process according to one-quarter rule:

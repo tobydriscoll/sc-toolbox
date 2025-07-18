@@ -4,7 +4,7 @@ function slide=scdtutor
 
 % Copyright (c) 1984-98 by The MathWorks, Inc.
 % $Id: scdtutor.m 298 2009-09-15 14:36:37Z driscoll $
-if nargout<1,
+if nargout<1
   playshow scdtutor
 else
   %========== Slide 1 ==========
@@ -71,23 +71,23 @@ else
   %========== Slide 7 ==========
 
   slide(7).code={
-   'plot(exp(i*pi/4)*(f-center(f)))' };
+   'plot(exp(1i*pi/4)*(f-center(f)))' };
   slide(7).text={
    'The map f and the polygon p are both MATLAB objects.  Each encapsulates all necessary data and has certain functions and operations defined for it, some of which extend the definitions of standard MATLAB functions.  That''s how we can make sense of statements such as "plot(f)".',
    '',
    'We can also apply affine transformations to a polygon or map.',
-   '>> plot( exp(i*pi/4)*(f-center(f)) )'};
+   '>> plot( exp(1i*pi/4)*(f-center(f)) )'};
 
   %========== Slide 8 ==========
 
   slide(8).code={
-   'plot(exp(i*linspace(0,2*pi))), axis square, axis(1.05*[-1 1 -1 1])',
+   'plot(exp(1i*linspace(0,2*pi))), axis square, axis(1.05*[-1 1 -1 1])',
    'hold on, plot(prevertex(f),''ro'')',
    'title(''Prevertices of the disk map'')',
    'hold off' };
   slide(8).text={
    'If you want to extract the data that is hidden in the object, there are functions to do that.',
-   '>> plot(exp(i*linspace(0,2*pi)))',
+   '>> plot(exp(1i*linspace(0,2*pi)))',
    '>> plot(prevertex(f),''ro'')',
    ''};
 

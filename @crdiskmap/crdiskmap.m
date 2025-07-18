@@ -43,7 +43,6 @@ classdef (InferiorClasses = {?double}) crdiskmap < scmap
             % Assign empties to optional args
             import sctool.*
             cr = [];
-            c = [];
             opt = [];
             
             % Branch based on class of first argument
@@ -71,7 +70,7 @@ classdef (InferiorClasses = {?double}) crdiskmap < scmap
                         arg = varargin{j};
                         % Each arg is an options struct, cr, or quadrilateral graph
                         if isa(arg,'struct')
-                            if strmatch('edge',fieldnames(arg))
+                            if any(strncmp('edge', fieldnames(arg), 4))
                                 Q = arg;
                             else
                                 opt = arg;

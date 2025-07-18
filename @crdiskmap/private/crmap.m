@@ -15,17 +15,14 @@ function wp = crmap(zp,w,beta,cr,aff,wcfix,Q,qdat)
 %   $Id: crmap.m 7 1998-05-10 04:37:19Z tad $
 
 % Parse input and initialize
-n = length(w);
-w = w(:);
 beta = beta(:);
 if nargin < 8
   qdat = scqdata(beta,8);
-elseif length(qdat)==1
+elseif isscalar(qdat)
   qdat = scqdata(beta,max(ceil(-log10(qdat)),4));
 end
 wp = zeros(size(zp));
 zp = zp(:);
-p = length(zp);
 
 % Transform points into all embeddings, from the reference in wcfix
 quadnum = wcfix(1);
@@ -33,7 +30,7 @@ zl = (wcfix(2)*zp + wcfix(3))./(wcfix(4)*zp + wcfix(5));
 zl = crspread(zl,quadnum,cr,Q);
 
 % Choose best embeddings based on proximity to origin
-[tmp,idx] = min(abs(zl));
+[~,idx] = min(abs(zl));
 
 % Compute maps via embeddings
 for q = unique(idx)

@@ -1,4 +1,4 @@
-function [edgehan,lblhan] = plotpoly(w,beta,number)
+function [edgehan,lblhan] = plotpoly(w,beta,~)
 %PLOTPOLY Plot a (generalized) polygon.
 %   PLOTPOLY(W,BETA) plots the polygon whose vertices are in vector W
 %   and whose turning angles are in BETA. Vertices at infinity are
@@ -43,7 +43,7 @@ R = max(lim(2)-lim(1),lim(4)-lim(3));
 
 % Renumber to start with two finite vertices
 first = find(~atinf & ~atinf([2:n,1]), 1 );
-if isempty(first), 
+if isempty(first) 
   error('There must be two consecutive finite vertices.')
 end
 renum = [first:n,1:first-1];

@@ -24,7 +24,7 @@ n = length(z);
 beta = beta(:);
 if nargin < 5
   qdat = sctool.scqdata(beta,8);
-elseif length(qdat)==1
+elseif isscalar(qdat)
   qdat = sctool.scqdata(beta,max(ceil(-log10(qdat)),2));
 end
 wp = zp;

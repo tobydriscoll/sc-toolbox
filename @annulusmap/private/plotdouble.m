@@ -11,6 +11,6 @@ plot(pOuter)
 hold on
 plot(pInner)
 
-if turn_off_hold, hold off, end;
+if turn_off_hold, hold off, end
 
 end

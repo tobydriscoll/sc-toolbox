@@ -28,7 +28,7 @@ if idx(end)==n, idx(end) = []; end
 endpt = [idx(1:end-1) idx(2:end)];
 
 % Midpoints are in upper half-plane. Always make 45 degrees with real line.
-mid = mean(z(endpt),2) + i*diff(z(endpt),1,2)/2;
+mid = mean(z(endpt),2) + 1i*diff(z(endpt),1,2)/2;
 
 % Integrations
 I = hpquad(z(endpt(:,1)),mid,endpt(:,1),z(1:n-1),alpha(1:n-1)-1,qdata) - ...
@@ -39,17 +39,17 @@ w(idx) = c*cumsum([0;I]);
 
 % Get the last vertex via intersection
 if alpha(n) > 0
-  if abs(alpha(n)-1) < 5*eps | abs(alpha(n)-2) < 5*eps
+  if abs(alpha(n)-1) < 5*eps || abs(alpha(n)-2) < 5*eps
     error(['Cannot deduce last vertex when its adjacent sides are' ...
           ' collinear.'])
   elseif any(atinf([1 2 n-1]))
     error('Vertices 1, 2, and end-1 must be finite.')
   else
     % Here's the direction from w(1)
-    d1 = (w(2)-w(1))*exp(i*pi*alpha(1));
+    d1 = (w(2)-w(1))*exp(1i*pi*alpha(1));
     % Get the direction from w(n-1)
     d2 = angle(w(2)-w(1)) + sum(pi*(1-alpha(2:n-1)));
-    d2 = exp(i*d2);
+    d2 = exp(1i*d2);
     b = w(n-1) - w(1);
     s = [real([d1 -d2]);imag([d1 -d2])]\[real(b);imag(b)];
     w(n) = w(1) + s(1)*d1;

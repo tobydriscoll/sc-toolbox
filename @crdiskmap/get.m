@@ -32,7 +32,7 @@ for j = 1:length(varargin)
    case 'cen'
     varargout{j} = map.center{1};
    otherwise
-    warning(sprintf('Property ''%s'' not recognized.\n',varargin{j}))
+    warning('Property ''%s'' not recognized.\n', varargin{j})
     varargout{j} = [];
   end
 end

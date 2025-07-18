@@ -85,7 +85,7 @@ classdef  (InferiorClasses = {?double}) extermap < scmap
                             z = arg;
                             % We will have to flip vertices to get correct orientation
                             z = flipud(z(:));
-                        elseif length(arg) == 1
+                        elseif isscalar(arg)
                             c = arg;
                         else
                             msg = 'Unable to parse argument ''%s''.';
@@ -106,7 +106,7 @@ classdef  (InferiorClasses = {?double}) extermap < scmap
                     for j = 3:length(varargin)
                         if isa(varargin{j},'struct')
                             opt = varargin{j};
-                        elseif length(varargin{j})==1
+                        elseif isscalar(varargin{j})
                             c = varargin{j};
                         else
                             msg = 'Unable to parse argument ''%s''.';
@@ -149,7 +149,7 @@ classdef  (InferiorClasses = {?double}) extermap < scmap
                 % Find constant
                 w = flipud(vertex(poly));
                 beta = 1 - flipud(angle(poly));
-                mid = z(1)*exp(i*angle(z(2)/z(1))/2);
+                mid = z(1)*exp(1i*angle(z(2)/z(1))/2);
                 I = dequad(z(1),mid,1,z,beta,qdata) - dequad(z(2),mid,2,z,beta,qdata);
                 c = diff(w(1:2))/I;
             end

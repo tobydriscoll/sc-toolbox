@@ -56,7 +56,7 @@ if (dataz.M == 3)
 end
 
 if (ishape==1)
-    ;
+    
 else
 % M-3 side length conditions of the outer polygon:
 for J = 1:dataz.M - 3
@@ -70,8 +70,8 @@ end
 % Outer polygon contains some infinite vertices & for each of them
 % two length conditions will be replaced by a complex integral:
 for K = 1:nshape - 1
-    if ((ind(K+1)==2) | (ind(K) >= (ind(K+1)-2)))
-        ;
+    if ((ind(K+1)==2) || (ind(K) >= (ind(K+1)-2)))
+        
     else
         for J = (ind(K) + 1):(ind(K+1) - 2)
           wint3 = wquad(w0(J),phi0(J),J,0,w0(J+1),phi0(J+1),J+1,0,1,u,w0,w1,nptq,qwork,linearc,2,dataz,param4);
@@ -79,8 +79,8 @@ for K = 1:nshape - 1
         end 
     end
   
-   if ((K==(nshape-1)) | (ind(K+1) == (dataz.M - 1)))
-       ;
+   if ((K==(nshape-1)) || (ind(K+1) == (dataz.M - 1)))
+       
    else
     % The combination fo three different paths is used to integrate from wa
     % to wb to avoid domain program. The by-product of this is that it is
@@ -90,8 +90,8 @@ for K = 1:nshape - 1
           phia = phi0(ind(K+1)-1);
           phib = phi0(ind(K+1)+1);
           radius = (1+u)/2;
-          wai = radius*exp(i*phia);
-          wbi = radius*exp(i*phib);
+          wai = radius*exp(1i*phia);
+          wbi = radius*exp(1i*phib);
           wline1 = wquad(wa,0,ind(K+1)-1,0,wai,0,0,2,0,u,w0,w1,nptq,qwork,0,2,dataz,param4);
           wline2 = wquad(wb,0,ind(K+1)+1,0,wbi,0,0,2,0,u,w0,w1,nptq,qwork,0,2,dataz,param4);
           wcircle = wquad(wai,phia,0,2,wbi,phib,0,2,radius,u,w0,w1,nptq,qwork,1,2,dataz,param4);

@@ -51,7 +51,7 @@ if isa(varargin{1},'polygon')
 
   % Read off the BCs and exit.
   BC = get(handles.ListSides,'string');
-  bdata = repmat(NaN,n,1);
+  bdata = NaN(n,1);
   for k = 1:n
     if ~strcmp( BC{k}, 'N' )
       bdata(k) = str2num( BC{k} );
@@ -122,7 +122,7 @@ drawnow
 
 % Update the radio buttons and value box, unless this was a selection to
 % multiple sides.
-if length(target)==1
+if isscalar(target)
   if strcmp(BC{target},'N')
     set(handles.RadioDirichlet,'value',0)
     set(handles.EditValue,'enable','off')

@@ -47,7 +47,7 @@ for k = 1:length(j(:))
 end
 
 % Don't return cells for just one
-if length(j(:)) == 1
+if isscalar(j(:))
   z = z{1};
   c = c{1};
   a = a{1};

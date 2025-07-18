@@ -24,7 +24,7 @@ if nargin < 6
   plotpoly(w,beta)
   title('Click to set conformal center')
   [x,y] = ginput(1);
-  wc = x+i*y;
+  wc = complex(x,y);
   delete(fig)
   drawnow
 end

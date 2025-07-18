@@ -12,7 +12,6 @@ function wp = eval(M,zp,tol)
 %   $Id: eval.m 7 1998-05-10 04:37:19Z tad $
 
 p = polygon(M);
-n = length(p);
 
 if nargin < 3
   qdata = M.qdata;
@@ -22,5 +21,4 @@ end
 
 wp = NaN*zp;
 idx = (imag(zp) > -eps) & (imag(zp) < 1+eps);
-wp(idx) = ...
-    stmap(zp(idx),vertex(p),angle(p)-1,M.prevertex,M.constant,qdata);
+wp(idx) = stmap(zp(idx),vertex(p),angle(p)-1,M.prevertex,M.constant,qdata);

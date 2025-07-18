@@ -4,7 +4,7 @@ function slide=scdlong
 
 % Copyright (c) 1984-98 by The MathWorks, Inc.
 % $Id: scdlong.m 298 2009-09-15 14:36:37Z driscoll $
-if nargout<1,
+if nargout<1
   playshow scdlong
 else
   %========== Slide 1 ==========
@@ -39,7 +39,7 @@ else
 
   slide(3).code={
    'z=prevertex(f);',
-   'plot(exp(i*linspace(0,2*pi)),''b'')',
+   'plot(exp(1i*linspace(0,2*pi)),''b'')',
    'hold on',
    'plot(z,''ro'',''markerfacecolor'',''r'',''markersize'',5)',
    'axis equal',

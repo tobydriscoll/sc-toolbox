@@ -23,14 +23,14 @@ z = z(renum);
 zh = exp(pi*z);
 
 % Map -Inf correctly
-idx = find(isinf(z) & (z < 0));
+idx = isinf(z) & (z < 0);
 zh(idx) = 0;
 
 % Map Inf correctly
 zh(n) = Inf;
 
 % Transform prevertices to disk
-A = moebius(zh(n-2:n),[-1 -i 1]);
+A = moebius(zh(n-2:n),[-1 -1i 1]);
 zd = sign(A(zh));
 zd(n) = 1;
 

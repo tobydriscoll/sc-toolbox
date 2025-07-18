@@ -74,12 +74,12 @@ for k = nontriv
     terms = 1 - (nd(:,ones(sum(mask),1)).')./bigz(mask,:);
     % Check for coincident values indicating crowding. (Should never
     % happen!)
-    if any( diff(nd)==0 ) | any(terms(:)==0)
+    if any( diff(nd)==0 ) || any(terms(:)==0)
       warning('Prevertices are too crowded.')
       I(k) = 0;
     else
       % Use Gauss-Jacobi on first subinterval, if necessary.
-      if sng & (qcol < n+1)
+      if sng && (qcol < n+1)
 	terms(sng,:) = terms(sng,:)./abs(terms(sng,:));
 	wt = wt*(abs(zb-za)/2)^beta(keep(sng));
       end

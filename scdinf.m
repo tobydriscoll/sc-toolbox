@@ -4,7 +4,7 @@ function slide=scdinf
 
 % Copyright (c) 1984-98 by The MathWorks, Inc.
 % $Id: scdinf.m 298 2009-09-15 14:36:37Z driscoll $
-if nargout<1,
+if nargout<1
   playshow scdinf
 else
   %========== Slide 1 ==========

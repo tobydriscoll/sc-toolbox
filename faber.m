@@ -24,9 +24,7 @@ elseif isa(M,'polygon')
   p = M;
   M = extermap(p);
 else
-  msg = sprintf('Expected %s to be of class extermap or polygon.',...
-      inputname(1));
-  error(msg)
+  error('Expected %s to be of class extermap or polygon.', inputname(1))
 end  
 
 % Low-level quantities

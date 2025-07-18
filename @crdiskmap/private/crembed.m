@@ -22,7 +22,7 @@ r = cr(qnum);
 f1 = sqrt(1/(r+1));
 f2 = sqrt(r/(r+1));
 idx = Q.qlvert(:,qnum);			% quadrilateral vertices
-z(idx) = f1*[-1;-1;1;1] + i*f2*[-1;1;1;-1];
+z(idx) = f1*[-1;-1;1;1] + 1i*f2*[-1;1;1;-1];
 
 % Set up "already visited" lists
 vtxdone = zeros(n,1);
@@ -40,7 +40,7 @@ edgetodo(Q.qledge(:,qnum)) = ~edgedone(Q.qledge(:,qnum));
 
 % Begin iteration
 while any(edgetodo)
-  e = min(find(edgetodo));
+  e = find(edgetodo, 1);
   idx = Q.qlvert(:,e);
   % If necessary, renumber so that z(idx(4)) is to be determined
   if ~vtxdone(idx(2))

@@ -7,11 +7,11 @@ function wp = subsref(f,S)
 %   Copyright 2001 by Toby Driscoll.
 %   $Id: subsref.m 154 2001-07-20 13:52:46Z driscoll $
 
-if length(S) == 1 & strcmp(S.type,'()')
+if isscalar(S) && strcmp(S.type,'()')
   wp = eval(f,S.subs{1});
-elseif length(S) == 1 & strcmp(S.type,'{}')
+elseif isscalar(S) && strcmp(S.type,'{}')
   idx = S.subs{1};
-  if length(idx)==1 & ~ischar(idx)
+  if isscalar(idx) && ~ischar(idx)
     wp = f.maps{idx};
   else
     wp = f.maps(idx);

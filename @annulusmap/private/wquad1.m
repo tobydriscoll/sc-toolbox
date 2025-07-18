@@ -18,11 +18,11 @@ else
         idx = (d < 1e-15);
         d(idx) = 0;
         %---------
-        w_dist = min(2,min(d(find(d))));
+        w_dist = min(2,min(d(d ~= 0)));
         r = min(1,w_dist/abs(wb-wa));
         % -----------------------------
         phaa = phia + r*(phib-phia);
-        waa = radius*exp(i*phaa);
+        waa = radius*exp(1i*phaa);
         w_quad1 = wqsum(wa,phia,kwa,ic,waa,phaa,radius,u,w0,w1,nptq,qwork,linearc,dataz,param4);
       while (r~=1)
         % Find minimum distance from waa to the nearest vertex.
@@ -33,11 +33,11 @@ else
         idx = (d < 1e-15);
         d(idx) = 0;
         %---------
-        w_dist = min(2,min(d(find(d))));
+        w_dist = min(2,min(d(d ~= 0)));
         r = min(1,w_dist/abs(waa-wb));
         % -----------------------------
         phbb = phaa + r*(phib-phaa);
-        wbb = radius*exp(i*phbb);
+        wbb = radius*exp(1i*phbb);
         w_quad1 = w_quad1 + wqsum(waa,phaa,0,2,wbb,phbb,radius,u,w0,w1,nptq,qwork,linearc,dataz,param4);
         phaa = phbb;
         waa = wbb;
@@ -52,7 +52,7 @@ else
         idx = (d < 1e-15);
         d(idx) = 0;
         %---------
-        w_dist = min(2,min(d(find(d))));
+        w_dist = min(2,min(d(d ~= 0)));
         r = min(1,w_dist/abs(wb-wa));
         % ------------------------------
         waa = wa + r*(wb-wa);
@@ -66,7 +66,7 @@ else
         idx = (d < 1e-15);
         d(idx) = 0;
         %---------
-        w_dist = min(2,min(d(find(d))));
+        w_dist = min(2,min(d(d(d ~= 0))));
         r = min(1,w_dist/abs(waa-wb));
         % -------------------------------
         wbb = waa + r*(wb-waa);

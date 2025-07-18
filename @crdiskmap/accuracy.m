@@ -20,7 +20,6 @@ p = polygon(M);
 w = vertex(p);
 beta = angle(p) - 1;
 cr = M.crossratio;
-aff = M.affine;
 Q = M.qlgraph;
 qdata = M.qdata;
 

@@ -148,7 +148,7 @@ linh1 = linh;
 for j = 1:length(theta)
     %Rp = linspace(0,1,14)';
     Rp = linspace(map.u,1,14)';
-    zp = Rp*exp(i*theta(j));
+    zp = Rp*exp(1i*theta(j));
     new = true(length(zp),1);
     wp = NaN*new;
     
@@ -171,7 +171,7 @@ for j = 1:length(theta)
     
     % Adaptively refine to make smooth curve
     iter = 0;
-    while (any(new)) & (iter < maxrefn)
+    while (any(new)) && (iter < maxrefn)
         drawnow
         for k=1:length(zp)
             [knear,inear] = nearw(zp(k),map.w0,map.w1,dataz);
@@ -232,6 +232,6 @@ if ~draw2
 end
 if verLessThan('matlab','8.4'), set(linh,'erasemode','normal'),end
 drawnow
-if turn_off_hold, hold off, end;
+if turn_off_hold, hold off, end
 
 end

@@ -27,7 +27,6 @@ qdata = M.qdata;
 % Test accuracy by integrating between consecutive finite prevertices, and
 % comparing to differences of vertices.
 
-n = length(w);
 idx = find(~isinf(w));
 wf = w(idx);				% finite vertices
 
@@ -36,7 +35,7 @@ idx = [idx(1:end) idx([2:end 1])];
 
 % Always use center as the integration midpoint
 %dtheta = mod(angle(z(idx(:,2))./z(idx(:,1))),2*pi);
-%mid = z(idx(:,1)).*exp(i*dtheta/2);
+%mid = z(idx(:,1)).*exp(1i*dtheta/2);
 mid = zeros(length(idx),1);
 
 % Do the integrations

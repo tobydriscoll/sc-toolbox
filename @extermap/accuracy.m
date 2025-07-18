@@ -23,7 +23,6 @@ beta = flipud(1 - angle(p));
 z = M.prevertex;
 c = M.constant;
 qdata = M.qdata;
-n = length(w);
 
 % Test accuracy by integrating between consecutive finite prevertices, and
 % comparing to differences of vertices.
@@ -35,7 +34,7 @@ idx = [idx(1:end) idx([2:end 1])];
 
 % Find midpoints that are halfway between in angular sense
 dtheta = mod(angle(z(idx(:,2))./z(idx(:,1))),2*pi);
-mid = z(idx(:,1)).*exp(i*dtheta/2);
+mid = z(idx(:,1)).*exp(1i*dtheta/2);
 
 % Do the integrations
 I = dequad(z(idx(:,1)),mid,idx(:,1),z,beta,qdata) - ...

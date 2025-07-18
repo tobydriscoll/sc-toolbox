@@ -20,11 +20,10 @@ if nargin < 6
 end
 
 % Place the quadrilateral prevertices in a rectangle around the origin.
-idx = Q.qlvert(:,quadnum);
 r = cr(quadnum);
 f1 = sqrt(1/(r+1));
 f2 = sqrt(r/(r+1));
-zr(:,quadnum) = f1*[-1;-1;1;1] + i*f2*[-1;1;1;-1];
+zr(:,quadnum) = f1*[-1;-1;1;1] + 1i*f2*[-1;1;1;-1];
 
 % Recurse on neighbors to map into embedding quadnum
 nbr = Q.adjacent(quadnum,:) & isnan(zr(1,:));

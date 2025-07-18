@@ -4,7 +4,7 @@ function slide=scdfaber
 
 % Copyright (c) 1984-98 by The MathWorks, Inc.
 % $Id: scdfaber.m 298 2009-09-15 14:36:37Z driscoll $
-if nargout<1,
+if nargout<1
   playshow scdfaber
 else
   %========== Slide 1 ==========
@@ -113,14 +113,14 @@ else
   %========== Slide 9 ==========
 
   slide(9).code={
-   'zp = f( exp(i*linspace(0,2*pi)) );',
+   'zp = f( exp(1i*linspace(0,2*pi)) );',
    'delete(h)',
    'title('''')' };
   slide(9).text={
    'A familiar property of Chebyshev polynomials on the interval is equioscillation.  The Faber polynomials have similar tendencies on the boundary.',
    '',
    'We create a vector of Fejer points around the polygon.',
-   '>> zp = f( exp(i*linspace(0,2*pi)) );'};
+   '>> zp = f( exp(1i*linspace(0,2*pi)) );'};
 
   %========== Slide 10 ==========
 

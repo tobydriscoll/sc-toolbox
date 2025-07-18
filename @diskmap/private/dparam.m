@@ -44,7 +44,7 @@ if err==1
 end
 
 [trace,tol,method] = parseopt(options);
-if length(z0)==1
+if isscalar(z0)
   tol = z0;
   z0 = [];
 end
@@ -55,7 +55,7 @@ atinf = (beta <= -1);
 
 if n==3
   % Trivial solution
-  z = [-i;(1-i)/sqrt(2);1];
+  z = [-1i; (1-1i)/sqrt(2); 1];
 
 else
 
@@ -78,7 +78,7 @@ else
   else
     z0 = z0(:)./abs(z0(:));
     % Moebius to make th(n-2:n)=[1,1.5,2]*pi;
-    Am = moebius(z0(n-2:n),[-1;-i;1]);
+    Am = moebius(z0(n-2:n),[-1; -1i; 1]);
     z0 = Am(z0);
     th = angle(z0);
     th(th<=0) = th(th<=0) + 2*pi;
@@ -113,8 +113,8 @@ else
   cs = cumsum(cumprod([1;exp(-y)]));
   theta = pi*cs(1:n-3)/cs(n-2);
   z = ones(n,1);
-  z([1:n-3]) = exp(i*theta);
-  z(n-2:n-1) = [-1;-i];
+  z(1:n-3) = exp(1i*theta);
+  z(n-2:n-1) = [-1; -1i];
 end
 
 % Determine scaling constant
@@ -133,8 +133,8 @@ function F = dpfun(y,fdat)
 cs = cumsum(cumprod([1;exp(-y)]));
 theta = pi*cs(1:n-3)/cs(length(cs));
 z = ones(n,1);
-z(1:n-3) = exp(i*theta);
-z(n-2:n-1) = [-1;-i];
+z(1:n-3) = exp(1i*theta);
+z(n-2:n-1) = [-1; -1i];
 
 %%% Check crowding.
 %%if any(diff(theta)<eps) | any(isnan(theta))
@@ -148,7 +148,7 @@ z(n-2:n-1) = [-1;-i];
 zleft = z(left);
 zright = z(right);
 angl = angle(zleft);
-mid = exp(i*(angl + rem(angle(zright./zleft)+2*pi,2*pi)/2));
+mid = exp(1i*(angl + rem(angle(zright./zleft)+2*pi,2*pi)/2));
 % For integrals between nonadjacent singularities, choose 0 as intermediate
 % integration point.
 mid(cmplx) = zeros(size(mid(cmplx)));

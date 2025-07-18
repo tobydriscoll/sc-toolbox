@@ -35,7 +35,7 @@ for j=find(sharp(:)')
   v = (w-w(j))/(w(jp1)-w(j));
   ang = rem(angle(v)+2*pi,2*pi);
   vis = (ang>0) & (ang<ang(jm1));
-  vis(rem([j-2:j]+n,n)+1) = [1;0;1];
+  vis(rem((j-2:j)+n,n)+1) = [1;0;1];
   mindist = min(abs(w(vis)-w(j)));
   neww(1,j) = w(j) + 0.5*mindist*sign(w(jm1)-w(j));
   neww(3,j) = w(j) + 0.5*mindist*sign(w(jp1)-w(j));
@@ -112,7 +112,7 @@ while ~done
     idx = renum(1,[j rem(j,n)+1]);	% endpoints of newly split edge
     % Find split edge
     e = find((edge(1,:)==idx(1)) & (edge(2,:)==idx(2)));
-    if isempty(e),
+    if isempty(e)
       e = find((edge(1,:)==idx(2)) & (edge(2,:)==idx(1)));
     end 
     t = edgetri(1,e);			% triangle that edge e was in
@@ -134,7 +134,7 @@ while ~done
     % New boundary edges
     edge(:,nedge+(3:4)) = rem(idx(1)+[[1;2] [2;3]]-1,newn)+1;
     % 2 new triangles and an old one replaced
-    triedge(:,ntri+(1:2)) = [[nedge+[3;2;1]] [nedge+2;nedge+4;e2]];
+    triedge(:,ntri+(1:2)) = [nedge+[3;2;1] [nedge+2;nedge+4;e2]];
     triedge(i2,t) = nedge+1;
     % New triangle memberships for new edges and e2
     edgetri(:,nedge+(1:2)) = [[t;ntri+1] [ntri+1;ntri+2]];

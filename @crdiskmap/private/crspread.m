@@ -30,12 +30,11 @@ dl(quadnum,:) = ones(1,length(u));
 % Place the quadrilateral prevertices in a rectangle around the origin.
 % We will store each rectangle so as to stably find the map between any
 % neighboring pair of embeddings.
-idx = Q.qlvert(:,quadnum);
 r = cr(quadnum);
 f1 = sqrt(1/(r+1));
 f2 = sqrt(r/(r+1));
 zr = zeros(4,n3);
-zr(:,quadnum) = f1*[-1;-1;1;1] + i*f2*[-1;1;1;-1];
+zr(:,quadnum) = f1*[-1;-1;1;1] + 1i*f2*[-1;1;1;-1];
 
 done = zeros(n3,1);
 done(quadnum) = 1;
@@ -43,14 +42,14 @@ done(quadnum) = 1;
 todo = Q.adjacent(:,quadnum);			
 
 while any(~done)
-  q = min(find(todo));			% pick an embedding
+  q = find(todo, 1);			% pick an embedding
   r = cr(q);
   % Quadrilateral prevertices for q
   f1 = sqrt(1/(r+1));
   f2 = sqrt(r/(r+1));
-  zr(:,q) = f1*[-1;-1;1;1] + i*f2*[-1;1;1;-1];
+  zr(:,q) = f1*[-1;-1;1;1] + 1i*f2*[-1;1;1;-1];
   % Find a neighbor to quadrilateral q
-  qn = min(find(done & Q.adjacent(:,q)));
+  qn = find(done & Q.adjacent(:,q), 1);
   % Find the 3 points in common between q and qn
   [i1,i2] = find(Q.qlvert(:,q*ones(4,1))==Q.qlvert(:,qn*ones(4,1))');
   mt = double(moebius(zr(i2,qn),zr(i1,q)));

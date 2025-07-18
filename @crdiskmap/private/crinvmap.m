@@ -25,7 +25,7 @@ end
 
 if isempty(qdat)
   qdat = scqdata(beta,8);
-elseif length(qdat)==1
+elseif isscalar(qdat)
   qdat = scqdata(beta,max(ceil(-log10(qdat)),2));
 end
 

@@ -77,7 +77,7 @@ for k = nontriv
     while dist < 1              
       % Do regular Gaussian quad on other subintervals.
       argl = argr;
-      zl = exp(i*argl);
+      zl = exp(1i*argl);
       dist = min(1,2*min(abs(z-zl)/abs(zl-zb)));
       argr = argl + dist*(argb-argl);
       nd = ((argr-argl)*qdat(:,n+1) + argr + argl).'/2;

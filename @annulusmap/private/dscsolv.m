@@ -9,7 +9,6 @@ import sctool.*
 w1 = zeros(1,dataz.N);
 phi1 = zeros(1,dataz.N);
 nshape = 0;
-%ind(1) = 0;
 ind = []; %modified
 if (ishape==1)
 % Determine the number of outer boundary components,etc:
@@ -37,8 +36,6 @@ if (iguess==0)
     x(4:dataz.N+1) = log((ave + 0.0001*(1:dataz.N-2))./(ave + 0.0001*(2:dataz.N-1)));
     x(dataz.N + 2) = log((ave + 0.0001*(dataz.N-1))/(2*pi-(dataz.N-1)*(ave + (dataz.N)*0.00005)));
     x(dataz.N + 3) = 1/(4-0.1) - 1/(4+0.1);
-%    x(dataz.N + 3) = 1/(pi-0.1) - 1/(pi+0.1);
-%    x(dataz.N + 3) = 1/(pi-0.001) - 1/(pi+0.001);
     ave = 2*pi/(dataz.M);
     x(dataz.N+4:dataz.M+dataz.N+1) = log((ave+0.0001*(0:dataz.M-3))./(ave + 0.0001*(1:dataz.M-2)));
     x(dataz.M + dataz.N + 2) = log((ave+0.0001*(dataz.M-2))/(2*pi-(dataz.M-1)*(ave+(dataz.M-2)*0.00005)));
@@ -48,7 +45,6 @@ elseif (iguess==1)
     x(1) = 1/0.53 - 1/0.43; 
     x(4:dataz.N+2) = 0;
     x(dataz.N + 3) = 1/(4-0.1) - 1/(4+0.1);
-%    x(dataz.N + 3) = 1/(pi-0.001) - 1/(pi+0.001);
     x(dataz.N+4:dataz.M+dataz.N+2) = 0;
 else 
     x(1) = 1/(0.98-u) - 1/(u-0.02);
@@ -82,7 +78,7 @@ else
                 botm = botm + 2*pi;
             end
               x(dataz.N + 3 + K) = log(top) - log(botm);
-          end 
+        end 
 end
 
 % Calculate the initial guess x(2) & x(3) to match

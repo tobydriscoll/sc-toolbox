@@ -11,7 +11,7 @@ if isa(M,'double') & isa(a,'crdiskmap')
   a = tmp;
 end
 
-if length(a)==1 & isa(a,'double')
+if isscalar(a) && isa(a,'double')
   M.affine(:,2) = M.affine(:,2) + a;
   M.scmap = M.scmap + a;
   M = center(M,M.center{1}+a);

@@ -34,7 +34,7 @@ aff = NaN*ones(n-3,2);
 rawimage = ones(4,n-3);
 
 % Deduce the side we will start with
-sidenum = min(find(~isnan(w) & ~isnan(w([2:n,1]))));
+sidenum = find(~isnan(w) & ~isnan(w([2:n,1])), 1 );
 if isempty(sidenum)
   error('You must specify at least one side of the target polygon.')
 end
@@ -50,7 +50,7 @@ if isempty(edgenum)
   edgenum = find(Q.edge(2,:)==s(1) & Q.edge(1,:)==s(2));
 end
 % Which quadrilateral?
-quadnum = min(find(any(Q.qledge==edgenum(ones(4,1),ones(n-3,1)))));
+quadnum = find(any(Q.qledge==edgenum(ones(4,1),ones(n-3,1))), 1 );
 % Do the embedding & calculate affine constants
 z = crembed(cr,Q,quadnum);
 idx = Q.qlvert(:,quadnum);

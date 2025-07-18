@@ -45,7 +45,7 @@ if from_strip
     beta = beta(renum);
     qdat(:,1:n) = qdat(:,renum);
     qdat(:,n+1+(1:n)) = qdat(:,n+1+renum);
-    kinf = max(find(isinf(z)));
+    kinf = find(isinf(z), 1, 'last' );
     argw = cumsum([angle(w(3)-w(2));-pi*beta([3:n,1])]);
     argw = argw([n,1:n-1]);
 else
@@ -58,7 +58,7 @@ fwd = [2:n 1];
 anchor = zeros(1,n);
 anchor(~infty) = w(~infty);
 anchor(infty) = w( fwd(infty) );        % use the finite endpoint
-direcn = exp(i*argw);
+direcn = exp(1i*argw);
 direcn(infty) = -direcn(infty);         % reverse
 len = abs( w(fwd) - w );
 
@@ -91,9 +91,9 @@ while m > 0				% while some not done
     for j = 1:n
         if from_disk
             if j<n
-                zbase(j) = exp(i*(factor*argz(j) + (1-factor)*argz(j+1)));
+                zbase(j) = exp(1i*(factor*argz(j) + (1-factor)*argz(j+1)));
             else
-                zbase(j) = exp(i*(factor*argz(n) + (1-factor)*(2*pi+argz(1))));
+                zbase(j) = exp(1i*(factor*argz(n) + (1-factor)*(2*pi+argz(1))));
             end
         elseif from_hp
             if j < n-1			% between two finite points
@@ -120,7 +120,7 @@ while m > 0				% while some not done
             % Can't use 0 or iK' as basis points.
             if abs(zbase(j)) < 1e-4
                 zbase(j) = zbase(j) + .2i;
-            elseif abs(zbase(j)-i*max(imag(z))) < 1e-4
+            elseif abs(zbase(j)-1i*max(imag(z))) < 1e-4
                 zbase(j) = zbase(j) - .2i;
             end
         end
@@ -170,7 +170,7 @@ while m > 0				% while some not done
                         % All 4 involved points are collinear.
                         wpx = real( (wp(p)-anchor(k)) / direcn(k) );
                         w0x = real( (w0(p)-anchor(k)) / direcn(k) );
-                        if (wpx*w0x < 0) | ((wpx-len(k))*(w0x-len(k)) < 0)
+                        if (wpx*w0x < 0) || ((wpx-len(k))*(w0x-len(k)) < 0)
                             % Intersection interior to segment: it's no good
                             done(p) = 0;
                         end
@@ -178,7 +178,7 @@ while m > 0				% while some not done
                         dif = (w0(p)-anchor(k));
                         s = A\[real(dif);imag(dif)];
                         % Intersection occurs interior to side? and segment?
-                        if s(1)>=0 & s(1)<=len(k)
+                        if s(1)>=0 && s(1)<=len(k)
                             if abs(s(2)-1) < tol
                                 % Special case: wp(p) is on polygon side k
                                 z0(p) = zbase(k);
@@ -190,7 +190,7 @@ while m > 0				% while some not done
                                     % Line segment came from "outside"
                                     done(p) = 0;
                                 end
-                            elseif s(2) > 0 & s(2) < 1
+                            elseif (s(2) > 0) && (s(2) < 1)
                                 % Intersection interior to segment: it's no good
                                 done(p) = 0;
                             end

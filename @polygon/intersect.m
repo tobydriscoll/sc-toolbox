@@ -31,16 +31,16 @@ isslit = isslit | isslit([2:n 1]);
 
 % Find two consecutive finite vertices.
 dw = diff( w([1:n 1]) );
-K = min( find( ~isinf(dw) ) );
+K = find( ~isinf(dw) , 1 );
 % Arguments of polygon sides.
 argw = ones(n,1);
 argw([K:n 1:K-1]) = cumsum( [angle(dw(K));-pi*beta([K+1:n 1:K-1])] );
 
 % Check each side. Solve for two parameters and check their ranges.
-hits = logical(zeros(m,n));
-loc = repmat(NaN,[m n]);
+hits = false(m,n);
+loc = NaN(m, n);
 for k = 1:n
-  tangent = exp(i*argw(k));
+  tangent = exp(1i*argw(k));
   if ~isinf(w(k))
     wk = w(k);
     s1max = abs( w(rem(k,n)+1)-w(k) );  % parameter in [0,s1max]
@@ -67,7 +67,7 @@ for k = 1:n
         x1 = min( real([e1 e2]) );
         x2 = max( real([e1 e2]) );
         % Do these values straddle either of the side's endpoints?
-        if (x2 >= tol) & (x1 <= s1max-tol)
+        if (x2 >= tol) && (x1 <= s1max-tol)
           hits(j,k) = 1;
           loc(j,k) = wk;  % pick a place
         end
@@ -77,14 +77,14 @@ for k = 1:n
       delta = endpt(j,1) - wk;
       s = A \ [real(delta);imag(delta)];
       % Check parameter ranges.
-      if s(1)>=-eps & s(1)<=s1max+eps & s(2)>=tol & s(2)<=1-tol
+      if s(1)>=-eps && s(1)<=s1max+eps && s(2)>=tol && s(2)<=1-tol
         % If an end of the segment lies on a slit side, check for
         % interior vs. exterior.
-        if isslit(k) & (abs(s(2)) < 10*eps)
-          normal = i*tangent; 
+        if isslit(k) && (abs(s(2)) < 10*eps)
+          normal = 1i*tangent; 
           if real( conj(e1e2)*normal ) < 0, break, end
-        elseif isslit(k) & (abs(s(2)-1) < 10*eps)
-          normal = i*tangent;
+        elseif isslit(k) && (abs(s(2)-1) < 10*eps)
+          normal = 1i*tangent;
           if real( conj(e1e2)*normal ) > 0, break, end
         end
         hits(j,k) = 1;

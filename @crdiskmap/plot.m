@@ -28,7 +28,7 @@ Q = M.qlgraph;
 
 if nargin == 1
   [a1,a2,a3] = crplot(w,beta,cr,aff,wcfix,Q);
-elseif length(varargin) == 1
+elseif isscalar(varargin)
   % Tolerance given only
   [a1,a2,a3] = crplot(w,beta,cr,aff,wcfix,Q,10,10,ceil(-log10(varargin{1})));
 elseif length(varargin) == 2

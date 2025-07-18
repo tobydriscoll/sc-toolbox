@@ -18,7 +18,6 @@ function zp = crimap0(wp,z,beta,aff,qdat,options)
 
 % Parse input and initialize
 import sctool.*
-n = length(beta);
 if nargin < 6
   options = [];
   if nargin < 5
@@ -29,7 +28,7 @@ zp = 0*wp;
 wp = wp(:);
 lenwp = length(wp);
 
-[ode,newton,tol,maxiter] = scinvopt(options);
+[ode,newton,tol,~] = scinvopt(options);
 
 if isempty(qdat)
   qdat = scqdata(beta,max(ceil(-log10(tol)),2));
@@ -56,7 +55,7 @@ if ode
   odefun = @(w,y) diskmap.imapfun(w,y,scale,z2,beta2,aff(1));
   [t,y] = ode23(odefun,[0,0.5,1],zeros(2*length(wp),1),odeset('abstol',odetol));
   [m,leny] = size(y);
-  zp(:) = y(m,1:lenwp) + i*y(m,lenwp+1:leny);
+  zp(:) = y(m,1:lenwp) + 1i*y(m,lenwp+1:leny);
   abszp = abs(zp);
   out = abszp > 1;
   zp(out) = zp(out)./abszp(out);
@@ -67,7 +66,7 @@ if newton
   % Setup
   if ~ode
     zn = z0(:);
-    if length(z0)==1 & lenwp > 1
+    if isscalar(z0) & lenwp > 1
       zn = zn(:,ones(lenwp,1));
     end
     zn(done) = zp(done);

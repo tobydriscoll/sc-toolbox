@@ -42,7 +42,7 @@ idx = [idxbot(1:end-1) idxbot(2:end)];
 idx = [idx ; [idxtop(1:end-1) idxtop(2:end)] ];
 
 % As a final check, integrate once across the strip
-[tmp,k] = min(abs( real(z(idxtop)-z(rem(endidx(1),n)+1)) ));
+[~,k] = min(abs( real(z(idxtop)-z(rem(endidx(1),n)+1)) ));
 idx = [idx; [rem(endidx(1),n)+1 idxtop(k)]];
 
 I = zeros(size(idx,1),1);
@@ -56,8 +56,8 @@ I(s2) = stquadh(zl(s2),mid,idx(s2,1),z,beta,qdata) ...
     - stquadh(zr(s2),mid,idx(s2,2),z,beta,qdata);
 
 % Three-stage integrations
-mid1 = real(zl(~s2)) + i/2;
-mid2 = real(zr(~s2)) + i/2;
+mid1 = real(zl(~s2)) + 1i/2;
+mid2 = real(zr(~s2)) + 1i/2;
 I(~s2) = stquad(zl(~s2),mid1,idx(~s2,1),z,beta,qdata) ...
     + stquadh(mid1,mid2,zeros(size(mid1)),z,beta,qdata) ...
     - stquad(zr(~s2),mid2,idx(~s2,2),z,beta,qdata);

@@ -20,7 +20,7 @@ for j = 1:length(varargin)
    case 'con'
     varargout{j} = map.constant;
    otherwise
-    warning(sprintf('Property ''%s'' not recognized.\n',varargin{j}))
+    warning('Property ''%s'' not recognized.\n', varargin{j})
     varargout{j} = [];
   end
 end

@@ -23,7 +23,7 @@ z = z(renum);
 zh = real(exp(pi*z));
 
 % Map -Inf correctly
-idx = find(isinf(z) & (z < 0));
+idx = isinf(z) & (z < 0);
 zh(idx) = 0;
 
 % Put finite ones inside [-1,1]
