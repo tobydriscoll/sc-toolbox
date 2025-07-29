@@ -27,13 +27,14 @@ w = w(:);
 beta = beta(:);
 n = length(w);
 renum = 1:n;
+import sctool.*
 
 % Orientation conventions
 sumb = -2 + 4*strcmp(type,'de');
 if abs(sum(beta)+sumb) < 1e-9
   % Reverse order
   w = w([1,n:-1:2]);
-  beta = scangle(w);
+  beta = sctool.scangle(w);
   renum = renum([1,n:-1:2]);
   if nargin > 3
     aux = renum(aux);
