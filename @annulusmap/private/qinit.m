@@ -5,6 +5,8 @@ function qwork = qinit(dataz,nptq)
 % M+N+1 contain the corresponding weights on output. nptq is the number of
 % G-J nodes (same as weights) used.
 
+import sctool.gaussj;
+
 %   For each finite vertex, compute nodes & weights
 %   For one-sided Gauss-Jacobi quadrature 
 
