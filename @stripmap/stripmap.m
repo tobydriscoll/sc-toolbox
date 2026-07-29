@@ -167,6 +167,12 @@ classdef  (InferiorClasses = {?double}) stripmap < scmap
         function w = evaluate(varargin)
             w = stmap(varargin{:});
         end
+
+        % Generic accessor for C++ golden-value test generators
+        % (tests/cpp/generators); calls any private function by name.
+        function varargout = private_(name, varargin)
+            [varargout{1:nargout}] = feval(name, varargin{:});
+        end
     end
 end
 

@@ -143,7 +143,15 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
             
             % Now fill in apparent accuracy
             map.accuracy = accuracy(map);
-            
+
+        end
+    end
+
+    methods (Static)
+        % Generic accessor for C++ golden-value test generators
+        % (tests/cpp/generators); calls any private function by name.
+        function varargout = private_(name, varargin)
+            [varargout{1:nargout}] = feval(name, varargin{:});
         end
     end
 end

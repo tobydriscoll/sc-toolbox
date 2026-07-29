@@ -96,7 +96,7 @@ else
    details(14) = 1;
 end
 if details(14), path = x0.'; end
-if (details(1) == 2), btrack = []; end
+btrack = [];
 nofun = 0;              % Number of function evaluations.
 trustvars = zeros(4,1); % variables for trust region methods.
 
