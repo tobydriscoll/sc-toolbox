@@ -1,1 +1,5 @@
 .DS_Store
+
+# C++ build artifacts
+cpp/build/
+*.dSYM/

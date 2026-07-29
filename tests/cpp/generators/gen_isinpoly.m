@@ -1,0 +1,29 @@
+function gen_isinpoly(outDir)
+%GEN_ISINPOLY  Golden values for sctool.isinpoly.
+
+import sctool.*
+
+cases = struct('desc', {}, 'inputs', {}, 'outputs', {}, 'tol', {});
+
+specs = { ...
+    [0,1,1+1i,1i], [0.5+0.5i, 2+2i, 0.99+0.5i],            'unit square: interior, exterior, near-edge interior'; ...
+    [0,1,1+1i,1i], [0.5+0i, 1+0.5i],                        'unit square: on-edge points'; ...
+    [0,1,1+1i,1i], [0+0i, 1+1i],                            'unit square: at-vertex points'; ...
+    [0, 2, 2+1i, 1+1i, 1+2i, 2i], [0.5+0.5i, 1.5+1.5i, 0.5+1.5i], 'L-shape: interior, exterior (notch), interior'; ...
+};
+
+for k = 1:size(specs, 1)
+    w = specs{k,1}(:);
+    z = specs{k,2}(:);
+    idx = sctool.isinpoly(z, w);
+    cases(end+1) = struct( ...
+        'desc',    specs{k,3}, ...
+        'inputs',  struct('z', z, 'w', w), ...
+        'outputs', struct('idx', double(idx)), ...
+        'tol',     1e-12); %#ok<AGROW>
+end
+
+cases_isinpoly = cases;
+save(fullfile(outDir, 'isinpoly.mat'), 'cases_isinpoly');
+fprintf('  isinpoly: %d cases\n', numel(cases_isinpoly));
+end

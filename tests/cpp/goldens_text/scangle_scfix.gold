@@ -1,0 +1,400 @@
+GROUP cases_angle
+CASE
+DESC unit square
+TOL 1e-14
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT beta 4 1 R
+-0.5
+-0.5
+-0.5
+-0.5
+ENDCASE
+CASE
+DESC equilateral triangle
+TOL 1e-14
+INPUT w 3 1 C
+0 0
+1 0
+0.5 0.86599999999999999
+OUTPUT beta 3 1 R
+-0.66667070989348554
+-0.66667070989348554
+-0.66665858021302937
+ENDCASE
+CASE
+DESC L-shape
+TOL 1e-14
+INPUT w 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+OUTPUT beta 6 1 R
+-0.5
+-0.5
+-0.5
+0.5
+-0.5
+-0.5
+ENDCASE
+CASE
+DESC irregular pentagon
+TOL 1e-14
+INPUT w 6 1 C
+0 0
+1 0
+1 1
+0.5 2
+-0.5 1
+-0.5 0
+OUTPUT beta 6 1 R
+0
+-0.5
+-0.14758361765043326
+-0.60241638234956674
+-0.25
+-0.5
+ENDCASE
+ENDGROUP
+GROUP cases_scfix
+CASE
+DESC disk / unit square (already valid)
+TOL 1e-14
+INPUT type STR
+d
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 0 1 R
+OUTPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC disk / L-shape
+TOL 1e-14
+INPUT type STR
+d
+INPUT w 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+INPUT beta 6 1 R
+-1.5
+-1.5
+-1.5
+-0.5
+-1.5
+-1.5
+INPUT aux 0 1 R
+OUTPUT w 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+OUTPUT beta 6 1 R
+-1.5
+-1.5
+-1.5
+-0.5
+-1.5
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC half-plane / unit square
+TOL 1e-14
+INPUT type STR
+hp
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 0 1 R
+OUTPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC exterior / unit square
+TOL 1e-14
+INPUT type STR
+de
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 0 1 R
+OUTPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC disk / square with flat vertex needing renumber
+TOL 1e-14
+INPUT type STR
+d
+INPUT w 5 1 C
+0 1
+0 0
+1 0
+1 1
+0.5 1
+INPUT beta 5 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+0
+INPUT aux 0 1 R
+OUTPUT w 5 1 C
+0 0
+1 0
+1 1
+0.5 1
+0 1
+OUTPUT beta 5 1 R
+-1.5
+-1.5
+-1.5
+0
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC disk / unbounded triangle forces vertex insertion
+TOL 1e-14
+INPUT type STR
+d
+INPUT w 3 1 C
+0 0
+Inf 0
+1 1
+INPUT beta 3 1 R
+-1.5
+-1.5
+-1.5
+INPUT aux 0 1 R
+OUTPUT w 3 1 C
+1 1
+0 0
+Inf 0
+OUTPUT beta 3 1 R
+-1.5
+-1.5
+-1.5
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC exterior / alternating flat vertices reduce to segment
+TOL 1e-14
+INPUT type STR
+de
+INPUT w 4 1 R
+0
+1
+2
+3
+INPUT beta 4 1 R
+0
+1
+0
+1
+INPUT aux 0 1 R
+OUTPUT w 2 1 R
+1
+3
+OUTPUT beta 2 1 R
+1
+1
+OUTPUT aux 0 1 R
+ENDCASE
+CASE
+DESC strip / unit square, ends at opposite corners
+TOL 1e-14
+INPUT type STR
+st
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 2 1 R
+1
+3
+OUTPUT w 5 1 C
+0 0
+0.5 0
+1 0
+1 1
+0 1
+OUTPUT beta 5 1 R
+-1.5
+0
+-1.5
+-1.5
+-1.5
+OUTPUT aux 2 1 R
+1
+4
+ENDCASE
+CASE
+DESC rectangle / unit square, identity corners
+TOL 1e-14
+INPUT type STR
+r
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 4 1 R
+1
+2
+3
+4
+OUTPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+OUTPUT aux 4 1 R
+1
+2
+3
+4
+ENDCASE
+CASE
+DESC rectangle / unit square, rotated corners
+TOL 1e-14
+INPUT type STR
+r
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+INPUT aux 4 1 R
+2
+3
+4
+1
+OUTPUT w 4 1 C
+1 0
+1 1
+0 1
+0 0
+OUTPUT beta 4 1 R
+-1.5
+-1.5
+-1.5
+-1.5
+OUTPUT aux 4 1 R
+1
+2
+3
+4
+ENDCASE
+CASE
+DESC disk / unit square triggers orientation reversal
+TOL 1e-14
+INPUT type STR
+d
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT beta 4 1 R
+0.5
+0.5
+0.5
+0.5
+INPUT aux 0 1 R
+OUTPUT w 4 1 C
+0 0
+0 1
+1 1
+1 0
+OUTPUT beta 4 1 R
+0.5
+0.5
+0.5
+0.5
+OUTPUT aux 0 1 R
+ENDCASE
+ENDGROUP

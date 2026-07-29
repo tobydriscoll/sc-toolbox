@@ -1,0 +1,68 @@
+GROUP cases_isinpoly
+CASE
+DESC unit square: interior, exterior, near-edge interior
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0.5 0.5
+2 2
+0.98999999999999999 0.5
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT idx 3 1 R
+1
+0
+1
+ENDCASE
+CASE
+DESC unit square: on-edge points
+TOL 9.9999999999999998e-13
+INPUT z 2 1 C
+0.5 0
+1 0.5
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT idx 2 1 R
+1
+1
+ENDCASE
+CASE
+DESC unit square: at-vertex points
+TOL 9.9999999999999998e-13
+INPUT z 2 1 C
+0 0
+1 1
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT idx 2 1 R
+0
+1
+ENDCASE
+CASE
+DESC L-shape: interior, exterior (notch), interior
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0.5 0.5
+1.5 1.5
+0.5 1.5
+INPUT w 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+OUTPUT idx 3 1 R
+1
+0
+1
+ENDCASE
+ENDGROUP

@@ -1,0 +1,96 @@
+GROUP cases_polygon
+CASE
+DESC unit square, already CCW
+TOL 9.9999999999999998e-13
+INPUT w 4 1 C
+0 0
+1 0
+1 1
+0 1
+INPUT alpha 0 1 R
+OUTPUT vertex 4 1 C
+0 0
+1 0
+1 1
+0 1
+OUTPUT angle 4 1 R
+0.5
+0.5
+0.5
+0.5
+OUTPUT isinf 1 1 R
+0
+ENDCASE
+CASE
+DESC unit square, CW input gets reversed
+TOL 9.9999999999999998e-13
+INPUT w 4 1 C
+0 0
+0 1
+1 1
+1 0
+INPUT alpha 0 1 R
+OUTPUT vertex 4 1 C
+1 0
+1 1
+0 1
+0 0
+OUTPUT angle 4 1 R
+0.5
+0.5
+0.5
+0.5
+OUTPUT isinf 1 1 R
+0
+ENDCASE
+CASE
+DESC unbounded triangle, explicit angles
+TOL 9.9999999999999998e-13
+INPUT w 3 1 C
+0 1
+-0 -1
+Inf 0
+INPUT alpha 3 1 R
+1.5
+0.5
+-1
+OUTPUT vertex 3 1 C
+0 1
+-0 -1
+Inf 0
+OUTPUT angle 3 1 R
+1.5
+0.5
+-1
+OUTPUT isinf 1 1 R
+1
+ENDCASE
+CASE
+DESC L-shape, already CCW
+TOL 9.9999999999999998e-13
+INPUT w 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+INPUT alpha 0 1 R
+OUTPUT vertex 6 1 C
+0 0
+2 0
+2 1
+1 1
+1 2
+0 2
+OUTPUT angle 6 1 R
+0.5
+0.5
+0.5
+1.5
+0.5
+0.5
+OUTPUT isinf 1 1 R
+0
+ENDCASE
+ENDGROUP

@@ -1,0 +1,83 @@
+function gen_scangle_scfix(outDir)
+%GEN_SCANGLE_SCFIX  Golden values for sctool.scangle and scfix.
+
+cases_angle = struct('desc', {}, 'inputs', {}, 'outputs', {}, 'tol', {});
+cases_scfix = struct('desc', {}, 'inputs', {}, 'outputs', {}, 'tol', {});
+
+% --- scangle ---
+polySpecs = { ...
+    [0, 1, 1+1i, 1i],             'unit square'; ...
+    [0, 1, 0.5+0.866i],           'equilateral triangle'; ...
+    [0, 2, 2+1i, 1+1i, 1+2i, 2i], 'L-shape'; ...
+    [0, 1+0i, 1+1i, 0.5+2i, -0.5+1i, -0.5+0i], 'irregular pentagon'; ...
+};
+
+for k = 1:size(polySpecs, 1)
+    w    = polySpecs{k,1}(:);
+    beta = sctool.scangle(w);
+    cases_angle(end+1) = struct( ...
+        'desc',    polySpecs{k,2}, ...
+        'inputs',  struct('w', w), ...
+        'outputs', struct('beta', beta), ...
+        'tol',     1e-14); %#ok<AGROW>
+end
+
+% --- scfix ---
+% Each row: {type, w, beta (or [] to derive via scangle(w)-1), aux, desc}.
+fixSpecs = { ...
+    'd',  [0, 1, 1+1i, 1i],             [],                       [], 'disk / unit square (already valid)'; ...
+    'd',  [0, 2, 2+1i, 1+1i, 1+2i, 2i], [],                       [], 'disk / L-shape'; ...
+    'hp', [0, 1, 1+1i, 1i],             [],                       [], 'half-plane / unit square'; ...
+    'de', [0, 1, 1+1i, 1i],             [],                       [], 'exterior / unit square'; ...
+    % Square + an extra flat (beta=0) vertex placed last: forces the
+    % renumbering loop in the 'hp'/'d' branch (beta(n) is a problem
+    % vertex) without needing an actual vertex insertion.
+    'd',  [1i, 0, 1, 1+1i, 0.5+1i],     [-1.5,-1.5,-1.5,-1.5,0],  [], 'disk / square with flat vertex needing renumber'; ...
+    % Triangle with one infinite vertex: w([1,2,n-1]) always includes
+    % the infinite vertex for n=3, so this exercises the vertex-insertion
+    % branch (scaddvtx) inside scfix.
+    'd',  [0, Inf, 1+1i],               [-1.5,-1.5,-1.5],         [], 'disk / unbounded triangle forces vertex insertion'; ...
+    % All four betas are 0 or 1, so the 'de' branch's renumbering loop
+    % cycles through every rotation and falls into the degenerate-vertex
+    % removal path, dropping the two beta==0 vertices.
+    'de', [0, 1, 2, 3],                 [0, 1, 0, 1],             [], 'exterior / alternating flat vertices reduce to segment'; ...
+    % 'st': strip ends supplied explicitly via aux (no interactive fallback).
+    'st', [0, 1, 1+1i, 1i],             [-1.5,-1.5,-1.5,-1.5],    [1,3], 'strip / unit square, ends at opposite corners'; ...
+    % 'r': corners already in canonical order (trivial pass-through).
+    'r',  [0, 1, 1+1i, 1i],             [-1.5,-1.5,-1.5,-1.5],    [1,2,3,4], 'rectangle / unit square, identity corners'; ...
+    % 'r': corners rotated, so scfix must renumber to put corner(1) first.
+    'r',  [0, 1, 1+1i, 1i],             [-1.5,-1.5,-1.5,-1.5],    [2,3,4,1], 'rectangle / unit square, rotated corners'; ...
+    % Orientation reversal: beta sum is +2, which for type 'd' (sumb=-2)
+    % triggers the reverse-order correction; beta is then recomputed from
+    % the reversed geometry via scangle.
+    'd',  [0, 1, 1+1i, 1i],             [0.5,0.5,0.5,0.5],        [], 'disk / unit square triggers orientation reversal'; ...
+};
+
+for k = 1:size(fixSpecs, 1)
+    type = fixSpecs{k,1};
+    w    = fixSpecs{k,2}(:);
+    betaSpec = fixSpecs{k,3};
+    aux  = fixSpecs{k,4};
+    if isempty(betaSpec)
+        beta = sctool.scangle(w) - 1;
+    else
+        beta = betaSpec(:);
+    end
+    if isempty(aux)
+        [wf, bf] = scfix(type, w, beta);
+        auxf = [];
+    else
+        [wf, bf, auxf] = scfix(type, w, beta, aux);
+    end
+    inp = struct('type', type, 'w', w, 'beta', beta, 'aux', aux(:));
+    out = struct('w', wf, 'beta', bf, 'aux', auxf(:));
+    cases_scfix(end+1) = struct( ...
+        'desc',    fixSpecs{k,5}, ...
+        'inputs',  inp, ...
+        'outputs', out, ...
+        'tol',     1e-14); %#ok<AGROW>
+end
+
+save(fullfile(outDir, 'scangle_scfix.mat'), 'cases_angle', 'cases_scfix');
+fprintf('  scangle: %d cases, scfix: %d cases\n', numel(cases_angle), numel(cases_scfix));
+end
