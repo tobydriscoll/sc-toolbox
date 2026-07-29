@@ -1,0 +1,1148 @@
+GROUP cases_construct
+CASE
+DESC construct / all finite
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0 0
+1 0
+0 1
+INPUT w 3 1 C
+1 0
+-1 0
+0 1
+OUTPUT coeff 4 1 C
+-1 1
+1 1
+-1 1
+1 -3
+OUTPUT source 3 1 C
+0 0
+1 0
+0 1
+OUTPUT image 3 1 C
+1 0
+-1 0
+0 1
+ENDCASE
+CASE
+DESC construct / all finite, asymmetric
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0 0
+1 0
+0 1
+INPUT w 3 1 C
+2 1
+3 0
+-0 -1
+OUTPUT coeff 4 1 C
+5 -5
+7 5
+1 -3
+3 3
+OUTPUT source 3 1 C
+0 0
+1 0
+0 1
+OUTPUT image 3 1 C
+2 1
+3 0
+-0 -1
+ENDCASE
+CASE
+DESC construct / w(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+-1
+0
+1
+INPUT w 3 1 R
+Inf
+0
+1
+OUTPUT coeff 4 1 R
+0
+-2
+-1
+-1
+OUTPUT source 3 1 R
+1
+-1
+0
+OUTPUT image 3 1 R
+1
+Inf
+0
+ENDCASE
+CASE
+DESC construct / w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+-1
+0
+1
+INPUT w 3 1 R
+0
+Inf
+1
+OUTPUT coeff 4 1 R
+1
+1
+0
+2
+OUTPUT source 3 1 R
+-1
+0
+1
+OUTPUT image 3 1 R
+0
+Inf
+1
+ENDCASE
+CASE
+DESC construct / w(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+-1
+0
+1
+INPUT w 3 1 R
+0
+1
+Inf
+OUTPUT coeff 4 1 R
+1
+1
+1
+-1
+OUTPUT source 3 1 R
+0
+1
+-1
+OUTPUT image 3 1 R
+1
+Inf
+0
+ENDCASE
+CASE
+DESC construct / z(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+Inf
+0
+1
+INPUT w 3 1 R
+-1
+0
+1
+OUTPUT coeff 4 1 R
+0
+-1
+-2
+1
+OUTPUT source 3 1 R
+1
+Inf
+0
+OUTPUT image 3 1 R
+1
+-1
+0
+ENDCASE
+CASE
+DESC construct / z(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+0
+Inf
+1
+INPUT w 3 1 R
+-1
+0
+1
+OUTPUT coeff 4 1 R
+-1
+0
+1
+-2
+OUTPUT source 3 1 R
+0
+Inf
+1
+OUTPUT image 3 1 R
+-1
+0
+1
+ENDCASE
+CASE
+DESC construct / z(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+0
+1
+Inf
+INPUT w 3 1 R
+-1
+0
+1
+OUTPUT coeff 4 1 R
+-1
+1
+1
+1
+OUTPUT source 3 1 R
+1
+Inf
+0
+OUTPUT image 3 1 R
+0
+1
+-1
+ENDCASE
+CASE
+DESC construct / z(1) = Inf and w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+Inf
+0
+1
+INPUT w 3 1 R
+0
+Inf
+1
+OUTPUT coeff 4 1 R
+1
+0
+-0
+1
+OUTPUT source 3 1 R
+Inf
+0
+1
+OUTPUT image 3 1 R
+0
+Inf
+1
+ENDCASE
+CASE
+DESC construct / z(2) = Inf and w(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+0
+Inf
+1
+INPUT w 3 1 R
+Inf
+0
+1
+OUTPUT coeff 4 1 R
+1
+0
+-0
+1
+OUTPUT source 3 1 R
+Inf
+0
+1
+OUTPUT image 3 1 R
+0
+Inf
+1
+ENDCASE
+CASE
+DESC construct / z(3) = Inf and w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+0
+1
+Inf
+INPUT w 3 1 R
+0
+Inf
+1
+OUTPUT coeff 4 1 R
+-0
+1
+-1
+1
+OUTPUT source 3 1 R
+Inf
+1
+0
+OUTPUT image 3 1 R
+1
+Inf
+0
+ENDCASE
+CASE
+DESC construct / z(1) = Inf and w(2) = Inf, complex
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+Inf 0
+0 1
+-0 -1
+INPUT w 3 1 R
+2
+Inf
+0
+OUTPUT coeff 4 1 C
+0 2
+2 0
+-0 -1
+1 0
+OUTPUT source 3 1 C
+Inf 0
+0 1
+-0 -1
+OUTPUT image 3 1 R
+2
+Inf
+0
+ENDCASE
+CASE
+DESC construct / z(3) = Inf and w(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0 1
+-0 -1
+Inf 0
+INPUT w 3 1 C
+0 0
+3 -1
+Inf 0
+OUTPUT coeff 4 1 C
+-1 -3
+3 -1
+0 -2
+0 0
+OUTPUT source 3 1 C
+-0 -1
+Inf 0
+0 1
+OUTPUT image 3 1 C
+3 -1
+Inf 0
+0 0
+ENDCASE
+ENDGROUP
+GROUP cases_eval
+CASE
+DESC eval / generic map
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+2
+3
+4
+INPUT zp 5 1 C
+0 0
+1 0
+-0.75 0
+0 1
+Inf 0
+OUTPUT fp 5 1 C
+0.33333333333333331 0
+0.42857142857142855 0
+Inf 0
+0.44 0.080000000000000002
+0.5 0
+OUTPUT dp 5 1 C
+0.22222222222222221 0
+0.040816326530612242 0
+Inf 0
+-0.0224 -0.076799999999999993
+0 0
+ENDCASE
+CASE
+DESC eval / 1/z (pole at 0)
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+0
+0
+1
+INPUT zp 4 1 C
+0 0
+2 0
+-0 -3
+Inf 0
+OUTPUT fp 4 1 C
+Inf 0
+0.5 0
+0 0.33333333333333331
+0 0
+OUTPUT dp 4 1 R
+-Inf
+-0.25
+0.1111111111111111
+-0
+ENDCASE
+CASE
+DESC eval / z/1 reversed: (0+z)/(1+0z)
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+0
+1
+1
+0
+INPUT zp 4 1 C
+0 0
+2 0
+-0 -3
+Inf 0
+OUTPUT fp 4 1 C
+0 0
+2 0
+0 -3
+Inf 0
+OUTPUT dp 4 1 R
+1
+1
+1
+NaN
+ENDCASE
+CASE
+DESC eval / complex coefficients
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+2 1
+-1 0
+3 0
+0 1
+INPUT zp 4 1 C
+0 0
+1 1
+0 3
+Inf 0
+OUTPUT fp 4 1 C
+0.66666666666666663 0.33333333333333331
+0.40000000000000002 -0.20000000000000001
+Inf 0
+0 1
+OUTPUT dp 4 1 C
+-0.22222222222222221 -0.22222222222222221
+-0.56000000000000005 0.080000000000000002
+-Inf -Inf
+0 0
+ENDCASE
+CASE
+DESC eval / pole at 0 (c3 = 0)
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+2
+0
+1
+INPUT zp 4 1 R
+0
+-1
+2
+Inf
+OUTPUT fp 4 1 R
+Inf
+1
+2.5
+2
+OUTPUT dp 4 1 R
+-Inf
+-1
+-0.25
+-0
+ENDCASE
+CASE
+DESC eval at source points / all finite
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+-1 1
+1 1
+-1 1
+1 -3
+INPUT zp 3 1 C
+0 0
+1 0
+0 1
+OUTPUT fp 3 1 C
+1 0
+-1 0
+0 1
+OUTPUT dp 3 1 C
+2 -2
+1 1
+-0.5 0.5
+ENDCASE
+CASE
+DESC eval at source points / all finite, asymmetric
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+5 -5
+7 5
+1 -3
+3 3
+INPUT zp 3 1 C
+0 0
+1 0
+0 1
+OUTPUT fp 3 1 C
+1.9999999999999998 1
+3 0
+0 -1
+OUTPUT dp 3 1 C
+1.6000000000000001 0.80000000000000004
+-0.5 -1
+-2 -4
+ENDCASE
+CASE
+DESC eval at source points / w(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+0
+-2
+-1
+-1
+INPUT zp 3 1 R
+1
+-1
+0
+OUTPUT fp 3 1 R
+1
+Inf
+-0
+OUTPUT dp 3 1 R
+0.5
+Inf
+2
+ENDCASE
+CASE
+DESC eval at source points / w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+1
+0
+2
+INPUT zp 3 1 R
+-1
+0
+1
+OUTPUT fp 3 1 R
+-0
+Inf
+1
+OUTPUT dp 3 1 R
+-0.5
+-Inf
+-0.5
+ENDCASE
+CASE
+DESC eval at source points / w(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+1
+1
+-1
+INPUT zp 3 1 R
+0
+1
+-1
+OUTPUT fp 3 1 R
+1
+Inf
+0
+OUTPUT dp 3 1 R
+2
+Inf
+0.5
+ENDCASE
+CASE
+DESC eval at source points / z(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+0
+-1
+-2
+1
+INPUT zp 3 1 R
+1
+Inf
+0
+OUTPUT fp 3 1 R
+1
+-1
+-0
+OUTPUT dp 3 1 R
+2
+0
+0.5
+ENDCASE
+CASE
+DESC eval at source points / z(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+-1
+0
+1
+-2
+INPUT zp 3 1 R
+0
+Inf
+1
+OUTPUT fp 3 1 R
+-1
+-0
+1
+OUTPUT dp 3 1 R
+-2
+-0
+-2
+ENDCASE
+CASE
+DESC eval at source points / z(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+-1
+1
+1
+1
+INPUT zp 3 1 R
+1
+Inf
+0
+OUTPUT fp 3 1 R
+0
+1
+-1
+OUTPUT dp 3 1 R
+0.5
+0
+2
+ENDCASE
+CASE
+DESC eval at source points / z(1) = Inf and w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+0
+-0
+1
+INPUT zp 3 1 R
+Inf
+0
+1
+OUTPUT fp 3 1 R
+0
+Inf
+1
+OUTPUT dp 3 1 R
+-0
+-Inf
+-1
+ENDCASE
+CASE
+DESC eval at source points / z(2) = Inf and w(1) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+0
+-0
+1
+INPUT zp 3 1 R
+Inf
+0
+1
+OUTPUT fp 3 1 R
+0
+Inf
+1
+OUTPUT dp 3 1 R
+-0
+-Inf
+-1
+ENDCASE
+CASE
+DESC eval at source points / z(3) = Inf and w(2) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+-0
+1
+-1
+1
+INPUT zp 3 1 R
+Inf
+1
+0
+OUTPUT fp 3 1 R
+1
+Inf
+-0
+OUTPUT dp 3 1 R
+-0
+-Inf
+-1
+ENDCASE
+CASE
+DESC eval at source points / z(1) = Inf and w(2) = Inf, complex
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+0 2
+2 0
+-0 -1
+1 0
+INPUT zp 3 1 C
+Inf 0
+0 1
+-0 -1
+OUTPUT fp 3 1 R
+2
+Inf
+-0
+OUTPUT dp 3 1 C
+0 0
+0 -Inf
+0 1
+ENDCASE
+CASE
+DESC eval at source points / z(3) = Inf and w(3) = Inf
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+-1 -3
+3 -1
+0 -2
+0 0
+INPUT zp 3 1 C
+-0 -1
+Inf 0
+0 1
+OUTPUT fp 3 1 C
+3 -1
+Inf -Inf
+-0 0
+OUTPUT dp 3 1 C
+0.5 1.5
+NaN NaN
+0.5 1.5
+ENDCASE
+ENDGROUP
+GROUP cases_ops
+CASE
+DESC ops / generic map, real scalar
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+2
+3
+4
+INPUT s 1 1 R
+2
+OUTPUT coeff_inv 4 1 R
+1
+-3
+-2
+4
+OUTPUT coeff_normal 4 1 R
+0.33333333333333331
+0.66666666666666663
+1
+1.3333333333333333
+OUTPUT coeff_neg 4 1 R
+-1
+-2
+3
+4
+OUTPUT coeff_plus 4 1 R
+7
+10
+3
+4
+OUTPUT coeff_minus 4 1 R
+-5
+-6
+3
+4
+OUTPUT coeff_times 4 1 R
+2
+4
+3
+4
+OUTPUT coeff_rdiv 4 1 R
+1
+2
+6
+8
+OUTPUT coeff_ldiv 4 1 R
+6
+8
+1
+2
+ENDCASE
+CASE
+DESC ops / generic map, complex scalar
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+2
+3
+4
+INPUT s 1 1 C
+-1.5 0.5
+OUTPUT coeff_inv 4 1 R
+1
+-3
+-2
+4
+OUTPUT coeff_normal 4 1 R
+0.33333333333333331
+0.66666666666666663
+1
+1.3333333333333333
+OUTPUT coeff_neg 4 1 R
+-1
+-2
+3
+4
+OUTPUT coeff_plus 4 1 C
+-3.5 1.5
+-4 2
+3 0
+4 0
+OUTPUT coeff_minus 4 1 C
+5.5 -1.5
+8 -2
+3 0
+4 0
+OUTPUT coeff_times 4 1 C
+-1.5 0.5
+-3 1
+3 0
+4 0
+OUTPUT coeff_rdiv 4 1 C
+1 0
+2 0
+-4.5 1.5
+-6 2
+OUTPUT coeff_ldiv 4 1 C
+-4.5 1.5
+-6 2
+1 0
+2 0
+ENDCASE
+CASE
+DESC ops / complex coefficients
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 C
+2 1
+-1 0
+3 0
+0 1
+INPUT s 1 1 C
+0 0.25
+OUTPUT coeff_inv 4 1 C
+2 1
+-3 0
+1 0
+0 1
+OUTPUT coeff_normal 4 1 C
+0.66666666666666663 0.33333333333333331
+-0.33333333333333331 0
+1 0
+0 0.33333333333333331
+OUTPUT coeff_neg 4 1 C
+-2 -1
+1 0
+3 0
+0 1
+OUTPUT coeff_plus 4 1 C
+2 1.75
+-1.25 0
+3 0
+0 1
+OUTPUT coeff_minus 4 1 C
+2 0.25
+-0.75 0
+3 0
+0 1
+OUTPUT coeff_times 4 1 C
+-0.25 0.5
+-0 -0.25
+3 0
+0 1
+OUTPUT coeff_rdiv 4 1 C
+2 1
+-1 0
+0 0.75
+-0.25 0
+OUTPUT coeff_ldiv 4 1 C
+0 0.75
+-0.25 0
+2 1
+-1 0
+ENDCASE
+CASE
+DESC ops / 1/z
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+0
+0
+1
+INPUT s 1 1 R
+3
+OUTPUT coeff_inv 4 1 R
+1
+-0
+-0
+1
+OUTPUT coeff_normal 4 1 R
+1
+0
+0
+1
+OUTPUT coeff_neg 4 1 R
+-1
+-0
+0
+1
+OUTPUT coeff_plus 4 1 R
+1
+3
+0
+1
+OUTPUT coeff_minus 4 1 R
+1
+-3
+0
+1
+OUTPUT coeff_times 4 1 R
+3
+0
+0
+1
+OUTPUT coeff_rdiv 4 1 R
+1
+0
+0
+3
+OUTPUT coeff_ldiv 4 1 R
+0
+3
+1
+0
+ENDCASE
+CASE
+DESC ops / zero constant term in denominator
+TOL 9.9999999999999998e-13
+INPUT coeff 4 1 R
+1
+2
+0
+1
+INPUT s 1 1 R
+-2
+OUTPUT coeff_inv 4 1 R
+1
+-0
+-2
+1
+OUTPUT coeff_normal 4 1 R
+1
+2
+0
+1
+OUTPUT coeff_neg 4 1 R
+-1
+-2
+0
+1
+OUTPUT coeff_plus 4 1 R
+1
+0
+0
+1
+OUTPUT coeff_minus 4 1 R
+1
+4
+0
+1
+OUTPUT coeff_times 4 1 R
+-2
+-4
+0
+1
+OUTPUT coeff_rdiv 4 1 R
+1
+2
+-0
+-2
+OUTPUT coeff_ldiv 4 1 R
+-0
+-2
+1
+2
+ENDCASE
+ENDGROUP
+GROUP cases_compose
+CASE
+DESC compose / generic composed with 1/z
+TOL 9.9999999999999998e-13
+INPUT coeff1 4 1 R
+1
+2
+3
+4
+INPUT coeff2 4 1 R
+0
+1
+1
+0
+INPUT zp 4 1 C
+0.29999999999999999 0
+-1.2 0.40000000000000002
+0 2
+Inf 0
+OUTPUT coeff 4 1 R
+1
+2
+3
+4
+OUTPUT fp 4 1 C
+0.38095238095238093 0
+0.65517241379310343 0.13793103448275867
+0.47945205479452052 0.054794520547945202
+0.5 0
+ENDCASE
+CASE
+DESC compose / complex composed with complex
+TOL 9.9999999999999998e-13
+INPUT coeff1 4 1 C
+2 1
+-1 0
+3 0
+0 1
+INPUT coeff2 4 1 C
+1 0
+-0 -1
+2 0
+1 0
+INPUT zp 4 1 C
+0.29999999999999999 0
+-1.2 0.40000000000000002
+0 2
+Inf 0
+OUTPUT coeff 4 1 C
+3 2
+2 2
+6 1
+4 0
+OUTPUT fp 4 1 C
+0.53974261922785771 0.2861468584405753
+0.097560975609756087 0.12195121951219519
+0.41025641025641024 0.38461538461538464
+0.5 0.5
+ENDCASE
+CASE
+DESC compose / 1/z composed with itself (identity)
+TOL 9.9999999999999998e-13
+INPUT coeff1 4 1 R
+1
+0
+0
+1
+INPUT coeff2 4 1 R
+1
+0
+0
+1
+INPUT zp 4 1 C
+0.29999999999999999 0
+-1.2 0.40000000000000002
+0 2
+Inf 0
+OUTPUT coeff 4 1 R
+0
+1
+1
+0
+OUTPUT fp 4 1 C
+0.29999999999999999 0
+-1.2 0.40000000000000002
+0 2
+Inf 0
+ENDCASE
+ENDGROUP
+GROUP cases_invpoints
+CASE
+DESC inv swaps source and image / three-point with Inf in w
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0 0
+1 0
+0 1
+INPUT w 3 1 R
+Inf
+0
+1
+OUTPUT coeff_inv 4 1 C
+-0 1
+0 0
+0 1
+1 -1
+OUTPUT source_inv 3 1 R
+1
+Inf
+0
+OUTPUT image_inv 3 1 C
+0 1
+0 0
+1 0
+ENDCASE
+CASE
+DESC inv swaps source and image / three-point all finite
+TOL 9.9999999999999998e-13
+INPUT z 3 1 C
+0 0
+1 0
+0 1
+INPUT w 3 1 C
+1 0
+-1 0
+0 1
+OUTPUT coeff_inv 4 1 C
+-1 1
+1 -1
+-1 -1
+1 -3
+OUTPUT source_inv 3 1 C
+1 0
+-1 0
+0 1
+OUTPUT image_inv 3 1 C
+0 0
+1 0
+0 1
+ENDCASE
+CASE
+DESC inv swaps source and image / three-point with Inf in z
+TOL 9.9999999999999998e-13
+INPUT z 3 1 R
+Inf
+0
+1
+INPUT w 3 1 R
+-1
+0
+1
+OUTPUT coeff_inv 4 1 R
+0
+2
+1
+1
+OUTPUT source_inv 3 1 R
+1
+-1
+0
+OUTPUT image_inv 3 1 R
+1
+Inf
+0
+ENDCASE
+ENDGROUP

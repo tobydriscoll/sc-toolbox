@@ -84,6 +84,8 @@ add_library(sctoolbox
   src/crdiskmap.cpp
   src/annulusmap_internal.cpp
   src/annulusmap.cpp
+  src/moebius.cpp
+  src/composite.cpp
 )
 target_include_directories(sctoolbox PUBLIC include)
 target_link_libraries(sctoolbox PUBLIC Eigen3::Eigen)
@@ -139,6 +141,8 @@ add_executable(sctoolbox_tests
   tests/test_rectmap.cpp
   tests/test_crdiskmap.cpp
   tests/test_annulusmap.cpp
+  tests/test_moebius.cpp
+  tests/test_composite.cpp
 )
 target_link_libraries(sctoolbox_tests PRIVATE sctoolbox Catch2::Catch2WithMain)
 target_compile_definitions(sctoolbox_tests PRIVATE

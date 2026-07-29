@@ -46,8 +46,8 @@ cmake --build cpp/build
 
 **Regenerate the C++ golden values** (MATLAB; only when a `.m` source or a generator changes):
 ```matlab
-tests/cpp/generateGoldens.m     % -> tests/cpp/goldens/*.mat
-tests/cpp/exportGoldensText.m   % -> tests/cpp/goldens_text/*.gold  (what C++ reads)
+generateGoldens()      % -> tests/cpp/goldens/*.mat
+exportGoldensText()    % -> tests/cpp/goldens_text/*.gold  (what the C++ tests read)
 ```
 
 Status, phase-by-phase progress, and the remaining work live in `CPP_PLAN.md` §0.
