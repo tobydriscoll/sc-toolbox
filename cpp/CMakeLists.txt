@@ -8,8 +8,26 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(Catch2 3 REQUIRED)
+# Build the Catch2 golden-value tests. Downstream consumers of the library
+# (e.g. the Python bindings in ../python) turn this OFF so they don't need
+# Catch2 installed.
+option(SCTOOLBOX_BUILD_TESTS "Build the Catch2 golden-value tests" ON)
+
+# Eigen: prefer a system/Homebrew install (the documented macOS workflow),
+# but fall back to fetching a pinned release so the library builds on machines
+# without Eigen installed (e.g. CI, or the Python wheel build).
+find_package(Eigen3 3.3 QUIET NO_MODULE)
+if(NOT Eigen3_FOUND)
+  message(STATUS "Eigen3 not found; fetching a pinned copy via FetchContent")
+  include(FetchContent)
+  FetchContent_Declare(eigen
+    URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+    URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72)
+  FetchContent_MakeAvailable(eigen)
+  add_library(eigen_headers INTERFACE)
+  target_include_directories(eigen_headers INTERFACE ${eigen_SOURCE_DIR})
+  add_library(Eigen3::Eigen ALIAS eigen_headers)
+endif()
 
 add_library(sctoolbox
   src/gaussj.cpp
@@ -87,6 +105,12 @@ add_library(sctoolbox
 )
 target_include_directories(sctoolbox PUBLIC include)
 target_link_libraries(sctoolbox PUBLIC Eigen3::Eigen)
+# Position-independent code so the static library can be linked into the
+# Python extension module (a shared object).
+set_target_properties(sctoolbox PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+if(SCTOOLBOX_BUILD_TESTS)
+find_package(Catch2 3 REQUIRED)
 
 add_executable(sctoolbox_tests
   tests/golden_reader.hpp
@@ -148,3 +172,4 @@ include(CTest)
 include(Catch)
 enable_testing()
 catch_discover_tests(sctoolbox_tests)
+endif()  # SCTOOLBOX_BUILD_TESTS
