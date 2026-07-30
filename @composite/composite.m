@@ -33,3 +33,4 @@ for n = 1:nargin
 end
 
 f = class(f,'composite');
+
