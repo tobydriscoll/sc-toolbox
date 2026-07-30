@@ -1,11 +1,12 @@
 function result = runTests(varargin)
 %RUNTESTS  Run the SC Toolbox regression test suite.
 %
-%   result = sctool.runTests()         run all tests
-%   result = sctool.runTests('disk')   run only testDisk
-%   result = sctool.runTests('disk', 'ann')  run a subset
+%   result = sctool.runTests()              run all tests
+%   result = sctool.runTests('disk')        run only testDisk
+%   result = sctool.runTests('disk', 'ann') run a subset
 %
-%   Valid names: 'disk', 'ext', 'hpl', 'strip', 'rect', 'crdisk', 'ann'
+%   Valid names: 'disk', 'ext', 'hpl', 'strip', 'rect', 'crdisk', 'ann',
+%                'vderiv'
 %
 %   The tests/ directory is temporarily added to the path if needed.
 %   Prerequisites: run generateFixtures() once to produce tests/fixtures.mat.
@@ -17,7 +18,8 @@ CLASS_MAP = struct( ...
     'strip',  'testStrip', ...
     'rect',   'testRectangle', ...
     'crdisk', 'testCRDisk', ...
-    'ann',    'testAnnulus');
+    'ann',    'testAnnulus', ...
+    'vderiv', 'testVertexDerivative');
 
 if isempty(varargin)
     names = fieldnames(CLASS_MAP);

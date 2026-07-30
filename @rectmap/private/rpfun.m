@@ -26,15 +26,15 @@ ints = zeros(size(zleft));
 % Two-stage integrations
 s2 = (right(:) - left(:) == 1) & (imag(zleft) - imag(zright) == 0);
 mid = mean([zleft(s2) zright(s2)],2);
-ints(s2) = stquadh(zleft(s2),mid,left(s2),z,beta,qdat) ...
-    - stquadh(zright(s2),mid,right(s2),z,beta,qdat);
+ints(s2) = stripmap.quadh(zleft(s2),mid,left(s2),z,beta,qdat) ...
+    - stripmap.quadh(zright(s2),mid,right(s2),z,beta,qdat);
 
 % Three-stage integrations
-mid1 = real(zleft(~s2)) + i/2;
-mid2 = real(zright(~s2)) + i/2;
-ints(~s2) = stquad(zleft(~s2),mid1,left(~s2),z,beta,qdat) ...
-    + stquadh(mid1,mid2,zeros(size(mid1)),z,beta,qdat) ...
-    - stquad(zright(~s2),mid2,right(~s2),z,beta,qdat);
+mid1 = real(zleft(~s2)) + 1i/2;
+mid2 = real(zright(~s2)) + 1i/2;
+ints(~s2) = stripmap.quad(zleft(~s2),mid1,left(~s2),z,beta,qdat) ...
+    + stripmap.quadh(mid1,mid2,zeros(size(mid1)),z,beta,qdat) ...
+    - stripmap.quad(zright(~s2),mid2,right(~s2),z,beta,qdat);
 
 if any(ints==0)|any(isnan(ints))
   % Singularities were too crowded. 

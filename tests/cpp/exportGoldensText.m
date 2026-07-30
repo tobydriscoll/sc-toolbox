@@ -3,6 +3,7 @@ function exportGoldensText(groupFiles, outDir)
 %   simple whitespace-delimited text format that the C++ test suite can
 %   read without any MATLAB-file-format library (no libmatio dependency).
 %
+%   exportGoldensText()          convert every .mat in tests/cpp/goldens
 %   exportGoldensText({'gaussj','scqdata','scangle_scfix'})
 %   exportGoldensText(groupFiles, outDir)
 %
@@ -28,6 +29,13 @@ end
 if ~exist(outDir, 'dir'), mkdir(outDir); end
 goldenDir = fullfile(fileparts(mfilename('fullpath')), 'goldens');
 
+if nargin < 1 || isempty(groupFiles)
+    listing = dir(fullfile(goldenDir, '*.mat'));
+    groupFiles = cell(1, numel(listing));
+    for gi = 1:numel(listing)
+        [~, groupFiles{gi}] = fileparts(listing(gi).name);
+    end
+end
 if ischar(groupFiles), groupFiles = {groupFiles}; end
 
 for gi = 1:numel(groupFiles)

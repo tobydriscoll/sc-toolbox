@@ -6,7 +6,7 @@ Goal: exhaustive function-to-function, class-to-class translation of the SC Tool
 
 ## 0. Current Status (read this first)
 
-**Phases 1–12 of 13 are complete and passing.** As of the last run: **1472 assertions, 69 test cases, 0 failures.**
+**All 13 phases are complete and passing.** As of the last run: **2242 assertions, 79 test cases, 0 failures.**
 
 ### Picking up on a new machine
 
@@ -30,8 +30,8 @@ Regenerating goldens (MATLAB only, and only when a `.m` source or a generator ch
 
 ```matlab
 addpath(genpath('/path/to/sc-toolbox'))
-tests/cpp/generateGoldens.m     % writes tests/cpp/goldens/*.mat  (calls rng(0) per group)
-tests/cpp/exportGoldensText.m   % converts those to tests/cpp/goldens_text/*.gold
+generateGoldens()      % writes tests/cpp/goldens/*.mat  (calls rng(0) per group)
+exportGoldensText()    % converts those to tests/cpp/goldens_text/*.gold
 ```
 
 Both `goldens/*.mat` and `goldens_text/*.gold` are committed; the `.gold` text files are what the C++ side actually reads (§3.4).
@@ -52,20 +52,19 @@ Both `goldens/*.mat` and `goldens_text/*.gold` are committed; the `.gold` text f
 | 10 | All `XXparam` (incl. `crparam`'s triangulation pipeline) | ✅ |
 | 11 | Map classes `DiskMap`/`HplMap`/`ExterMap`/`StripMap`/`RectMap`/`CrDiskMap` | ✅ |
 | 12 | `AnnulusMap` (DSCPACK) | ✅ |
-| 13 | `moebius`, `composite` | ⬜ **not started** |
+| 13 | `Moebius`, `Composite` | ✅ |
 
-72 source files in `cpp/src/`, 50 test files in `cpp/tests/`, 19 golden groups in `tests/cpp/goldens_text/`.
+74 source files in `cpp/src/`, 51 test files in `cpp/tests/`, 21 golden groups in `tests/cpp/goldens_text/`.
 
 ### What is next
 
-**Phase 13 — `@moebius` and `@composite`.** Thin wrapper classes; no C++ headers, no generator, and no `.gold` group exist for them yet. (`cpp/src/moebius3.cpp` is *not* this — it is the unrelated 3-point Möbius helper used by `crembed`.) Work needed:
-1. `tests/cpp/generators/gen_moebius.m` and `gen_composite.m`, added to `generateGoldens.m`'s `ALL` list.
-2. `cpp/include/sctoolbox/moebius.hpp` / `composite.hpp` + sources, added to `CMakeLists.txt`.
-3. `cpp/tests/test_moebius.cpp` / `test_composite.cpp`, added to `CMakeLists.txt`.
+Nothing is outstanding in the translation plan. The port covers every function and class it set out to cover; what is left is either explicitly out of scope or a deliberately unported branch, both listed below.
 
 ### Explicitly out of scope
 
-Never planned for translation, and no goldens exist: `@crrectmap`, `@riesurfmap`, `@dscpolygons`, `@scmapdiff`, `@scmapinv`.
+Never planned for translation, and no goldens exist: `@crrectmap`, `@riesurfmap`, `@dscpolygons`, `@scmapdiff`.
+
+`@scmapinv` has no C++ class of its own, but its only purpose — an object whose `eval` is some map's `evalinv` — is what `Composite::inverseMember` produces, which is the only context `@scmapinv` is used in (see §12).
 
 ### Bug fixes found after the initial port
 
@@ -77,6 +76,8 @@ Never planned for translation, and no goldens exist: `@crrectmap`, `@riesurfmap`
 - `wquad1`'s line-segment (`linearc==0`) continuation loop — the `.m` source has a self-indexing typo that would throw in MATLAB too (§11). Not exercised by any test case.
 - `annulusmap`'s `'truncate'` option for unbounded outer polygons (`ishape==1`).
 - Every map class's constructor is restricted to the "polygon in, parameter problem solved from an automatic initial guess" form; the MATLAB continuation-map / given-prevertex / tol-override constructor branches are not ported (§10).
+
+Also skipped, but harmless: the pretty-printing methods of every class (`char`/`disp`/`display`), which have no numerical content.
 
 ### MATLAB-side changes this port depends on
 
@@ -661,7 +662,7 @@ Translate in dependency order. Each tier can only begin after the previous tier'
 | 10 ✅ | `dparam`, `hpparam`, `deparam`, `stparam`, `rparam`, `crparam` | Wire `nesolve` + domain residual functions; `dparam`/`deparam` additionally needed `sctool.dabsquad` (ported alongside `dparam`); `stparam` reuses `stquad`/`stquadh` and renumbers around the strip's two end-vertices; `rparam` additionally needed `rptrnsfm` (Trefethen-style short-edge transform) and a post-`nesolve` Newton refinement onto the rectangle boundary via `r2strip`; `crparam` needed a full polygon-triangulation pipeline (`crtriang`, `crcdt`, `crqgraph`, `crsplit`, `crossrat`, `craffine`, `crfixwc`) plus `nesolve`'s identity-initial-Jacobian variant (`nesolvei.m`) |
 | 11 ✅ | Map classes (`diskmap`, `hplmap`, `extermap`, `stripmap`, `rectmap`, `crdiskmap`) | C++ classes with `eval`, `evalinv`, `evaldiff`, `accuracy`; constructors call the matching `XXparam` directly (not via a from-scratch port of every MATLAB constructor branch) |
 | 12 ✅ | `annulusmap` | Standalone; depends on its own quadrature and `nesolve` |
-| 13 | `moebius`, `composite` | Thin wrapper classes |
+| 13 ✅ | `moebius`, `composite` | `Moebius` ports the three-point constructor's infinity branches verbatim; `Composite` replaces MATLAB's duck typing with a forward/inverse callable pair per member, which is what lets `inverse()` reverse-and-swap the chain the way `@composite/inv.m` does |
 
 ---
 
@@ -781,3 +782,17 @@ The dependency chain mirrors the `XXparam`/`XXmap`/`XXinvmap` pattern but is bui
 `gen_annulus_private.m`'s existing skeleton (from an earlier session) had its own latent bug, caught while writing the C++ test: it computed the eval/evalinv query-point radii as `exp(-u) + frac*(1-exp(-u))`, treating `u` as if it were a *log*-radius — but `u` is the inner radius of the canonical annulus directly (`|w1(k)|==u` by construction in `xwtran.m`). Fixed to `u + frac*(1-u)`. The generator was also extended to store the outer/inner polygon's raw vertex/angle arrays (not just the solved `u,c,w0,...` fields, which `annulusmap`'s restrictive `subsref` blocks from being read outside `golden_fields.m` anyway) so the C++ test can reconstruct an `AnnulusMap` end-to-end via its public constructor — exercising the *whole* pipeline (`qinit`→`dscsolv`→`eval`/`evalinv`) per case, the same way `gen_crdiskmap_class.m` etc. do for the simply-connected map classes, rather than only the lower-level private functions.
 
 `wquad1.m`'s line-segment (`linearc==0`) continuation branch contains a self-indexing typo (`d(d(d ~= 0))`, using distance *values* as array *subscripts*) in its `while` loop body that would throw a MATLAB indexing error if ever executed; like `crsplit`'s deferred mesh-surgery branch (§9.6), this is not ported — the C++ `wquad1` throws `std::runtime_error` if that continuation is ever needed, since no exercised test case hits it and guessing at the intended fix was judged worse than failing loudly. The circular-arc (`linearc==1`) continuation loop, which *is* exercised, has a `kMaxSteps`-style safety counter (10000 iterations) added defensively, matching the precedent set by the `ode45.cpp` fix in Phase 11.
+
+## 12. Phase 13 — `moebius` and `composite`
+
+`Moebius` (`cpp/include/sctoolbox/moebius.hpp`) ports `@moebius` in full: the four-coefficient and three-point constructors, `eval`, `diff`, `inv`, `normal`, the `M1(M2)` composition form of `subsref.m`, and the scalar arithmetic operators (`plus`, `minus`, `mtimes`, `mrdivide` in both operand orders, `uminus`, `uplus`). Only the pretty-printers (`char`/`disp`/`display`) are skipped. The pre-existing `moebius3` (`cpp/src/moebius3.cpp`) is left alone: it is the all-finite fast path of the same three-point formula, called on `crspread`/`crgather` hot paths, and folding it into the new class would have churned already-passing Phase 10 goldens for no gain.
+
+The three-point constructor's infinity handling is the only intricate part, and it is ported branch-for-branch rather than re-derived: the `rem((j-1:j+1)+2,3)+1` renumbering that rotates the infinite entry into the middle slot, the separate `w`-infinite and `z`-infinite paths, the nested "move `Inf` to the beginning of `z`" swap, and the `isnan(A(1))` sentinel that MATLAB uses to detect whether the special-case branch already filled in the coefficients (a `bool haveA` in C++). The renumbered `z`/`w` are stored as `source`/`image`, since `inv()` swaps them. `gen_moebius.m` covers all thirteen reachable combinations of which slot (if any) of `z` and `w` holds an infinity.
+
+**`eval.m` and `diff.m` disagree about infinity, and the goldens record that.** `eval.m` deliberately funnels every degenerate result to `Inf`: infinite inputs map to `c2/c4`, a denominator with `|den| < 3*eps` is forced to `NaN`, and a trailing `f(isnan(f)) = Inf` sweep converts every `NaN` — however it arose — into `Inf`. `diff.m` (added in 2007, nine years after the rest of the class) has no infinity handling at all, so at `z = Inf` it evaluates `0*Inf` and returns a genuine `NaN`. This is not a porting artifact; it is what MATLAB returns, and `moebius.gold` stores `fp = Inf` alongside `dp = NaN` for the same input point. `test_moebius.cpp` therefore compares non-finite entries in two modes: `kInfExact` for `eval` outputs (MATLAB never returns `NaN` there, so `Inf` must match `Inf`), and `kAnyNonFinite` for `diff` outputs. The looser mode for `diff` is deliberate — C++ agrees with MATLAB and yields `NaN` on this platform, but the standard explicitly permits a complex multiplication to recover an infinity where IEEE arithmetic would produce `NaN`, so asserting which flavor of non-finite comes out would be testing the standard library rather than this port.
+
+**`Composite` needs explicit type erasure, and that is what makes `inv()` work.** MATLAB's `composite.m` is duck-typed: it accepts `moebius`, any of the six SC map classes, `scmapinv`, or an `inline`, stores them in a cell array, and dispatches through `feval`. C++ has no equivalent, so `Composite::Member` holds a forward callable *plus* its inverse callable (empty when there is none). That pairing is not an implementation convenience — it is the direct analogue of what MATLAB does: `inv(composite)` reverses the member list and calls `inv` on each member, and `inv` of an SC map yields an `scmapinv` whose `eval` is the original map's `evalinv`. Reversing the list and swapping `forward`/`inverse` per member reproduces this exactly. Members are built with the factories `Composite::member` (templated over any class with `eval`/`evalinv`, plus a `Moebius` overload), `Composite::inverseMember` (the `scmapinv` case), and `Composite::function` (the `inline` case — usable but not invertible, so `inverse()` throws `std::runtime_error`, mirroring MATLAB's "Can't invert INLINE maps."). Maps are copied into the member closures, so a composite outlives the objects it was built from. `append(const Composite&)` splices in another composite's members, matching the flattening MATLAB's constructor performs.
+
+`gen_composite.m` pins three member orderings per polygon (`map_then_mob`, `mob_then_map`, `mob_map_mob`), recording the ordering as a `STR` golden field so the C++ test can rebuild the same chain. The Moebius map placed *before* a `diskmap` is a Blaschke factor `(z-a)/(1-conj(a)z)`, i.e. a disk automorphism, since anything else would feed the disk map points outside its domain.
+
+**`generateGoldens.m`'s `ALL` list was missing the six `_class` groups.** `gen_diskmap_class.m` and its five siblings existed and their `.mat`/`.gold` outputs were committed, but the group names were never added to `ALL`, so `generateGoldens()` with no arguments silently skipped them and `generateGoldens('diskmap_class')` errored as an unknown group. Fixed while adding `moebius`/`composite`; `ALL` is now the complete list of 21 groups, and a full `generateGoldens()` followed by `exportGoldensText(ALL)` reproduces every committed `.gold` file byte-for-byte.

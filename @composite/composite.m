@@ -21,7 +21,7 @@ for n = 1:nargin
     case {'moebius','diskmap','hplmap','extermap','stripmap','rectmap',...
 	    'crdiskmap','crrectmap','riesurfmap','scmapinv'}
       f.maps{end+1} = map;
-    case 'inline'
+    case {'inline','function_handle'}
       if nargin(map) > 1
 	error('Inline functions must have only one argument.')
       else
@@ -33,6 +33,3 @@ for n = 1:nargin
 end
 
 f = class(f,'composite');
-
-      
-    

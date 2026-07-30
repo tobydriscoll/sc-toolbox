@@ -4,21 +4,22 @@ function generateGoldens(which)
 %   generateGoldens()           regenerate all golden files
 %   generateGoldens('gaussj')   regenerate one group
 %
-%   Valid group names:
-%     'gaussj', 'scqdata', 'scangle_scfix',
-%     'diskmap_private', 'hplmap_private', 'extermap_private',
-%     'stripmap_private', 'rectmap_private', 'crdiskmap_private',
-%     'annulus_private', 'nesolve'
+%   Valid group names: see ALL below. Every group has a matching
+%   tests/cpp/generators/gen_<group>.m.
 %
-%   Output: tests/cpp/goldens/<group>.mat, each containing a struct array
-%   'cases' with fields: desc, inputs, outputs, tol.
+%   Output: tests/cpp/goldens/<group>.mat, each containing one or more
+%   struct arrays with fields: desc, inputs, outputs, tol. Convert them to
+%   the text format the C++ tests read with exportGoldensText(ALL).
 %
 %   Prerequisites: SC Toolbox on the MATLAB path.
 
 ALL = {'gaussj', 'scqdata', 'scangle_scfix', ...
        'diskmap_private', 'hplmap_private', 'extermap_private', ...
        'stripmap_private', 'rectmap_private', 'crdiskmap_private', ...
-       'annulus_private', 'nesolve', 'isinpoly', 'polygon'};
+       'annulus_private', 'nesolve', 'isinpoly', 'polygon', ...
+       'diskmap_class', 'hplmap_class', 'extermap_class', ...
+       'stripmap_class', 'rectmap_class', 'crdiskmap_class', ...
+       'moebius', 'composite'};
 
 if nargin < 1
     which = ALL;

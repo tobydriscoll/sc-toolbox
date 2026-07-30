@@ -1,4 +1,4 @@
-function [z,c,L,qdat] = rparam(w,beta,cnr,z0,options);
+function [z,c,L,qdat,stripdat] = rparam(w,beta,cnr,z0,options);
 %RPARAM Schwarz-Christoffel rectangle parameter problem.
 %   [Z,C,L,QDAT] = RPARAM(W,BETA,CORNERS) solves the Schwarz-Christoffel
 %   parameter problem with a rectangle as fundamental domain and
@@ -260,6 +260,12 @@ if any(abs(F)> tol)
   warning('Could not converge to the rectangle prevertices.')
 end
 z(:) = zn; 
+
+% Pack data for IFT-based sensitivity analysis
+stripdat.y     = y;
+stripdat.cnr   = cnr;
+stripdat.renum = renum;
+stripdat.fdat  = fdat;  % {n, beta(renum), nmlen, left, right, cmplx, qdat, cnr}
 
 % Undo renumbering
 z(renum) = z;
