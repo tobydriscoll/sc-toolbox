@@ -6,6 +6,10 @@ or annulus); the right panel shows the conformal image of that same grid inside
 the target polygon. Because the maps are conformal, the two families of grid
 lines stay orthogonal after mapping.
 
+It also renders `gallery.png`, a single six-tile montage (one map type per
+tile, grid lines colored by a cyclic colormap) used as the hero image in the
+top-level README.
+
 Run from anywhere:
 
     python examples/render_examples.py            # -> examples/images/*.png
@@ -250,7 +254,109 @@ def example_annulus():
     print("wrote", os.path.relpath(out, HERE))
 
 
+# --------------------------------------------------------------------------
+# A single polished gallery figure for the top-level README: one tile per map
+# type, each showing the conformal image of a grid inside the target region.
+# The "spoke"/"vertical" family is colored by a cyclic colormap so the
+# angle-preserving structure of the maps reads at a glance.
+# --------------------------------------------------------------------------
+def _carpet_tile(ax, img_a, img_b, polys, title, cmap="twilight", lim=None):
+    n = len(img_a)
+    colors = plt.get_cmap(cmap)(np.linspace(0, 1, n, endpoint=False))
+    for ln, c in zip(img_a, colors):
+        ax.plot(ln.real, ln.imag, color=c, lw=0.9)
+    for ln in img_b:
+        ax.plot(ln.real, ln.imag, color="#33333344", lw=0.6)
+    for poly in polys:
+        v = _finite(np.asarray(poly.vertex))
+        v = np.append(v, v[0])
+        ax.plot(v.real, v.imag, color="#111111", lw=2.0)
+    ax.set_aspect("equal", "box")
+    ax.set_title(title, fontsize=12, fontweight="bold", pad=6)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for s in ax.spines.values():
+        s.set_visible(False)
+    if lim:
+        ax.set_xlim(lim[0])
+        ax.set_ylim(lim[1])
+
+
+def example_gallery():
+    fig, axes = plt.subplots(2, 3, figsize=(13.5, 8.4))
+
+    # 1. Disk -> hexagon
+    m = sc.DiskMap(sc.Polygon(HEX6))
+    a, b = disk_grid(n_spoke=36, n_circle=10)
+    _carpet_tile(axes[0, 0], mapped(m, a), mapped(m, b), [m.polygon],
+                 "DiskMap: disk → polygon", cmap="twilight")
+
+    # 2. Rectangle -> generalized quadrilateral
+    m = sc.RectMap(sc.Polygon(HEX6), (1, 2, 3, 4))
+    z = _finite(np.asarray(m.prevertex))
+    a, b = box_grid((z.real.min(), z.real.max()), (z.imag.min(), z.imag.max()),
+                    n_vert=28, n_horiz=16)
+    _carpet_tile(axes[0, 1], mapped(m, a), mapped(m, b), [m.polygon],
+                 "RectMap: rectangle → quadrilateral", cmap="viridis")
+
+    # 3. Strip -> hexagon
+    m = sc.StripMap(sc.Polygon(HEX6), (1, 4))
+    z = _finite(np.asarray(m.prevertex))
+    a, b = box_grid((z.real.min() - 1, z.real.max() + 1), (0.0, 1.0),
+                    n_vert=44, n_horiz=11)
+    _carpet_tile(axes[0, 2], mapped(m, a), mapped(m, b), [m.polygon],
+                 "StripMap: strip → polygon", cmap="plasma")
+
+    # 4. Disk exterior -> polygon exterior
+    m = sc.ExterMap(sc.Polygon(HEX6))
+    a, b = disk_grid(rmin=0.16, rmax=0.999, n_spoke=36, n_circle=9)
+    v = _finite(np.asarray(m.polygon.vertex))
+    pad = 4.0
+    _carpet_tile(axes[1, 0], mapped(m, a), mapped(m, b), [m.polygon],
+                 "ExterMap: disk → polygon exterior", cmap="twilight",
+                 lim=((v.real.min() - pad, v.real.max() + pad),
+                      (v.imag.min() - pad, v.imag.max() + pad)))
+
+    # 5. Cross-ratio disk -> non-convex L-shape
+    Lshape = np.array([1j, -1 + 1j, -1 - 1j, 1 - 1j, 1, 0], dtype=complex)
+    m = sc.CrDiskMap(sc.Polygon(Lshape))
+    a, b = disk_grid(rmax=0.995, n_spoke=36, n_circle=10)
+    _carpet_tile(axes[1, 1], mapped(m, a), mapped(m, b), [m.polygon],
+                 "CrDiskMap: disk → L-shape", cmap="viridis")
+
+    # 6. Annulus -> doubly connected region (scalar eval)
+    q = np.sqrt(2.0)
+    a_ = 1.0 + q
+    outer = sc.Polygon(np.array([a_ + a_ * 1j, -a_ + a_ * 1j,
+                                 -a_ - a_ * 1j, a_ - a_ * 1j], dtype=complex))
+    inner = sc.Polygon(np.array([q, q * 1j, -q, -q * 1j], dtype=complex))
+    m = sc.AnnulusMap(outer, inner)
+    spokes, circles = annulus_grid(m.u, n_spoke=37, n_circle=7)
+
+    def ev(ln):
+        out = np.empty(len(ln), dtype=complex)
+        for i, z in enumerate(ln):
+            try:
+                out[i] = m.eval(complex(z))
+            except RuntimeError:
+                out[i] = complex("nan")
+        return out
+
+    _carpet_tile(axes[1, 2], [ev(s) for s in spokes], [ev(c) for c in circles],
+                 [outer, inner], "AnnulusMap: annulus → doubly connected",
+                 cmap="plasma")
+
+    fig.suptitle("Schwarz–Christoffel conformal maps  ·  sctoolbox (Python)",
+                 fontsize=16, fontweight="bold")
+    fig.tight_layout(rect=(0, 0, 1, 0.965))
+    out = os.path.join(IMG_DIR, "gallery.png")
+    fig.savefig(out, dpi=140)
+    plt.close(fig)
+    print("wrote", os.path.relpath(out, HERE))
+
+
 def main():
+    example_gallery()
     example_disk()
     example_halfplane()
     example_strip()

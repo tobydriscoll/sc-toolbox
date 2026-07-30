@@ -3,6 +3,10 @@ sc-toolbox
 
 A **C++17 port** of the Schwarz–Christoffel Toolbox for conformal mapping — numerical routines for computing Schwarz–Christoffel conformal maps onto regions bounded by polygons in the complex plane.
 
+![Gallery of Schwarz–Christoffel maps](python/examples/images/gallery.png)
+
+*Each tile maps an orthogonal grid from a canonical domain (disk, rectangle, strip, annulus) into a polygon; the maps are conformal, so the colored grid stays orthogonal. Rendered with the [Python bindings](python) — `python examples/render_examples.py`.*
+
 This is a fork of [tobydriscoll/sc-toolbox](https://github.com/tobydriscoll/sc-toolbox), the original MATLAB toolbox by Toby Driscoll. The MATLAB sources are still here and unchanged in behavior: they are the reference implementation, and they generate the golden values the C++ tests are checked against.
 
 For the mathematics, see *Schwarz–Christoffel Mapping* by Driscoll and Trefethen. For a user's guide to the original toolbox (concepts, options, and map types all carry over), visit <https://tobydriscoll.net/project/sc-toolbox/>. The MATLAB version is also on the [File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/1316-schwarz-christoffel-toolbox), where you can try it online.
