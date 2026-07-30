@@ -35,11 +35,11 @@ addpath(genpath('/path/to/sc-toolbox'))
 
 ### C++ port
 
-Prerequisites: `brew install cmake eigen catch2`. MATLAB is **not** needed to build or test the C++ code — the goldens are committed as text.
+Prerequisites: a C++17 compiler and `cmake`. Eigen and Catch2 are fetched by CMake (pinned by version + hash), so no other installs are needed. MATLAB is **not** needed to build or test the C++ code — the goldens are committed as text.
 
 **Build and run the C++ tests:**
 ```sh
-cmake -S cpp -B cpp/build -DCMAKE_PREFIX_PATH=/opt/homebrew
+cmake -S cpp -B cpp/build
 cmake --build cpp/build
 ./cpp/build/sctoolbox_tests     # or: ctest --test-dir cpp/build
 ```

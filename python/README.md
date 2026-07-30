@@ -24,8 +24,8 @@ theory, meshing, and complex-analysis applications.
 
 ## Install
 
-Requires a C++17 compiler and CMake. Eigen is fetched automatically at build
-time if it is not already installed.
+Requires a C++17 compiler and CMake. Eigen (and nanobind) are fetched
+automatically at build time — no system libraries needed.
 
 ```sh
 cd python
