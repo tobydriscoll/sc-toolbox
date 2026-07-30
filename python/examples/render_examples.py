@@ -285,9 +285,13 @@ def _carpet_tile(ax, img_a, img_b, polys, title, cmap="twilight", lim=None):
 def example_gallery():
     fig, axes = plt.subplots(2, 3, figsize=(13.5, 8.4))
 
+    # Dense per-polyline sampling so the conformal images stay smooth even
+    # where the map stretches a grid line over a long, sharply curved arc.
+    NP = 2400
+
     # 1. Disk -> hexagon
     m = sc.DiskMap(sc.Polygon(HEX6))
-    a, b = disk_grid(n_spoke=36, n_circle=10)
+    a, b = disk_grid(n_spoke=36, n_circle=10, npts=NP)
     _carpet_tile(axes[0, 0], mapped(m, a), mapped(m, b), [m.polygon],
                  "DiskMap: disk → polygon", cmap="twilight")
 
@@ -295,7 +299,7 @@ def example_gallery():
     m = sc.RectMap(sc.Polygon(HEX6), (1, 2, 3, 4))
     z = _finite(np.asarray(m.prevertex))
     a, b = box_grid((z.real.min(), z.real.max()), (z.imag.min(), z.imag.max()),
-                    n_vert=28, n_horiz=16)
+                    n_vert=28, n_horiz=16, npts=NP)
     _carpet_tile(axes[0, 1], mapped(m, a), mapped(m, b), [m.polygon],
                  "RectMap: rectangle → quadrilateral", cmap="viridis")
 
@@ -303,13 +307,13 @@ def example_gallery():
     m = sc.StripMap(sc.Polygon(HEX6), (1, 4))
     z = _finite(np.asarray(m.prevertex))
     a, b = box_grid((z.real.min() - 1, z.real.max() + 1), (0.0, 1.0),
-                    n_vert=44, n_horiz=11)
+                    n_vert=44, n_horiz=11, npts=NP)
     _carpet_tile(axes[0, 2], mapped(m, a), mapped(m, b), [m.polygon],
                  "StripMap: strip → polygon", cmap="plasma")
 
     # 4. Disk exterior -> polygon exterior
     m = sc.ExterMap(sc.Polygon(HEX6))
-    a, b = disk_grid(rmin=0.16, rmax=0.999, n_spoke=36, n_circle=9)
+    a, b = disk_grid(rmin=0.16, rmax=0.999, n_spoke=36, n_circle=9, npts=NP)
     v = _finite(np.asarray(m.polygon.vertex))
     pad = 4.0
     _carpet_tile(axes[1, 0], mapped(m, a), mapped(m, b), [m.polygon],
@@ -320,7 +324,7 @@ def example_gallery():
     # 5. Cross-ratio disk -> non-convex L-shape
     Lshape = np.array([1j, -1 + 1j, -1 - 1j, 1 - 1j, 1, 0], dtype=complex)
     m = sc.CrDiskMap(sc.Polygon(Lshape))
-    a, b = disk_grid(rmax=0.995, n_spoke=36, n_circle=10)
+    a, b = disk_grid(rmax=0.995, n_spoke=36, n_circle=10, npts=NP)
     _carpet_tile(axes[1, 1], mapped(m, a), mapped(m, b), [m.polygon],
                  "CrDiskMap: disk → L-shape", cmap="viridis")
 
@@ -331,7 +335,7 @@ def example_gallery():
                                  -a_ - a_ * 1j, a_ - a_ * 1j], dtype=complex))
     inner = sc.Polygon(np.array([q, q * 1j, -q, -q * 1j], dtype=complex))
     m = sc.AnnulusMap(outer, inner)
-    spokes, circles = annulus_grid(m.u, n_spoke=37, n_circle=7)
+    spokes, circles = annulus_grid(m.u, n_spoke=37, n_circle=7, npts=NP)
 
     def ev(ln):
         out = np.empty(len(ln), dtype=complex)
