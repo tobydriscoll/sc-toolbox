@@ -3,6 +3,10 @@ sc-toolbox
 
 A **C++17 port** of the Schwarz–Christoffel Toolbox for conformal mapping — numerical routines for computing Schwarz–Christoffel conformal maps onto regions bounded by polygons in the complex plane.
 
+![Gallery of Schwarz–Christoffel maps](python/examples/images/gallery.png)
+
+*Each tile maps an orthogonal grid from a canonical domain (disk, rectangle, strip, annulus) into a polygon; the maps are conformal, so the colored grid stays orthogonal. Rendered with the [Python bindings](python) — `python examples/render_examples.py`.*
+
 This is a fork of [tobydriscoll/sc-toolbox](https://github.com/tobydriscoll/sc-toolbox), the original MATLAB toolbox by Toby Driscoll. The MATLAB sources are still here and unchanged in behavior: they are the reference implementation, and they generate the golden values the C++ tests are checked against.
 
 For the mathematics, see *Schwarz–Christoffel Mapping* by Driscoll and Trefethen. For a user's guide to the original toolbox (concepts, options, and map types all carry over), visit <https://tobydriscoll.net/project/sc-toolbox/>. The MATLAB version is also on the [File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/1316-schwarz-christoffel-toolbox), where you can try it online.
@@ -25,19 +29,15 @@ Plus `Polygon`, `Moebius`, `Composite`, the Gauss–Jacobi quadrature machinery,
 
 ## Build
 
-Prerequisites — [Eigen 3](https://eigen.tuxfamily.org), CMake 3.16+, and (for the tests only) [Catch2 3](https://github.com/catchorg/Catch2). On macOS:
+The only prerequisites are a C++17 compiler and CMake 3.16+. All third-party dependencies ([Eigen 3](https://eigen.tuxfamily.org) and, for the tests, [Catch2 3](https://github.com/catchorg/Catch2)) are fetched by CMake — pinned by version and hash — so the build is hermetic and needs no `brew`/`apt` installs.
 
 ```sh
-brew install cmake eigen catch2
-```
-
-```sh
-cmake -S cpp -B cpp/build -DCMAKE_PREFIX_PATH=/opt/homebrew
+cmake -S cpp -B cpp/build
 cmake --build cpp/build
 ./cpp/build/sctoolbox_tests     # or: ctest --test-dir cpp/build
 ```
 
-MATLAB is **not** needed to build or test the C++ library — the golden values are committed as text. If Eigen is not installed, the build fetches a pinned copy automatically.
+MATLAB is **not** needed to build or test the C++ library — the golden values are committed as text.
 
 ### Using it in your project
 
@@ -46,7 +46,7 @@ add_subdirectory(path/to/sc-toolbox/cpp sctoolbox)
 target_link_libraries(your_target PRIVATE sctoolbox)
 ```
 
-The test suite is skipped automatically when the project is consumed this way, so Catch2 is not required. Force it either way with `-DSCTOOLBOX_BUILD_TESTS=ON/OFF`.
+The test suite is skipped automatically when the project is consumed this way, so Catch2 is not fetched. Force it either way with `-DSCTOOLBOX_BUILD_TESTS=ON/OFF`.
 
 ## Basic usage
 

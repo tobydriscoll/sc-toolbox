@@ -10,16 +10,15 @@ Goal: exhaustive function-to-function, class-to-class translation of the SC Tool
 
 ### Picking up on a new machine
 
-Prerequisites (macOS/Homebrew; known-good versions in parentheses):
-
-```sh
-brew install cmake eigen catch2      # cmake 4.0, eigen 5.0.1, catch2 3.15.1
-```
+Prerequisites: a C++17 compiler and CMake 3.16+. Eigen (3.4.0) and Catch2
+(3.5.2) are fetched by `CMakeLists.txt` via `FetchContent`, pinned by version
+and SHA256, so no system/Homebrew installs are needed and the build is
+reproducible on any machine.
 
 Build and test:
 
 ```sh
-cmake -S cpp -B cpp/build -DCMAKE_PREFIX_PATH=/opt/homebrew
+cmake -S cpp -B cpp/build
 cmake --build cpp/build
 ./cpp/build/sctoolbox_tests           # or: ctest --test-dir cpp/build
 ```

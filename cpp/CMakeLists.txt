@@ -17,19 +17,25 @@ else()
 endif()
 option(SCTOOLBOX_BUILD_TESTS "Build the golden-value test suite" ${SCTOOLBOX_BUILD_TESTS_DEFAULT})
 
-# Eigen: prefer a system/Homebrew install (the documented macOS workflow), but
-# fall back to fetching a pinned release so the library builds on machines
-# without Eigen installed (e.g. CI, or the Python wheel build).
-find_package(Eigen3 3.3 QUIET NO_MODULE)
-if(NOT Eigen3_FOUND)
-  message(STATUS "Eigen3 not found; fetching a pinned copy via FetchContent")
-  include(FetchContent)
-  FetchContent_Declare(eigen
-    URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
-    URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72)
-  FetchContent_MakeAvailable(eigen)
+# All third-party dependencies are fetched by CMake (pinned by version + hash)
+# rather than found on the system, so the build is hermetic and reproducible on
+# any machine without brew/apt installs.
+include(FetchContent)
+
+# Eigen (header-only). FetchContent_MakeAvailable configures Eigen's own CMake,
+# which defines the Eigen3::Eigen target; guard the fallback alias in case a
+# given release does not.
+FetchContent_Declare(Eigen3
+  URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+  URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72)
+# Keep Eigen's own test/doc/blas targets out of our build.
+set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(Eigen3)
+if(NOT TARGET Eigen3::Eigen)
   add_library(eigen_headers INTERFACE)
-  target_include_directories(eigen_headers INTERFACE ${eigen_SOURCE_DIR})
+  target_include_directories(eigen_headers INTERFACE ${eigen3_SOURCE_DIR})
   add_library(Eigen3::Eigen ALIAS eigen_headers)
 endif()
 
@@ -116,7 +122,13 @@ target_link_libraries(sctoolbox PUBLIC Eigen3::Eigen)
 set_target_properties(sctoolbox PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(SCTOOLBOX_BUILD_TESTS)
-  find_package(Catch2 3 REQUIRED)
+  # Catch2 v3, fetched and built from source (provides Catch2::Catch2WithMain
+  # and the Catch.cmake module used by catch_discover_tests).
+  FetchContent_Declare(Catch2
+    URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.2.tar.gz
+    URL_HASH SHA256=269543a49eb76f40b3f93ff231d4c24c27a7e16c90e47d2e45bcc564de470c6e)
+  FetchContent_MakeAvailable(Catch2)
+  list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
   add_executable(sctoolbox_tests
     tests/golden_reader.hpp

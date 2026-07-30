@@ -24,8 +24,8 @@ theory, meshing, and complex-analysis applications.
 
 ## Install
 
-Requires a C++17 compiler and CMake. Eigen is fetched automatically at build
-time if it is not already installed.
+Requires a C++17 compiler and CMake. Eigen (and nanobind) are fetched
+automatically at build time — no system libraries needed.
 
 ```sh
 cd python
@@ -74,10 +74,14 @@ an inner `Polygon` and operates on scalar complex points.
 
 ## Gallery
 
-Each figure draws an orthogonal grid in the canonical domain (left) and its
-conformal image inside the target polygon (right). Because the maps are
+A single montage of every map type (grid lines colored by a cyclic colormap):
+
+![Gallery](examples/images/gallery.png)
+
+The per-map figures below draw an orthogonal grid in the canonical domain (left)
+and its conformal image inside the target polygon (right). Because the maps are
 conformal, the two grid-line families stay orthogonal after mapping. Regenerate
-them with `python examples/render_examples.py`.
+everything with `python examples/render_examples.py`.
 
 ### DiskMap — unit disk → polygon interior
 ![DiskMap](examples/images/disk.png)
