@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 #include <vector>
 
 #include "sctoolbox/crpsdist.hpp"
@@ -74,6 +75,15 @@ CrTriangulation crtriang(const Eigen::VectorXcd& Win) {
                             break;
                         }
                     }
+                }
+                if (enumv < 1) {
+                    // Should be unreachable now that edges are stored sorted
+                    // (see the diagonal-storage note below). Guard defensively
+                    // so a lookup miss surfaces as a catchable error rather than
+                    // an out-of-bounds write that corrupts the heap.
+                    throw std::runtime_error(
+                        "crtriang: could not resolve a triangle edge during "
+                        "polygon triangulation");
                 }
                 triedge(j, tnum - 1) = enumv;
                 if (edgetri(0, enumv - 1) == 0)
@@ -190,8 +200,19 @@ CrTriangulation crtriang(const Eigen::VectorXcd& Win) {
             }
 
             const int enumv = firstZeroColumn(edge, 2 * N - 3);
-            edge(0, enumv - 1) = idx[e1];
-            edge(1, enumv - 1) = idx[e2];
+            // Store the diagonal's endpoints sorted by *original* vertex index.
+            // MATLAB represents each sub-polygon as a boolean mask and re-reads
+            // it with find(), so its vertex list is always in increasing global
+            // order and `edge(:,enum)=idx(e)` is implicitly sorted. This port
+            // keeps a rotated vertex list (i2 wraps around, see below), so e1<e2
+            // by *position* does not imply idx[e1]<idx[e2]; sorting here restores
+            // the invariant the base-case edge lookup (line ~72) relies on.
+            // Without this, polygons that subdivide past a single split (n>=5)
+            // record an unsorted edge, the lookup misses it, and enumv stays -1.
+            int va = idx[e1], vb = idx[e2];
+            if (va > vb) std::swap(va, vb);
+            edge(0, enumv - 1) = va;
+            edge(1, enumv - 1) = vb;
 
             std::vector<int> i1, i2;
             for (int p = e1; p <= e2; ++p) i1.push_back(idx[p]);

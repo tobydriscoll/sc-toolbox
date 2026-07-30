@@ -66,6 +66,10 @@ Never planned for translation, and no goldens exist: `@crrectmap`, `@riesurfmap`
 
 `@scmapinv` has no C++ class of its own, but its only purpose — an object whose `eval` is some map's `evalinv` — is what `Composite::inverseMember` produces, which is the only context `@scmapinv` is used in (see §12).
 
+### Bug fixes found after the initial port
+
+- `crtriang` edge ordering (`cpp/src/crtriang.cpp`): MATLAB stores each sub-polygon as a boolean mask and re-reads it with `find`, so its vertex list is always in increasing global order and `edge(:,enum)=idx(e)` is implicitly sorted. This port keeps a rotated vertex list (`i2` wraps around), so for polygons that subdivide more than once (n≥5) a stored diagonal edge's endpoints were left in position order, the base-case edge lookup missed it, and the resulting `-1` edge index caused an out-of-bounds `Eigen` write (a heap corruption that surfaced through the Python bindings). Fixed by sorting the stored endpoints by original vertex index; a defensive guard now throws instead of writing out of bounds. The MATLAB golden cases only cover quadrilaterals (one subdivision), so the path was never exercised — `test_crdiskmap.cpp` adds a golden-free self-consistency regression (octagon + L-shape round trip).
+
 ### Deliberately unported branches (throw `std::runtime_error` if reached)
 
 - `crsplit`'s narrow-channel re-triangulation surgery — detection is ported, the mesh surgery is not (§9.6). Neither crdiskmap fixture triggers it.

@@ -8,7 +8,8 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# Tests need Catch2; consumers who add_subdirectory() this project do not.
+# Tests need Catch2; consumers who add_subdirectory() this project (e.g. the
+# Python bindings in ../python) do not, so default the suite OFF in that case.
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   set(SCTOOLBOX_BUILD_TESTS_DEFAULT ON)
 else()
@@ -16,9 +17,20 @@ else()
 endif()
 option(SCTOOLBOX_BUILD_TESTS "Build the golden-value test suite" ${SCTOOLBOX_BUILD_TESTS_DEFAULT})
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-if(SCTOOLBOX_BUILD_TESTS)
-  find_package(Catch2 3 REQUIRED)
+# Eigen: prefer a system/Homebrew install (the documented macOS workflow), but
+# fall back to fetching a pinned release so the library builds on machines
+# without Eigen installed (e.g. CI, or the Python wheel build).
+find_package(Eigen3 3.3 QUIET NO_MODULE)
+if(NOT Eigen3_FOUND)
+  message(STATUS "Eigen3 not found; fetching a pinned copy via FetchContent")
+  include(FetchContent)
+  FetchContent_Declare(eigen
+    URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+    URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72)
+  FetchContent_MakeAvailable(eigen)
+  add_library(eigen_headers INTERFACE)
+  target_include_directories(eigen_headers INTERFACE ${eigen_SOURCE_DIR})
+  add_library(Eigen3::Eigen ALIAS eigen_headers)
 endif()
 
 add_library(sctoolbox
@@ -99,62 +111,67 @@ add_library(sctoolbox
 )
 target_include_directories(sctoolbox PUBLIC include)
 target_link_libraries(sctoolbox PUBLIC Eigen3::Eigen)
+# Position-independent code so the static library can be linked into the
+# Python extension module (a shared object).
+set_target_properties(sctoolbox PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(SCTOOLBOX_BUILD_TESTS)
-add_executable(sctoolbox_tests
-  tests/golden_reader.hpp
-  tests/test_gaussj.cpp
-  tests/test_scqdata.cpp
-  tests/test_scangle.cpp
-  tests/test_neqrdcmp.cpp
-  tests/test_nechdcmp.cpp
-  tests/test_nefdjac.cpp
-  tests/test_nesolve.cpp
-  tests/test_scfix.cpp
-  tests/test_isinpoly.cpp
-  tests/test_polygon.cpp
-  tests/test_dquad.cpp
-  tests/test_hpquad.cpp
-  tests/test_dequad.cpp
-  tests/test_stderiv.cpp
-  tests/test_stquad.cpp
-  tests/test_crquad.cpp
-  tests/test_dderiv.cpp
-  tests/test_hpderiv.cpp
-  tests/test_dederiv.cpp
-  tests/test_dmap.cpp
-  tests/test_hpmap.cpp
-  tests/test_demap.cpp
-  tests/test_stmap.cpp
-  tests/test_dinvmap.cpp
-  tests/test_hpinvmap.cpp
-  tests/test_deinvmap.cpp
-  tests/test_stinvmap.cpp
-  tests/test_ellipkkp.cpp
-  tests/test_ellipjc.cpp
-  tests/test_rderiv.cpp
-  tests/test_rmap.cpp
-  tests/test_rinvmap.cpp
-  tests/test_crderiv.cpp
-  tests/test_crmap.cpp
-  tests/test_crinvmap.cpp
-  tests/test_dabsquad.cpp
-  tests/test_dparam.cpp
-  tests/test_hpparam.cpp
-  tests/test_deparam.cpp
-  tests/test_stparam.cpp
-  tests/test_rparam.cpp
-  tests/test_crparam.cpp
-  tests/test_diskmap.cpp
-  tests/test_hplmap.cpp
-  tests/test_extermap.cpp
-  tests/test_stripmap.cpp
-  tests/test_rectmap.cpp
-  tests/test_crdiskmap.cpp
-  tests/test_annulusmap.cpp
-  tests/test_moebius.cpp
-  tests/test_composite.cpp
-)
+  find_package(Catch2 3 REQUIRED)
+
+  add_executable(sctoolbox_tests
+    tests/golden_reader.hpp
+    tests/test_gaussj.cpp
+    tests/test_scqdata.cpp
+    tests/test_scangle.cpp
+    tests/test_neqrdcmp.cpp
+    tests/test_nechdcmp.cpp
+    tests/test_nefdjac.cpp
+    tests/test_nesolve.cpp
+    tests/test_scfix.cpp
+    tests/test_isinpoly.cpp
+    tests/test_polygon.cpp
+    tests/test_dquad.cpp
+    tests/test_hpquad.cpp
+    tests/test_dequad.cpp
+    tests/test_stderiv.cpp
+    tests/test_stquad.cpp
+    tests/test_crquad.cpp
+    tests/test_dderiv.cpp
+    tests/test_hpderiv.cpp
+    tests/test_dederiv.cpp
+    tests/test_dmap.cpp
+    tests/test_hpmap.cpp
+    tests/test_demap.cpp
+    tests/test_stmap.cpp
+    tests/test_dinvmap.cpp
+    tests/test_hpinvmap.cpp
+    tests/test_deinvmap.cpp
+    tests/test_stinvmap.cpp
+    tests/test_ellipkkp.cpp
+    tests/test_ellipjc.cpp
+    tests/test_rderiv.cpp
+    tests/test_rmap.cpp
+    tests/test_rinvmap.cpp
+    tests/test_crderiv.cpp
+    tests/test_crmap.cpp
+    tests/test_crinvmap.cpp
+    tests/test_dabsquad.cpp
+    tests/test_dparam.cpp
+    tests/test_hpparam.cpp
+    tests/test_deparam.cpp
+    tests/test_stparam.cpp
+    tests/test_rparam.cpp
+    tests/test_crparam.cpp
+    tests/test_diskmap.cpp
+    tests/test_hplmap.cpp
+    tests/test_extermap.cpp
+    tests/test_stripmap.cpp
+    tests/test_rectmap.cpp
+    tests/test_crdiskmap.cpp
+    tests/test_annulusmap.cpp
+    tests/test_moebius.cpp
+    tests/test_composite.cpp
+  )
   target_link_libraries(sctoolbox_tests PRIVATE sctoolbox Catch2::Catch2WithMain)
   target_compile_definitions(sctoolbox_tests PRIVATE
     GOLDENS_TEXT_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../tests/cpp/goldens_text")

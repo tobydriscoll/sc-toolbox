@@ -3,6 +3,7 @@
 
 #include "golden_reader.hpp"
 #include "sctoolbox/crdiskmap.hpp"
+#include "sctoolbox/polygon.hpp"
 
 namespace {
 sctoolbox::CrDiskMap buildMap(const golden::Case& c) {
@@ -81,4 +82,41 @@ TEST_CASE("CrDiskMap::accuracy matches MATLAB goldens") {
         const double acc = m.accuracy();
         CHECK(std::abs(acc - c.out("acc")(0, 0).real()) < c.tol);
     }
+}
+
+// Regression test for the crtriang edge-ordering bug (cpp/src/crtriang.cpp):
+// polygons that subdivide more than once (n >= 5) used to store a diagonal
+// edge with unsorted endpoints, the base-case edge lookup then missed it, and
+// the resulting -1 edge index caused an out-of-bounds Eigen write. The MATLAB
+// golden cases only cover quadrilaterals (a single subdivision), so this path
+// was never exercised. No MATLAB golden is needed here: we only assert
+// self-consistency (forward/inverse round trip) and a small accuracy estimate.
+namespace {
+double crRoundtripError(const sctoolbox::Polygon& poly) {
+    const sctoolbox::CrDiskMap m(poly, 1e-10);
+    Eigen::VectorXcd zp(24);
+    for (int i = 0; i < 24; ++i)
+        zp(i) = 0.5 * std::exp(std::complex<double>(0.0, 2.0 * M_PI * i / 24.0));
+    const Eigen::VectorXcd wp = m.eval(zp);
+    const Eigen::VectorXcd back = m.evalinv(wp);
+    double err = 0.0;
+    for (int i = 0; i < 24; ++i) err = std::max(err, std::abs(back(i) - zp(i)));
+    return err;
+}
+}  // namespace
+
+TEST_CASE("CrDiskMap handles polygons that subdivide more than once (n>=5)") {
+    // A regular octagon: several subdivisions, exercises the wrap-around
+    // sub-polygon path that mis-ordered the stored diagonal edges.
+    Eigen::VectorXcd oct(8);
+    for (int i = 0; i < 8; ++i)
+        oct(i) = std::exp(std::complex<double>(0.0, 2.0 * M_PI * i / 8.0));
+    CHECK(crRoundtripError(sctoolbox::Polygon(oct)) < 1e-6);
+
+    // The L-shape from tests/fixturePolygons.m -- a non-convex hexagon.
+    Eigen::VectorXcd L(6);
+    L << std::complex<double>(0, 1), std::complex<double>(-1, 1),
+        std::complex<double>(-1, -1), std::complex<double>(1, -1),
+        std::complex<double>(1, 0), std::complex<double>(0, 0);
+    CHECK(crRoundtripError(sctoolbox::Polygon(L)) < 1e-6);
 }

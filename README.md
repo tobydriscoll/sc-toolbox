@@ -37,7 +37,7 @@ cmake --build cpp/build
 ./cpp/build/sctoolbox_tests     # or: ctest --test-dir cpp/build
 ```
 
-MATLAB is **not** needed to build or test the C++ library — the golden values are committed as text.
+MATLAB is **not** needed to build or test the C++ library — the golden values are committed as text. If Eigen is not installed, the build fetches a pinned copy automatically.
 
 ### Using it in your project
 
@@ -96,6 +96,28 @@ Every map class exposes the same four methods as its MATLAB counterpart: `eval`,
 - **`StripMap`'s `ends` and `RectMap`'s `corners` are 1-indexed**, matching the MATLAB argument they translate — e.g. `StripMap(poly, {1, 4})`. This convention is deliberate throughout the port wherever an index is passed straight through from a `.m` source; see `CPP_PLAN.md` §3.5.
 - **`AnnulusMap` takes scalars**, one point at a time, rather than vectors.
 - **`Polygon` normalizes orientation.** Vertices are stored counterclockwise, reversing the input order if needed, exactly as `@polygon/polygon.m` does.
+
+## Python bindings
+
+NumPy-native bindings over the C++ port, built with [nanobind](https://github.com/wjakob/nanobind), live in [`python/`](python). Every map class, `AnnulusMap`, and `Polygon` are exposed with plain NumPy complex arrays in and out:
+
+```python
+import numpy as np
+from sctoolbox import Polygon, DiskMap
+
+verts = np.array([1j, -1 + 1j, -1 - 1j, 1 - 1j, 1, 0], dtype=complex)  # L-shape
+m = DiskMap(Polygon(verts))
+
+z = 0.6 * np.exp(1j * np.linspace(0, 2 * np.pi, 200))
+w = m.eval(z)                       # disk -> polygon
+print(np.max(np.abs(m.evalinv(w) - z)))   # round trip, ~1e-14
+```
+
+```sh
+cd python && pip install .          # Eigen/nanobind fetched automatically
+```
+
+See [`python/README.md`](python/README.md) for the full API, the pytest suite, and a rendered gallery of conformal "carpet" plots for every map type.
 
 ## Tests and golden values
 

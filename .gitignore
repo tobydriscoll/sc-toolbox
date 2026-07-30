@@ -3,3 +3,11 @@
 # C++ build artifacts
 cpp/build/
 *.dSYM/
+
+# Python build artifacts
+python/build/
+python/dist/
+python/*.egg-info/
+python/**/__pycache__/
+*.so
+__pycache__/
