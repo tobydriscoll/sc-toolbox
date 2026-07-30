@@ -8,8 +8,18 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Tests need Catch2; consumers who add_subdirectory() this project do not.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  set(SCTOOLBOX_BUILD_TESTS_DEFAULT ON)
+else()
+  set(SCTOOLBOX_BUILD_TESTS_DEFAULT OFF)
+endif()
+option(SCTOOLBOX_BUILD_TESTS "Build the golden-value test suite" ${SCTOOLBOX_BUILD_TESTS_DEFAULT})
+
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(Catch2 3 REQUIRED)
+if(SCTOOLBOX_BUILD_TESTS)
+  find_package(Catch2 3 REQUIRED)
+endif()
 
 add_library(sctoolbox
   src/gaussj.cpp
@@ -90,6 +100,7 @@ add_library(sctoolbox
 target_include_directories(sctoolbox PUBLIC include)
 target_link_libraries(sctoolbox PUBLIC Eigen3::Eigen)
 
+if(SCTOOLBOX_BUILD_TESTS)
 add_executable(sctoolbox_tests
   tests/golden_reader.hpp
   tests/test_gaussj.cpp
@@ -144,11 +155,12 @@ add_executable(sctoolbox_tests
   tests/test_moebius.cpp
   tests/test_composite.cpp
 )
-target_link_libraries(sctoolbox_tests PRIVATE sctoolbox Catch2::Catch2WithMain)
-target_compile_definitions(sctoolbox_tests PRIVATE
-  GOLDENS_TEXT_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../tests/cpp/goldens_text")
+  target_link_libraries(sctoolbox_tests PRIVATE sctoolbox Catch2::Catch2WithMain)
+  target_compile_definitions(sctoolbox_tests PRIVATE
+    GOLDENS_TEXT_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../tests/cpp/goldens_text")
 
-include(CTest)
-include(Catch)
-enable_testing()
-catch_discover_tests(sctoolbox_tests)
+  include(CTest)
+  include(Catch)
+  enable_testing()
+  catch_discover_tests(sctoolbox_tests)
+endif()
