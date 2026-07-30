@@ -6,6 +6,7 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
         qdata = []
         stripL = []
         accuracy = []
+        stripdat = []   % struct with y, cnr, renum, fdat — for IFT sensitivity
     end
     
     methods
@@ -124,7 +125,7 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
                 poly = polygon(w,beta+1);
                 
                 % Solve parameter problem (always necessary)
-                [z,c,L,qdata] = rparam(w,beta,corner,opt.InitialGuess,opt);
+                [z,c,L,qdata,sdat] = rparam(w,beta,corner,opt.InitialGuess,opt);
                 
             else
                 % Prevertices, etc. given. Renumber to conform
@@ -140,6 +141,7 @@ classdef  (InferiorClasses = {?double}) rectmap < scmap
             map.constant = c;
             map.stripL = L;
             map.qdata = qdata;
+            if exist('sdat','var'), map.stripdat = sdat; end
             
             % Now fill in apparent accuracy
             map.accuracy = accuracy(map);
